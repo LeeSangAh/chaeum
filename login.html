@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <title>관리자 로그인 | 채움 클래식 필라테스</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --p-primary: #8b7355;
+      --p-light:   #f7f3ee;
+      --p-dark:    #2c2c2c;
+      --p-accent:  #6b5d4f;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Lato', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+      background: var(--p-light);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .login-card {
+      background: #fff;
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    }
+    .brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.7rem;
+      letter-spacing: 0.15em;
+      color: var(--p-dark);
+      text-align: center;
+      display: block;
+      margin-bottom: 4px;
+    }
+    .brand-sub {
+      font-size: 0.7rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--p-primary);
+      text-align: center;
+      display: block;
+      margin-bottom: 36px;
+    }
+    .form-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #999;
+      margin-bottom: 5px;
+      display: block;
+    }
+    .form-control {
+      width: 100%;
+      border: 1px solid rgba(139,115,85,0.3);
+      border-radius: 0;
+      padding: 10px 12px;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-control:focus {
+      border-color: var(--p-primary);
+    }
+    .mb-3 { margin-bottom: 18px; }
+    .btn-login {
+      width: 100%;
+      background: var(--p-primary);
+      color: #fff;
+      border: none;
+      padding: 13px;
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      cursor: pointer;
+      margin-top: 6px;
+      transition: background 0.3s;
+    }
+    .btn-login:hover { background: var(--p-accent); }
+    .btn-login:disabled { background: #ccc; cursor: not-allowed; }
+    .error-msg {
+      color: #c0392b;
+      font-size: 0.82rem;
+      text-align: center;
+      min-height: 22px;
+      margin-top: 10px;
+    }
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.82rem;
+      color: #aaa;
+      text-decoration: none;
+    }
+    .back-link:hover { color: var(--p-primary); }
+  </style>
+</head>
+<body>
+  <div class="login-card">
+    <span class="brand">채움 PILATES</span>
+    <span class="brand-sub">관리자 로그인</span>
+    <form id="loginForm">
+      <div class="mb-3">
+        <label class="form-label" for="email">이메일</label>
+        <input type="email" class="form-control" id="email" autocomplete="email" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="password">비밀번호</label>
+        <input type="password" class="form-control" id="password" autocomplete="current-password" required>
+      </div>
+      <div class="error-msg" id="errorMsg"></div>
+      <button type="submit" class="btn-login" id="loginBtn">로그인</button>
+    </form>
+    <a href="index.html" class="back-link">← 홈으로 돌아가기</a>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-client.js"></script>
+  <script>
+    (async () => {
+      const { data: { session } } = await _supabase.auth.getSession();
+      if (session) window.location.href = 'admin.html';
+    })();
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn    = document.getElementById('loginBtn');
+      const errEl  = document.getElementById('errorMsg');
+      btn.disabled = true;
+      btn.textContent = '로그인 중...';
+      errEl.textContent = '';
+
+      const { error } = await _supabase.auth.signInWithPassword({
+        email:    document.getElementById('email').value,
+        password: document.getElementById('password').value,
+      });
+
+      if (error) {
+        errEl.textContent = '이메일 또는 비밀번호를 확인해 주세요.';
+        btn.disabled = false;
+        btn.textContent = '로그인';
+      } else {
+        window.location.href = 'admin.html';
+      }
+    });
+  </script>
+</body>
+</html>

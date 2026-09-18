@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <title>관리자 대시보드 | 채움 클래식 필라테스</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --p-primary:   #8b7355;
+      --p-secondary: #c9b99a;
+      --p-light:     #f7f3ee;
+      --p-dark:      #2c2c2c;
+      --p-accent:    #6b5d4f;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Lato', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+      background: #f5f5f3;
+      color: var(--p-dark);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .admin-header {
+      background: var(--p-dark);
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
+    .brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      letter-spacing: 0.12em;
+      color: #fff;
+      text-decoration: none;
+    }
+    .brand small {
+      font-family: 'Lato', sans-serif;
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--p-secondary);
+      margin-left: 10px;
+      vertical-align: middle;
+    }
+    .btn-logout {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.25);
+      color: rgba(255,255,255,0.7);
+      padding: 6px 16px;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-logout:hover { border-color: #fff; color: #fff; }
+
+    /* ── Main ── */
+    .main-wrap { max-width: 1100px; margin: 0 auto; padding: 28px 16px 60px; }
+
+    /* ── Calendar controls ── */
+    .cal-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .cal-nav {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .cal-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: var(--p-dark);
+      min-width: 140px;
+      text-align: center;
+    }
+    .btn-nav {
+      background: none;
+      border: 1px solid var(--p-secondary);
+      color: var(--p-primary);
+      width: 34px;
+      height: 34px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .btn-nav:hover { background: var(--p-primary); color: #fff; border-color: var(--p-primary); }
+    /* ── Calendar grid ── */
+    .cal-wrap { background: #fff; border: 1px solid #e8e8e8; }
+    .cal-header-row {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      border-bottom: 2px solid var(--p-light);
+    }
+    .cal-header-row div {
+      text-align: center;
+      padding: 10px 4px;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #999;
+      font-weight: 700;
+    }
+    .cal-header-row div.sat { color: #3a7bd5; }
+    .cal-header-row div.sun { color: #c0392b; }
+
+    #calGrid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+    }
+    .cal-cell {
+      min-height: 110px;
+      border-right: 1px solid #f0f0f0;
+      border-bottom: 1px solid #f0f0f0;
+      padding: 8px 6px 6px;
+      cursor: pointer;
+      transition: background 0.15s;
+      position: relative;
+    }
+    .cal-cell:nth-child(7n) { border-right: none; }
+    .cal-cell:hover { background: #faf8f5; }
+    .cal-cell.empty { cursor: default; background: #fafafa; }
+    .cal-cell.today .cal-date {
+      background: var(--p-primary);
+      color: #fff;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .cal-cell.selected { background: #fdf6ee; }
+    .cal-cell.selected::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border: 2px solid var(--p-primary);
+      pointer-events: none;
+    }
+    .cal-date {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--p-dark);
+      margin-bottom: 5px;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .cal-cell.sat .cal-date { color: #3a7bd5; }
+    .cal-cell.sun .cal-date { color: #c0392b; }
+    .slot-badge {
+      font-size: 0.67rem;
+      background: var(--p-light);
+      color: var(--p-accent);
+      padding: 2px 5px;
+      margin-bottom: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .res-dot {
+      background: var(--p-primary);
+      color: #fff;
+      border-radius: 50%;
+      width: 14px;
+      height: 14px;
+      font-size: 0.6rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .more-badge {
+      font-size: 0.65rem;
+      color: #aaa;
+      padding-left: 5px;
+    }
+
+    /* ── Day detail panel ── */
+    .day-detail {
+      margin-top: 20px;
+      background: #fff;
+      border: 1px solid #e8e8e8;
+    }
+    .detail-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 20px;
+      background: var(--p-light);
+      border-bottom: 1px solid rgba(139,115,85,0.15);
+    }
+    .detail-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: var(--p-dark);
+    }
+    .btn-close-detail {
+      background: none;
+      border: none;
+      font-size: 1rem;
+      color: #aaa;
+      cursor: pointer;
+      padding: 0 4px;
+    }
+    .btn-close-detail:hover { color: var(--p-dark); }
+    .detail-body { padding: 16px 20px; }
+
+    /* ── Slot cards in detail ── */
+    .slot-card {
+      border: 1px solid #ebebeb;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    .slot-card:last-child { margin-bottom: 0; }
+    .slot-card-header {
+      background: var(--p-light);
+      padding: 10px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(139,115,85,0.1);
+    }
+    .slot-time { font-size: 0.95rem; font-weight: 700; margin-right: 8px; }
+    .slot-name { font-size: 0.85rem; color: var(--p-accent); margin-right: 8px; }
+    .slot-count {
+      font-size: 0.72rem;
+      background: #fff;
+      border: 1px solid var(--p-secondary);
+      color: var(--p-primary);
+      padding: 1px 7px;
+    }
+    .slot-count.full { background: #fef5f5; border-color: #e74c3c; color: #e74c3c; }
+    .slot-card-body { padding: 10px 16px; }
+    .res-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 7px 0;
+      border-bottom: 1px solid #f5f5f5;
+      font-size: 0.86rem;
+    }
+    .res-item:last-child { border-bottom: none; }
+    .res-phone { color: #888; margin-left: 10px; font-size: 0.8rem; }
+    .res-memo { color: #aaa; margin-left: 8px; font-size: 0.78rem; font-style: italic; }
+    .no-res { font-size: 0.82rem; color: #bbb; margin: 0; }
+    .empty-msg { text-align: center; color: #bbb; font-size: 0.88rem; padding: 30px 0; margin: 0; }
+
+    /* ── Buttons ── */
+    .btn-add-res {
+      background: transparent;
+      border: 1px solid var(--p-primary);
+      color: var(--p-primary);
+      padding: 4px 12px;
+      font-size: 0.76rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .btn-add-res:hover { background: var(--p-primary); color: #fff; }
+    .btn-add-res:disabled { border-color: #ccc; color: #ccc; cursor: not-allowed; }
+    .btn-del-small {
+      background: none;
+      border: none;
+      color: #c0392b;
+      font-size: 0.76rem;
+      cursor: pointer;
+      padding: 2px 6px;
+      flex-shrink: 0;
+    }
+    .btn-del-small:hover { text-decoration: underline; }
+    .btn-add {
+      background: var(--p-primary);
+      color: #fff;
+      border: none;
+      padding: 8px 18px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-add:hover { background: var(--p-accent); }
+    .btn-save {
+      background: var(--p-primary);
+      color: #fff;
+      border: none;
+      padding: 9px 22px;
+      font-size: 0.82rem;
+      cursor: pointer;
+    }
+    .btn-save:hover { background: var(--p-accent); }
+    .btn-cancel {
+      background: #fff;
+      color: #666;
+      border: 1px solid #ddd;
+      padding: 9px 22px;
+      font-size: 0.82rem;
+      cursor: pointer;
+    }
+    .btn-action {
+      background: none;
+      border: 1px solid #ddd;
+      padding: 3px 9px;
+      font-size: 0.74rem;
+      cursor: pointer;
+      margin-right: 3px;
+      transition: all 0.2s;
+    }
+    .btn-action:hover { border-color: var(--p-primary); color: var(--p-primary); }
+    .btn-action.btn-del { color: #c0392b; }
+    .btn-action.btn-del:hover { border-color: #c0392b; background: #fef5f5; }
+    .btn-action.btn-pause { color: #e67e22; }
+    .btn-action.btn-resume { color: #27ae60; }
+
+    /* ── Slot management table ── */
+    .admin-table { font-size: 0.86rem; }
+    .admin-table th {
+      background: var(--p-dark);
+      color: #fff;
+      font-size: 0.73rem;
+      letter-spacing: 0.08em;
+      font-weight: 400;
+      padding: 10px 12px;
+    }
+    .admin-table td { padding: 10px 12px; vertical-align: middle; border-bottom: 1px solid #f0f0f0; }
+    .row-inactive td { color: #bbb; }
+    .status-badge { font-size: 0.7rem; padding: 2px 8px; }
+    .status-badge.active { background: #eafaf1; color: #27ae60; }
+    .status-badge.inactive { background: #f8f8f8; color: #999; }
+
+    /* ── Form elements ── */
+    .form-label-sm {
+      font-size: 0.73rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #999;
+      margin-bottom: 4px;
+      display: block;
+    }
+    .form-ctrl {
+      width: 100%;
+      border: 1px solid #e0e0e0;
+      padding: 8px 10px;
+      font-size: 0.88rem;
+      border-radius: 0;
+      outline: none;
+      transition: border-color 0.2s;
+      font-family: inherit;
+    }
+    .form-ctrl:focus { border-color: var(--p-primary); }
+
+    /* ── Modal ── */
+    .modal-content { border-radius: 0; border: none; }
+    .modal-header { background: var(--p-dark); color: #fff; border-radius: 0; }
+    .modal-title { font-size: 0.9rem; letter-spacing: 0.08em; }
+    .modal-header .btn-close { filter: invert(1); opacity: 0.7; }
+    .modal-footer { border-top: 1px solid #f0f0f0; gap: 8px; }
+
+    /* ── Toast ── */
+    .toast-msg {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--p-dark);
+      color: #fff;
+      padding: 12px 28px;
+      font-size: 0.84rem;
+      z-index: 9999;
+      animation: fadeUp 0.3s ease;
+    }
+    .toast-msg.error { background: #c0392b; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translate(-50%, 10px); }
+      to   { opacity: 1; transform: translate(-50%, 0); }
+    }
+
+    /* ── 시간표 편집 GCal 스타일 ── */
+    .se-layout { display: flex; gap: 0; min-height: 500px; }
+    .se-cal-col {
+      flex: 0 0 280px;
+      border-right: 1px solid #e8eaed;
+      padding: 8px 16px 8px 0;
+    }
+    .se-panel-col { flex: 1; min-width: 0; padding-left: 20px; }
+
+    .se-cal-top { display: flex; align-items: center; gap: 4px; margin-bottom: 8px; }
+    .se-cal-title { flex: 1; text-align: center; font-size: 0.9rem; font-weight: 700; color: var(--p-dark); }
+    .se-cal-nav {
+      background: none; border: none; color: #70757a; font-size: 1.1rem;
+      cursor: pointer; width: 26px; height: 26px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; padding: 0;
+    }
+    .se-cal-nav:hover { background: #f1f3f4; }
+
+    .se-dow-row {
+      display: grid; grid-template-columns: repeat(7,1fr);
+      text-align: center; font-size: 0.62rem; font-weight: 700;
+      letter-spacing: 0.04em; color: #70757a;
+      padding: 4px 0; border-bottom: 1px solid #e8eaed; margin-bottom: 3px;
+    }
+    .se-dow-row .se-dh-sun { color: #d93025; }
+    .se-dow-row .se-dh-sat { color: var(--p-primary); }
+
+    .se-cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 1px; }
+    .se-cal-cell {
+      min-height: 40px; padding: 2px 1px; cursor: pointer;
+      border-radius: 4px; transition: background 0.1s; text-align: center;
+    }
+    .se-cal-cell:hover { background: #f1f3f4; }
+    .se-cal-cell.se-empty { pointer-events: none; opacity: 0; }
+    .se-cal-cell.se-sel-dow { background: rgba(139,115,85,0.10); }
+    .se-cal-cell.se-today .se-day-n { background: var(--p-primary); color: #fff; font-weight: 700; border-radius: 50%; }
+
+    .se-day-n {
+      width: 20px; height: 20px; display: inline-flex;
+      align-items: center; justify-content: center;
+      font-size: 0.72rem; color: #3c4043; margin: 0 auto;
+    }
+    .se-day-n.se-sun-n { color: #d93025; }
+    .se-day-n.se-sat-n { color: var(--p-primary); }
+    .se-dot-row { display: flex; justify-content: center; gap: 2px; margin-top: 1px; }
+    .se-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--p-primary); }
+
+    .se-panel-head {
+      display: flex; align-items: baseline; gap: 8px;
+      margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid #e8eaed;
+    }
+    .se-panel-day { font-size: 1.05rem; font-weight: 700; color: var(--p-dark); }
+    .se-panel-sub { font-size: 0.72rem; color: #aaa; }
+
+    .se-event-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 7px 10px; background: var(--p-light);
+      border-radius: 5px; margin-bottom: 5px;
+      border-left: 3px solid var(--p-primary);
+    }
+    .se-event-time { font-size: 0.78rem; font-weight: 700; color: var(--p-primary); min-width: 42px; }
+    .se-event-name { flex: 1; font-size: 0.83rem; }
+    .se-event-del {
+      background: none; border: none; color: #ccc; cursor: pointer;
+      font-size: 0.9rem; padding: 0 2px; line-height: 1;
+    }
+    .se-event-del:hover { color: #c0392b; }
+
+    .se-no-events { font-size: 0.82rem; color: #aaa; padding: 8px 0 12px; }
+    .se-hint { font-size: 0.82rem; color: #aaa; padding: 20px 0; text-align: center; }
+    .day-modal-section {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.09em;
+      text-transform: uppercase; color: var(--p-primary); margin-bottom: 10px;
+    }
+
+    .se-add-form {
+      display: flex; gap: 8px; align-items: center;
+      flex-wrap: wrap; margin-top: 14px; padding-top: 12px;
+      border-top: 1px solid #e8eaed;
+    }
+    .se-add-form select,
+    .se-add-form input[type="text"] {
+      font-size: 0.82rem; padding: 6px 8px;
+      border: 1px solid #dadce0; border-radius: 4px;
+      background: #fff; color: var(--p-dark); outline: none;
+    }
+    .se-add-form select:focus,
+    .se-add-form input[type="text"]:focus { border-color: var(--p-primary); }
+    .se-add-form select { min-width: 100px; }
+    .se-add-form input[type="text"] { flex: 1; min-width: 120px; }
+    .se-add-btn {
+      background: var(--p-primary); color: #fff; border: none;
+      border-radius: 4px; padding: 6px 14px; font-size: 0.82rem;
+      cursor: pointer; white-space: nowrap;
+    }
+    .se-add-btn:hover { background: var(--p-accent); }
+
+    @media (max-width: 640px) {
+      .se-layout { flex-direction: column; }
+      .se-cal-col { flex: none; border-right: none; padding-right: 0; border-bottom: 1px solid #e8eaed; padding-bottom: 14px; margin-bottom: 14px; }
+      .se-panel-col { padding-left: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header class="admin-header">
+  <a href="index.html" target="_blank" class="brand">채움 PILATES <small>관리자</small></a>
+  <button class="btn-logout" onclick="logout()">로그아웃</button>
+</header>
+
+<div class="main-wrap">
+
+  <!-- ── Calendar controls ── -->
+  <div class="cal-controls">
+    <div class="cal-nav">
+      <button class="btn-nav" onclick="changeMonth(-1)">&#8249;</button>
+      <span class="cal-title" id="calTitle"></span>
+      <button class="btn-nav" onclick="changeMonth(1)">&#8250;</button>
+    </div>
+  </div>
+
+  <!-- ── Calendar ── -->
+  <div class="cal-wrap">
+    <div class="cal-header-row">
+      <div class="sun">일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div>
+      <div class="sat">토</div>
+    </div>
+    <div id="calGrid"></div>
+  </div>
+
+
+</div>
+
+<!-- ── Modal: 날짜 팝업 ── -->
+<div class="modal fade" id="dayModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="dayModalTitle"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:16px 20px;">
+        <div class="day-modal-section">수업 일정 <span style="font-weight:400;color:#bbb;text-transform:none;letter-spacing:0;">주간 반복</span></div>
+        <div id="dayModalSchedule"></div>
+        <hr style="margin:16px 0;border-color:#e8eaed;">
+        <div class="day-modal-section">예약 현황</div>
+        <div id="dayModalReservations"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" data-bs-dismiss="modal">닫기</button>
+        <button class="btn-save" onclick="saveSchedule()">저장</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Modal: 예약 추가 ── -->
+<div class="modal fade" id="resModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="resModalTitle">예약 추가</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="resSlotId">
+        <div class="mb-3">
+          <label class="form-label-sm">고객명 *</label>
+          <input type="text" id="resCustomerName" class="form-ctrl">
+        </div>
+        <div class="mb-3">
+          <label class="form-label-sm">연락처</label>
+          <input type="tel" id="resCustomerPhone" class="form-ctrl" placeholder="010-0000-0000">
+        </div>
+        <div class="mb-3">
+          <label class="form-label-sm">메모</label>
+          <textarea id="resMemo" class="form-ctrl" rows="2" style="resize:vertical;"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" data-bs-dismiss="modal">취소</button>
+        <button class="btn-save" onclick="saveReservation()">예약 추가</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/bootstrap.bundle.min.js"></script>
+<script src="js/supabase-client.js"></script>
+<script>
+  const DAY_NAMES  = ['일','월','화','수','목','금','토'];
+  const MONTH_NAMES = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+
+  let currentYear, currentMonth;
+  let monthReservations = [];
+  let selectedDateStr = null;
+
+  // JS getDay() 0=일 → 달력 열 0=일
+  const jsToCalDay = d => d;
+
+  const formatDate = d =>
+    `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+
+  const escHtml = s =>
+    String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+  // ── Auth ─────────────────────────────────────────────
+  async function checkAuth() {
+    const { data: { session } } = await _supabase.auth.getSession();
+    if (!session) window.location.href = 'login.html';
+  }
+  async function logout() {
+    await _supabase.auth.signOut();
+    window.location.href = 'login.html';
+  }
+
+  // ── Toast ─────────────────────────────────────────────
+  function showToast(msg, type = 'success') {
+    const el = document.createElement('div');
+    el.className = 'toast-msg' + (type === 'error' ? ' error' : '');
+    el.textContent = msg;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 2600);
+  }
+
+  // ── 데이터 로딩 ───────────────────────────────────────
+  async function loadMonthData() {
+    const first = formatDate(new Date(currentYear, currentMonth, 1));
+    const last  = formatDate(new Date(currentYear, currentMonth + 1, 0));
+    const { data } = await _supabase
+      .from('reservations').select('*')
+      .gte('reservation_date', first)
+      .lte('reservation_date', last)
+      .eq('status', 'confirmed');
+    monthReservations = data || [];
+    renderCalendar();
+  }
+
+  // ── 달력 렌더링 ───────────────────────────────────────
+  function renderCalendar() {
+    document.getElementById('calTitle').textContent =
+      `${currentYear}년 ${MONTH_NAMES[currentMonth]}`;
+
+    const today   = formatDate(new Date());
+    const first   = new Date(currentYear, currentMonth, 1);
+    const lastDay = new Date(currentYear, currentMonth + 1, 0).getDate();
+    const offset  = jsToCalDay(first.getDay());
+
+    let html = '';
+
+    // 빈 셀
+    for (let i = 0; i < offset; i++) {
+      html += '<div class="cal-cell empty"></div>';
+    }
+
+    for (let d = 1; d <= lastDay; d++) {
+      const date    = new Date(currentYear, currentMonth, d);
+      const calDay  = jsToCalDay(date.getDay());
+      const dateStr = formatDate(date);
+      const isToday    = dateStr === today;
+      const isSelected = dateStr === selectedDateStr;
+      const isSat = calDay === 6;
+      const isSun = calDay === 0;
+
+      const dayRes = monthReservations.filter(r => r.reservation_date === dateStr);
+      const resBadge = dayRes.length
+        ? `<div class="slot-badge"><span class="res-dot">${dayRes.length}</span> 예약</div>` : '';
+
+      html += `
+        <div class="cal-cell ${isToday?'today':''} ${isSelected?'selected':''} ${isSat?'sat':''} ${isSun?'sun':''}"
+             onclick="selectDay('${dateStr}')">
+          <div class="cal-date">${d}</div>
+          ${resBadge}
+        </div>`;
+    }
+
+    document.getElementById('calGrid').innerHTML = html;
+
+    // (날짜 선택 상태는 모달로 처리)
+  }
+
+  async function changeMonth(delta) {
+    currentMonth += delta;
+    if (currentMonth < 0)  { currentMonth = 11; currentYear--; }
+    if (currentMonth > 11) { currentMonth = 0;  currentYear++; }
+    await loadMonthData();
+  }
+
+  // ── 날짜 선택 → 팝업 ────────────────────────────────
+  function selectDay(dateStr) {
+    selectedDateStr = dateStr;
+    renderCalendar();
+    const date  = new Date(dateStr + 'T00:00:00');
+    const dow   = date.getDay();
+    const [y, m, d] = dateStr.split('-');
+    document.getElementById('dayModalTitle').textContent =
+      `${parseInt(y)}년 ${parseInt(m)}월 ${parseInt(d)}일 (${DAY_NAMES[dow]})`;
+    selectedDow = dow;
+    renderModalSchedule();
+    renderModalReservations();
+    new bootstrap.Modal(document.getElementById('dayModal')).show();
+  }
+
+  function renderModalSchedule() {
+    const events = weekEvents[selectedDow] || [];
+    const isRest = selectedDow === 0;
+    const cont   = document.getElementById('dayModalSchedule');
+    const evHtml = events.length
+      ? events.map((ev, idx) => `
+          <div class="se-event-item">
+            <span class="se-event-time">${ev.time}</span>
+            <span class="se-event-name">${escHtml(ev.name)}</span>
+            <button class="se-event-del" onclick="removeEditorEvent(${selectedDow},${idx})" title="삭제">✕</button>
+          </div>`).join('')
+      : '<div class="se-no-events">등록된 수업이 없습니다.</div>';
+    cont.innerHTML = isRest
+      ? '<div class="se-no-events">일요일은 휴무입니다.</div>'
+      : `${evHtml}
+         <div class="se-add-form">
+           <select id="seAddTime">${makeTimeOptions('')}</select>
+           <input type="text" id="seAddName" placeholder="수업 이름" maxlength="30"
+             onkeydown="if(event.key==='Enter')addEditorEvent()">
+           <button class="se-add-btn" onclick="addEditorEvent()">+ 추가</button>
+         </div>`;
+  }
+
+  function renderModalReservations() {
+    const dayRes = monthReservations.filter(r => r.reservation_date === selectedDateStr);
+    const cont   = document.getElementById('dayModalReservations');
+    if (!dayRes.length) {
+      cont.innerHTML = '<div class="se-no-events">이 날 예약이 없습니다.</div>';
+      return;
+    }
+    cont.innerHTML = dayRes.map(r => `
+      <div class="res-item">
+        <div>
+          <strong>${escHtml(r.customer_name)}</strong>
+          ${r.customer_phone ? `<span class="res-phone">${escHtml(r.customer_phone)}</span>` : ''}
+          ${r.memo ? `<span class="res-memo">${escHtml(r.memo)}</span>` : ''}
+        </div>
+        <button class="btn-del-small" onclick="deleteReservation('${r.id}')">삭제</button>
+      </div>`).join('');
+  }
+
+  // ── 시간표 (주간 이벤트) ──────────────────────────────
+  let weekEvents = Array.from({length: 7}, () => []); // JS dow 0=일...6=토
+  let selectedDow = -1;
+
+  function makeTimeOptions(selected) {
+    let opts = '<option value="">-- 시간 선택 --</option>';
+    for (let h = 6; h <= 22; h++) {
+      for (let m = 0; m < 60; m += 30) {
+        if (h === 22 && m > 0) break;
+        const t = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+        opts += `<option value="${t}"${selected === t ? ' selected' : ''}>${t}</option>`;
+      }
+    }
+    return opts;
+  }
+
+  function rowsToWeekEvents(rows) {
+    const we = Array.from({length: 7}, () => []);
+    (rows || []).forEach(row => {
+      (row.cells || []).forEach((cell, ci) => {
+        if (cell && cell.trim()) {
+          const jsDay = ci + 1; // cells[0]=월=JS1 ... cells[5]=토=JS6
+          we[jsDay].push({ time: row.time, name: cell.trim() });
+        }
+      });
+    });
+    we.forEach(evs => evs.sort((a, b) => a.time.localeCompare(b.time)));
+    return we;
+  }
+
+  function weekEventsToRows(we) {
+    const timeSet = new Set();
+    we.forEach(evs => evs.forEach(ev => timeSet.add(ev.time)));
+    return Array.from(timeSet).sort().map(time => ({
+      time,
+      cells: Array.from({length: 6}, (_, d) => {
+        const ev = we[d + 1].find(e => e.time === time);
+        return ev ? ev.name : '';
+      }),
+    }));
+  }
+
+  async function initWeekEvents() {
+    const { data } = await _supabase
+      .from('site_settings').select('value').eq('key','schedule').single();
+    weekEvents = rowsToWeekEvents(data?.value?.rows);
+  }
+
+  function addEditorEvent() {
+    const time = document.getElementById('seAddTime').value;
+    const name = document.getElementById('seAddName').value.trim();
+    if (!time) { showToast('시간을 선택하세요.', 'error'); return; }
+    if (!name) { showToast('수업 이름을 입력하세요.', 'error'); return; }
+    if (!weekEvents[selectedDow]) weekEvents[selectedDow] = [];
+    weekEvents[selectedDow].push({ time, name });
+    weekEvents[selectedDow].sort((a, b) => a.time.localeCompare(b.time));
+    renderModalSchedule();
+    renderCalendar();
+  }
+
+  function removeEditorEvent(dow, idx) {
+    weekEvents[dow].splice(idx, 1);
+    renderModalSchedule();
+    renderCalendar();
+  }
+
+  async function saveSchedule() {
+    const rows = weekEventsToRows(weekEvents);
+    const { error } = await _supabase
+      .from('site_settings').upsert({ key: 'schedule', value: { rows } });
+    if (error) { showToast('저장 실패: ' + error.message, 'error'); return; }
+    bootstrap.Modal.getInstance(document.getElementById('dayModal')).hide();
+    showToast('시간표가 저장되었습니다.');
+    renderCalendar();
+  }
+
+  // ── 예약 관리 ─────────────────────────────────────────
+  function openResModal(slotId, slotName) {
+    document.getElementById('resSlotId').value       = slotId;
+    document.getElementById('resModalTitle').textContent = `예약 추가 — ${slotName}`;
+    document.getElementById('resCustomerName').value  = '';
+    document.getElementById('resCustomerPhone').value = '';
+    document.getElementById('resMemo').value          = '';
+    new bootstrap.Modal(document.getElementById('resModal')).show();
+  }
+
+  async function saveReservation() {
+    const name = document.getElementById('resCustomerName').value.trim();
+    if (!name) { alert('고객명을 입력하세요.'); return; }
+
+    const { error } = await _supabase.from('reservations').insert({
+      class_slot_id:    document.getElementById('resSlotId').value,
+      reservation_date: selectedDateStr,
+      customer_name:    name,
+      customer_phone:   document.getElementById('resCustomerPhone').value.trim() || null,
+      memo:             document.getElementById('resMemo').value.trim() || null,
+      status:           'confirmed',
+    });
+
+    if (error) { showToast('예약 추가 실패: ' + error.message, 'error'); return; }
+    bootstrap.Modal.getInstance(document.getElementById('resModal')).hide();
+    showToast('예약이 추가되었습니다.');
+    await loadMonthData();
+  }
+
+  async function deleteReservation(id) {
+    if (!confirm('이 예약을 삭제하시겠습니까?')) return;
+    const { error } = await _supabase.from('reservations').delete().eq('id', id);
+    if (error) { showToast('삭제 실패: ' + error.message, 'error'); return; }
+    showToast('삭제되었습니다.');
+    await loadMonthData();
+  }
+
+  // ── 초기화 ────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', async () => {
+    await checkAuth();
+    const now = new Date();
+    currentYear  = now.getFullYear();
+    currentMonth = now.getMonth();
+    await initWeekEvents();
+    await loadMonthData();
+  });
+</script>
+</body>
+</html>
