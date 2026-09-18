@@ -78,8 +78,8 @@ CSS STRUCTURE:
 
 /* Fonts */
 :root {
-    --body-font           : "Lato", sans-serif;
-    --heading-font        : "Montserrat", sans-serif;
+    --body-font           : "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    --heading-font        : "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
 }
 
 /*----------------------------------------------*/
