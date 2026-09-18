@@ -295,6 +295,21 @@
       padding: 8px 12px; background: #fef5f5;
       border-radius: 4px;
     }
+
+    @media (max-width: 640px) {
+      .admin-header { padding: 10px 12px; }
+      .brand { font-size: 1.05rem; }
+      .brand small { display: none; }
+      .btn-header { padding: 5px 10px; font-size: 0.72rem; }
+      .main-wrap { padding: 16px 8px 40px; }
+      .tab-nav a { padding: 8px 14px; font-size: 0.78rem; }
+      .cal-title { font-size: 1.1rem; min-width: 100px; }
+      .cal-header-row div { padding: 7px 2px; font-size: 0.65rem; }
+      .cal-cell { min-height: 64px; padding: 5px 3px 3px; }
+      .slot-badge { font-size: 0.63rem; padding: 1px 3px; margin-bottom: 2px; }
+      .more-badge { font-size: 0.6rem; }
+      .btn-nav { width: 28px; height: 28px; font-size: 1rem; }
+    }
   </style>
 </head>
 <body>
@@ -453,11 +468,10 @@
 
       const dayRes = getReservationsForDate(dateStr);
       let badges = '';
-      dayRes.slice(0, 2).forEach(r => {
-        const mName = r.members?.name || '';
-        badges += `<div class="slot-badge">${r.start_time.substring(0,5)} ${escHtml(r.class_name)}${mName ? ' · '+escHtml(mName) : ''}</div>`;
+      dayRes.slice(0, 3).forEach(r => {
+        badges += `<div class="slot-badge">${r.start_time.substring(0,5)}</div>`;
       });
-      if (dayRes.length > 2) badges += `<div class="more-badge">+${dayRes.length - 2}개</div>`;
+      if (dayRes.length > 3) badges += `<div class="more-badge">+${dayRes.length - 3}개</div>`;
 
       html += `
         <div class="cal-cell ${isToday?'today':''} ${isSelected?'selected':''} ${calDay===6?'sat':''} ${calDay===0?'sun':''}"

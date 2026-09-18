@@ -385,10 +385,10 @@
       }
 
       @media (max-width: 600px) {
-        .gcal-cell     { min-height: 46px; padding: 4px 2px; }
-        .gcal-event,
-        .gcal-more     { display: none; }
-        .gcal-day-num  { width: 22px; height: 22px; font-size: 0.72rem; }
+        .gcal-cell     { min-height: 56px; padding: 4px 2px 2px; }
+        .gcal-event    { font-size: 0.58rem; padding: 1px 2px; margin-bottom: 1px; }
+        .gcal-more     { font-size: 0.55rem; padding: 0 2px; }
+        .gcal-day-num  { width: 22px; height: 22px; font-size: 0.72rem; margin-bottom: 2px; }
       }
 
       /* Instructor */
@@ -1624,7 +1624,7 @@
               if (dayClasses.length) {
                 const MAX = 3;
                 dayClasses.slice(0, MAX).forEach(ev => {
-                  inner += `<span class="gcal-event">${ev.start_time.substring(0,5)} ${ev.class_name}</span>`;
+                  inner += `<span class="gcal-event">${ev.start_time.substring(0,5)}</span>`;
                 });
                 if (dayClasses.length > MAX)
                   inner += `<span class="gcal-more">+${dayClasses.length - MAX}개</span>`;
