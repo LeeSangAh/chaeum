@@ -694,7 +694,6 @@
           <select id="seAddTime">${makeTimeOptions('')}</select>
           <input type="text" id="seAddName" placeholder="수업 이름" maxlength="30" style="flex:1; min-width:120px;"
             onkeydown="if(event.key==='Enter')addClass()">
-          <input type="number" id="seAddCapacity" value="10" min="1" max="99" placeholder="정원" style="width:65px;">
         </div>
         <div class="se-add-row" style="align-items:flex-start; flex-wrap:wrap; gap:12px;">
           <label style="display:flex; align-items:center; gap:5px; font-size:0.83rem; cursor:pointer; margin:0;">
@@ -735,7 +734,6 @@
   async function addClass() {
     const time     = document.getElementById('seAddTime').value;
     const name     = document.getElementById('seAddName').value.trim();
-    const capacity = parseInt(document.getElementById('seAddCapacity').value) || 10;
     const isRecurring = document.getElementById('seRecurring').checked;
 
     if (!time) { showToast('시간을 선택하세요.', 'error'); return; }
@@ -747,7 +745,6 @@
     const classData = {
       start_time:   time + ':00',
       class_name:   name,
-      capacity,
       is_recurring: isRecurring,
       is_active:    true,
     };
