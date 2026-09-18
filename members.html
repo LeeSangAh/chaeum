@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <title>회원 관리 | 채움 클래식 필라테스</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --p-primary:   #8b7355;
+      --p-secondary: #c9b99a;
+      --p-light:     #f7f3ee;
+      --p-dark:      #2c2c2c;
+      --p-accent:    #6b5d4f;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Lato', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+      background: #f5f5f3;
+      color: var(--p-dark);
+      min-height: 100vh;
+    }
+
+    .admin-header {
+      background: var(--p-dark);
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
+    .brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      letter-spacing: 0.12em;
+      color: #fff;
+      text-decoration: none;
+    }
+    .brand small {
+      font-family: 'Lato', sans-serif;
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--p-secondary);
+      margin-left: 10px;
+      vertical-align: middle;
+    }
+    .btn-header {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.25);
+      color: rgba(255,255,255,0.7);
+      padding: 6px 16px;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-header:hover { border-color: #fff; color: #fff; }
+
+    .main-wrap { max-width: 900px; margin: 0 auto; padding: 28px 16px 60px; }
+
+    /* ── 회원 추가 폼 ── */
+    .add-card {
+      background: #fff;
+      border: 1px solid #e8e8e8;
+      padding: 20px 24px;
+      margin-bottom: 24px;
+    }
+    .card-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem;
+      font-weight: 500;
+      margin-bottom: 16px;
+      color: var(--p-dark);
+    }
+    .form-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: flex-end;
+    }
+    .form-group { display: flex; flex-direction: column; gap: 4px; }
+    .form-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #999;
+    }
+    .form-ctrl {
+      border: 1px solid #e0e0e0;
+      padding: 8px 10px;
+      font-size: 0.88rem;
+      outline: none;
+      transition: border-color 0.2s;
+      font-family: inherit;
+      border-radius: 0;
+    }
+    .form-ctrl:focus { border-color: var(--p-primary); }
+    .btn-add {
+      background: var(--p-primary);
+      color: #fff;
+      border: none;
+      padding: 9px 22px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+    .btn-add:hover { background: var(--p-accent); }
+
+    /* ── 회원 목록 ── */
+    .list-card {
+      background: #fff;
+      border: 1px solid #e8e8e8;
+    }
+    .list-header {
+      padding: 14px 20px;
+      border-bottom: 1px solid #f0f0f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .member-count { font-size: 0.8rem; color: #aaa; }
+
+    .member-table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+    .member-table th {
+      background: var(--p-dark);
+      color: #fff;
+      font-size: 0.73rem;
+      letter-spacing: 0.08em;
+      font-weight: 400;
+      padding: 10px 16px;
+      text-align: left;
+    }
+    .member-table td {
+      padding: 11px 16px;
+      border-bottom: 1px solid #f5f5f5;
+      vertical-align: middle;
+    }
+    .member-table tr:last-child td { border-bottom: none; }
+    .member-table tr.inactive td { color: #bbb; }
+
+    .status-badge {
+      font-size: 0.7rem;
+      padding: 2px 9px;
+      border-radius: 10px;
+      white-space: nowrap;
+    }
+    .status-badge.active   { background: #eafaf1; color: #27ae60; }
+    .status-badge.inactive { background: #f5f5f5; color: #bbb; }
+
+    .btn-sm {
+      background: none;
+      border: 1px solid #ddd;
+      padding: 3px 10px;
+      font-size: 0.74rem;
+      cursor: pointer;
+      margin-right: 4px;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    .btn-sm:hover { border-color: var(--p-primary); color: var(--p-primary); }
+    .btn-sm.btn-del { color: #c0392b; }
+    .btn-sm.btn-del:hover { border-color: #c0392b; background: #fef5f5; }
+
+    .empty-msg { text-align: center; color: #bbb; font-size: 0.88rem; padding: 40px 0; }
+
+    /* ── Toast ── */
+    .toast-msg {
+      position: fixed;
+      bottom: 30px; left: 50%;
+      transform: translateX(-50%);
+      background: var(--p-dark);
+      color: #fff;
+      padding: 12px 28px;
+      font-size: 0.84rem;
+      z-index: 9999;
+      animation: fadeUp 0.3s ease;
+    }
+    .toast-msg.error { background: #c0392b; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translate(-50%, 10px); }
+      to   { opacity: 1; transform: translate(-50%, 0); }
+    }
+
+    /* ── 검색 ── */
+    .search-input {
+      border: 1px solid #e0e0e0;
+      padding: 6px 12px;
+      font-size: 0.84rem;
+      outline: none;
+      font-family: inherit;
+      border-radius: 0;
+      width: 180px;
+    }
+    .search-input:focus { border-color: var(--p-primary); }
+  </style>
+</head>
+<body>
+
+<header class="admin-header">
+  <a href="admin.html" class="brand">채움 PILATES <small>관리자</small></a>
+  <div style="display:flex; gap:8px;">
+    <a href="index.html" target="_blank" class="btn-header">사이트 보기</a>
+    <button class="btn-header" onclick="logout()">로그아웃</button>
+  </div>
+</header>
+
+<div class="main-wrap">
+
+  <!-- 탭 내비 -->
+  <div style="display:flex; gap:0; margin-bottom:24px; border-bottom:2px solid #e8e8e8;">
+    <a href="admin.html" style="padding:10px 22px; font-size:0.84rem; color:#aaa; text-decoration:none; border-bottom:2px solid transparent; margin-bottom:-2px;">예약 관리</a>
+    <a href="members.html" style="padding:10px 22px; font-size:0.84rem; color:var(--p-primary); text-decoration:none; border-bottom:2px solid var(--p-primary); margin-bottom:-2px; font-weight:700;">회원 관리</a>
+  </div>
+
+  <!-- 회원 추가 -->
+  <div class="add-card">
+    <div class="card-title">회원 등록</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">이름 *</label>
+        <input type="text" id="addName" class="form-ctrl" placeholder="홍길동" style="width:140px;">
+      </div>
+      <div class="form-group">
+        <label class="form-label">연락처</label>
+        <input type="tel" id="addPhone" class="form-ctrl" placeholder="010-0000-0000" style="width:160px;">
+      </div>
+      <div class="form-group" style="flex:1; min-width:160px;">
+        <label class="form-label">메모</label>
+        <input type="text" id="addMemo" class="form-ctrl" placeholder="특이사항 등"
+          onkeydown="if(event.key==='Enter') addMember()">
+      </div>
+      <button class="btn-add" onclick="addMember()">등록</button>
+    </div>
+  </div>
+
+  <!-- 회원 목록 -->
+  <div class="list-card">
+    <div class="list-header">
+      <div class="card-title" style="margin:0;">회원 목록</div>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <span class="member-count" id="memberCount"></span>
+        <input type="text" class="search-input" placeholder="이름 / 연락처 검색" oninput="filterMembers(this.value)">
+      </div>
+    </div>
+    <div id="memberList"></div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+<script>
+  let allMembers = [];
+  let filterText = '';
+
+  const escHtml = s =>
+    String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+  // ── Auth ────────────────────────────────────────────
+  async function checkAuth() {
+    const { data: { session } } = await _supabase.auth.getSession();
+    if (!session) window.location.href = 'login.html';
+  }
+  async function logout() {
+    await _supabase.auth.signOut();
+    window.location.href = 'login.html';
+  }
+
+  // ── Toast ────────────────────────────────────────────
+  function showToast(msg, type = 'success') {
+    const el = document.createElement('div');
+    el.className = 'toast-msg' + (type === 'error' ? ' error' : '');
+    el.textContent = msg;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 2600);
+  }
+
+  // ── 회원 목록 로딩 ──────────────────────────────────
+  async function loadMembers() {
+    const { data, error } = await _supabase
+      .from('members').select('*').order('created_at', { ascending: false });
+    if (error) { showToast('로딩 실패: ' + error.message, 'error'); return; }
+    allMembers = data || [];
+    renderMembers();
+  }
+
+  function filterMembers(text) {
+    filterText = text.toLowerCase();
+    renderMembers();
+  }
+
+  function renderMembers() {
+    const filtered = allMembers.filter(m =>
+      m.name.toLowerCase().includes(filterText) ||
+      (m.phone || '').includes(filterText)
+    );
+
+    const activeCount = allMembers.filter(m => m.status === 'active').length;
+    document.getElementById('memberCount').textContent =
+      `전체 ${allMembers.length}명 · 활성 ${activeCount}명`;
+
+    if (!filtered.length) {
+      document.getElementById('memberList').innerHTML =
+        '<div class="empty-msg">등록된 회원이 없습니다.</div>';
+      return;
+    }
+
+    const rows = filtered.map(m => `
+      <tr class="${m.status === 'inactive' ? 'inactive' : ''}">
+        <td><strong>${escHtml(m.name)}</strong></td>
+        <td>${m.phone ? escHtml(m.phone) : '<span style="color:#ccc;">-</span>'}</td>
+        <td>${m.memo ? escHtml(m.memo) : '<span style="color:#ccc;">-</span>'}</td>
+        <td><span class="status-badge ${m.status}">${m.status === 'active' ? '활성' : '비활성'}</span></td>
+        <td style="white-space:nowrap;">
+          <button class="btn-sm" onclick="toggleStatus('${m.id}','${m.status}')">
+            ${m.status === 'active' ? '비활성화' : '활성화'}
+          </button>
+          <button class="btn-sm btn-del" onclick="deleteMember('${m.id}','${escHtml(m.name)}')">삭제</button>
+        </td>
+      </tr>`).join('');
+
+    document.getElementById('memberList').innerHTML = `
+      <table class="member-table">
+        <thead>
+          <tr>
+            <th>이름</th><th>연락처</th><th>메모</th><th>상태</th><th>관리</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+  }
+
+  // ── 회원 추가 ────────────────────────────────────────
+  async function addMember() {
+    const name  = document.getElementById('addName').value.trim();
+    const phone = document.getElementById('addPhone').value.trim();
+    const memo  = document.getElementById('addMemo').value.trim();
+
+    if (!name) { showToast('이름을 입력하세요.', 'error'); return; }
+
+    const { error } = await _supabase.from('members').insert({
+      name, phone: phone || null, memo: memo || null, status: 'active'
+    });
+    if (error) { showToast('등록 실패: ' + error.message, 'error'); return; }
+
+    document.getElementById('addName').value  = '';
+    document.getElementById('addPhone').value = '';
+    document.getElementById('addMemo').value  = '';
+    showToast(`${name} 회원이 등록되었습니다.`);
+    await loadMembers();
+  }
+
+  // ── 상태 토글 ────────────────────────────────────────
+  async function toggleStatus(id, currentStatus) {
+    const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+    const { error } = await _supabase.from('members').update({ status: newStatus }).eq('id', id);
+    if (error) { showToast('변경 실패: ' + error.message, 'error'); return; }
+    showToast(newStatus === 'active' ? '활성화되었습니다.' : '비활성화되었습니다.');
+    await loadMembers();
+  }
+
+  // ── 회원 삭제 ────────────────────────────────────────
+  async function deleteMember(id, name) {
+    if (!confirm(`${name} 회원을 삭제하시겠습니까?\n해당 회원의 예약도 모두 삭제됩니다.`)) return;
+    const { error } = await _supabase.from('members').delete().eq('id', id);
+    if (error) { showToast('삭제 실패: ' + error.message, 'error'); return; }
+    showToast('삭제되었습니다.');
+    await loadMembers();
+  }
+
+  // ── 초기화 ──────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', async () => {
+    await checkAuth();
+    await loadMembers();
+  });
+</script>
+</body>
+</html>

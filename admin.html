@@ -49,7 +49,7 @@
       margin-left: 10px;
       vertical-align: middle;
     }
-    .btn-logout {
+    .btn-header {
       background: transparent;
       border: 1px solid rgba(255,255,255,0.25);
       color: rgba(255,255,255,0.7);
@@ -61,18 +61,30 @@
       text-decoration: none;
       display: inline-block;
     }
-    .btn-logout:hover { border-color: #fff; color: #fff; }
+    .btn-header:hover { border-color: #fff; color: #fff; }
 
     /* ── Main ── */
     .main-wrap { max-width: 1100px; margin: 0 auto; padding: 28px 16px 60px; }
 
-    /* ── Calendar controls ── */
-    .cal-controls {
+    /* ── 탭 ── */
+    .tab-nav {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
+      gap: 0;
+      margin-bottom: 24px;
+      border-bottom: 2px solid #e8e8e8;
     }
+    .tab-nav a {
+      padding: 10px 22px;
+      font-size: 0.84rem;
+      text-decoration: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+    }
+    .tab-nav a.active { color: var(--p-primary); border-bottom-color: var(--p-primary); font-weight: 700; }
+    .tab-nav a:not(.active) { color: #aaa; }
+
+    /* ── Calendar ── */
+    .cal-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
     .cal-nav { display: flex; align-items: center; gap: 14px; }
     .cal-title {
       font-family: 'Cormorant Garamond', serif;
@@ -94,7 +106,6 @@
     }
     .btn-nav:hover { background: var(--p-primary); color: #fff; border-color: var(--p-primary); }
 
-    /* ── Calendar grid ── */
     .cal-wrap { background: #fff; border: 1px solid #e8e8e8; }
     .cal-header-row {
       display: grid;
@@ -243,8 +254,8 @@
       color: var(--p-primary);
       margin-bottom: 2px;
     }
-    .add-row { display: flex; gap: 8px; flex-wrap: wrap; }
-    .add-form input, .add-form select, .add-form textarea {
+    .add-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .add-form input, .add-form select {
       font-size: 0.82rem;
       padding: 7px 9px;
       border: 1px solid #dadce0;
@@ -254,10 +265,7 @@
       outline: none;
       font-family: inherit;
     }
-    .add-form input:focus,
-    .add-form select:focus,
-    .add-form textarea:focus { border-color: var(--p-primary); }
-    .add-form textarea { resize: vertical; }
+    .add-form input:focus, .add-form select:focus { border-color: var(--p-primary); }
     .recur-range {
       display: none;
       align-items: center;
@@ -282,20 +290,31 @@
       padding: 9px 22px; font-size: 0.82rem; cursor: pointer;
     }
     .no-res { font-size: 0.82rem; color: #aaa; padding: 6px 0 10px; }
+    .no-members-msg {
+      font-size: 0.82rem; color: #e74c3c;
+      padding: 8px 12px; background: #fef5f5;
+      border-radius: 4px;
+    }
   </style>
 </head>
 <body>
 
-<!-- ── Header ── -->
 <header class="admin-header">
   <a href="admin.html" class="brand">채움 PILATES <small>관리자</small></a>
   <div style="display:flex; gap:8px;">
-    <a href="index.html" target="_blank" class="btn-logout">사이트 보기</a>
-    <button class="btn-logout" onclick="logout()">로그아웃</button>
+    <a href="index.html" target="_blank" class="btn-header">사이트 보기</a>
+    <button class="btn-header" onclick="logout()">로그아웃</button>
   </div>
 </header>
 
 <div class="main-wrap">
+
+  <!-- 탭 -->
+  <div class="tab-nav">
+    <a href="admin.html" class="active">예약 관리</a>
+    <a href="members.html">회원 관리</a>
+  </div>
+
   <div class="cal-controls">
     <div class="cal-nav">
       <button class="btn-nav" onclick="changeMonth(-1)">&#8249;</button>
@@ -311,6 +330,7 @@
     </div>
     <div id="calGrid"></div>
   </div>
+
 </div>
 
 <!-- ── 날짜 팝업 ── -->
@@ -340,6 +360,7 @@
 
   let currentYear, currentMonth;
   let allReservations = [];
+  let activeMembers   = [];
   let selectedDateStr = null;
 
   const formatDate = d =>
@@ -367,20 +388,29 @@
     setTimeout(() => el.remove(), 2600);
   }
 
+  // ── 회원 로딩 ────────────────────────────────────────
+  async function loadMembers() {
+    const { data } = await _supabase
+      .from('members').select('id, name, phone').eq('status', 'active').order('name');
+    activeMembers = data || [];
+  }
+
   // ── 데이터 로딩 ──────────────────────────────────────
   async function loadMonthData() {
     const firstStr = formatDate(new Date(currentYear, currentMonth, 1));
     const lastStr  = formatDate(new Date(currentYear, currentMonth + 1, 0));
 
     const { data: singleData } = await _supabase
-      .from('reservations').select('*')
+      .from('reservations')
+      .select('*, members(name, phone)')
       .eq('is_recurring', false)
       .eq('status', 'confirmed')
       .gte('reservation_date', firstStr)
       .lte('reservation_date', lastStr);
 
     const { data: recurData } = await _supabase
-      .from('reservations').select('*')
+      .from('reservations')
+      .select('*, members(name, phone)')
       .eq('is_recurring', true)
       .eq('status', 'confirmed')
       .lte('recurring_from', lastStr)
@@ -424,7 +454,8 @@
       const dayRes = getReservationsForDate(dateStr);
       let badges = '';
       dayRes.slice(0, 2).forEach(r => {
-        badges += `<div class="slot-badge">${r.start_time.substring(0,5)} ${escHtml(r.class_name)}</div>`;
+        const mName = r.members?.name || '';
+        badges += `<div class="slot-badge">${r.start_time.substring(0,5)} ${escHtml(r.class_name)}${mName ? ' · '+escHtml(mName) : ''}</div>`;
       });
       if (dayRes.length > 2) badges += `<div class="more-badge">+${dayRes.length - 2}개</div>`;
 
@@ -470,6 +501,15 @@
     return opts;
   }
 
+  // 회원 드롭다운 옵션
+  function makeMemberOptions() {
+    if (!activeMembers.length) return '<option value="">등록된 활성 회원이 없습니다</option>';
+    return '<option value="">회원 선택 *</option>' +
+      activeMembers.map(m =>
+        `<option value="${m.id}">${escHtml(m.name)}${m.phone ? ' ('+escHtml(m.phone)+')' : ''}</option>`
+      ).join('');
+  }
+
   // ── 매주 반복 토글 ────────────────────────────────────
   function toggleRecurring() {
     const checked  = document.getElementById('seRecurring').checked;
@@ -492,10 +532,10 @@
 
     if (rsvs.length) {
       rsvs.forEach(r => {
-        const badge = r.is_recurring
-          ? '<span class="badge-repeat">매주반복</span>'
-          : '<span class="badge-once">단일</span>';
-        const customer = [r.customer_name, r.customer_phone].filter(Boolean).join(' · ');
+        const badge    = r.is_recurring ? '<span class="badge-repeat">매주반복</span>' : '<span class="badge-once">단일</span>';
+        const mName    = r.members?.name  || '';
+        const mPhone   = r.members?.phone || '';
+        const customer = [mName, mPhone].filter(Boolean).join(' · ');
         html += `
           <div class="res-card">
             <span class="res-time">${r.start_time.substring(0,5)}</span>
@@ -511,16 +551,20 @@
       html = '<div class="no-res">이 날 예약이 없습니다.</div>';
     }
 
+    const noMemberMsg = !activeMembers.length
+      ? '<div class="no-members-msg">활성 회원이 없습니다. <a href="members.html">회원 관리</a>에서 먼저 회원을 등록해주세요.</div>'
+      : '';
+
     html += `
       <div class="add-form">
         <div class="add-form-title">예약 추가</div>
+        ${noMemberMsg}
+        <div class="add-row">
+          <select id="seMember" style="flex:1; min-width:160px;">${makeMemberOptions()}</select>
+        </div>
         <div class="add-row">
           <select id="seTime" style="min-width:110px;">${makeTimeOptions('')}</select>
           <input type="text" id="seClass" placeholder="수업명" style="flex:1; min-width:100px;">
-        </div>
-        <div class="add-row">
-          <input type="text" id="seName" placeholder="고객명 *" style="flex:1;">
-          <input type="tel" id="sePhone" placeholder="연락처" style="flex:1;">
         </div>
         <input type="text" id="seMemo" placeholder="메모" style="width:100%;">
         <div>
@@ -533,7 +577,7 @@
             <input type="date" id="seRecurUntil">
           </div>
         </div>
-        <button class="btn-add" onclick="addReservation()">+ 예약 추가</button>
+        <button class="btn-add" onclick="addReservation()" ${!activeMembers.length ? 'disabled' : ''}>+ 예약 추가</button>
       </div>`;
 
     document.getElementById('dayModalBody').innerHTML = html;
@@ -541,27 +585,25 @@
 
   // ── 예약 추가 ────────────────────────────────────────
   async function addReservation() {
+    const memberId  = document.getElementById('seMember').value;
     const time      = document.getElementById('seTime').value;
     const className = document.getElementById('seClass').value.trim();
-    const name      = document.getElementById('seName').value.trim();
-    const phone     = document.getElementById('sePhone').value.trim();
     const memo      = document.getElementById('seMemo').value.trim();
     const isRecurring = document.getElementById('seRecurring').checked;
 
+    if (!memberId)  { showToast('회원을 선택하세요.', 'error'); return; }
     if (!time)      { showToast('시간을 선택하세요.', 'error'); return; }
     if (!className) { showToast('수업명을 입력하세요.', 'error'); return; }
-    if (!name)      { showToast('고객명을 입력하세요.', 'error'); return; }
 
     const dow = new Date(selectedDateStr + 'T00:00:00').getDay();
 
     const data = {
-      customer_name:  name,
-      customer_phone: phone || null,
-      class_name:     className,
-      start_time:     time + ':00',
-      memo:           memo || null,
-      status:         'confirmed',
-      is_recurring:   isRecurring,
+      member_id:    memberId,
+      class_name:   className,
+      start_time:   time + ':00',
+      memo:         memo || null,
+      status:       'confirmed',
+      is_recurring: isRecurring,
     };
 
     if (isRecurring) {
@@ -586,8 +628,7 @@
 
   // ── 예약 삭제 ────────────────────────────────────────
   async function deleteReservation(id) {
-    const msg = '이 예약을 삭제하시겠습니까?\n(매주반복의 경우 전체 일정이 삭제됩니다.)';
-    if (!confirm(msg)) return;
+    if (!confirm('이 예약을 삭제하시겠습니까?\n(매주반복의 경우 전체 일정이 삭제됩니다.)')) return;
     const { error } = await _supabase.from('reservations').delete().eq('id', id);
     if (error) { showToast('삭제 실패: ' + error.message, 'error'); return; }
     showToast('삭제되었습니다.');
@@ -601,7 +642,7 @@
     const now = new Date();
     currentYear  = now.getFullYear();
     currentMonth = now.getMonth();
-    await loadMonthData();
+    await Promise.all([loadMembers(), loadMonthData()]);
   });
 </script>
 </body>
