@@ -1571,10 +1571,9 @@
 
         // 특정 날짜에 해당하는 수업 반환
         function getClassesForDate(dateStr) {
-          const date = new Date(dateStr + 'T00:00:00');
-          const dow  = date.getDay();
+          const dow = new Date(dateStr + 'T00:00:00').getDay();
           return allClasses.filter(c => {
-            if (!c.is_recurring) return c.class_date === dateStr;
+            if (!c.is_recurring) return c.reservation_date === dateStr;
             return c.day_of_week === dow &&
                    c.recurring_from  <= dateStr &&
                    c.recurring_until >= dateStr;
@@ -1584,9 +1583,9 @@
         async function loadClasses() {
           try {
             const { data } = await _supabase
-              .from('classes')
-              .select('id, start_time, class_name, is_recurring, class_date, day_of_week, recurring_from, recurring_until')
-              .eq('is_active', true);
+              .from('reservations')
+              .select('start_time, class_name, is_recurring, reservation_date, day_of_week, recurring_from, recurring_until')
+              .eq('status', 'confirmed');
             allClasses = data || [];
           } catch(e) {}
           render();

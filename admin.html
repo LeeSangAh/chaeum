@@ -58,6 +58,8 @@
       letter-spacing: 0.1em;
       cursor: pointer;
       transition: all 0.2s;
+      text-decoration: none;
+      display: inline-block;
     }
     .btn-logout:hover { border-color: #fff; color: #fff; }
 
@@ -71,11 +73,7 @@
       align-items: center;
       margin-bottom: 16px;
     }
-    .cal-nav {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
+    .cal-nav { display: flex; align-items: center; gap: 14px; }
     .cal-title {
       font-family: 'Cormorant Garamond', serif;
       font-size: 1.5rem;
@@ -88,13 +86,10 @@
       background: none;
       border: 1px solid var(--p-secondary);
       color: var(--p-primary);
-      width: 34px;
-      height: 34px;
+      width: 34px; height: 34px;
       font-size: 1.2rem;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       transition: all 0.2s;
     }
     .btn-nav:hover { background: var(--p-primary); color: #fff; border-color: var(--p-primary); }
@@ -118,10 +113,7 @@
     .cal-header-row div.sat { color: #3a7bd5; }
     .cal-header-row div.sun { color: #c0392b; }
 
-    #calGrid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-    }
+    #calGrid { display: grid; grid-template-columns: repeat(7, 1fr); }
     .cal-cell {
       min-height: 110px;
       border-right: 1px solid #f0f0f0;
@@ -138,11 +130,8 @@
       background: var(--p-primary);
       color: #fff;
       border-radius: 50%;
-      width: 24px;
-      height: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      width: 24px; height: 24px;
+      display: flex; align-items: center; justify-content: center;
     }
     .cal-cell.selected { background: #fdf6ee; }
     .cal-cell.selected::after {
@@ -157,15 +146,11 @@
       font-weight: 700;
       color: var(--p-dark);
       margin-bottom: 5px;
-      width: 24px;
-      height: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      width: 24px; height: 24px;
+      display: flex; align-items: center; justify-content: center;
     }
     .cal-cell.sat .cal-date { color: #3a7bd5; }
     .cal-cell.sun .cal-date { color: #c0392b; }
-
     .slot-badge {
       font-size: 0.67rem;
       background: var(--p-light);
@@ -175,81 +160,8 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      display: flex;
-      align-items: center;
-      gap: 4px;
     }
-    .res-dot {
-      background: var(--p-primary);
-      color: #fff;
-      border-radius: 50%;
-      width: 14px;
-      height: 14px;
-      font-size: 0.6rem;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-    .more-badge {
-      font-size: 0.65rem;
-      color: #aaa;
-      padding-left: 5px;
-    }
-
-    /* ── Buttons ── */
-    .btn-add-res {
-      background: transparent;
-      border: 1px solid var(--p-primary);
-      color: var(--p-primary);
-      padding: 3px 10px;
-      font-size: 0.72rem;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.2s;
-      border-radius: 3px;
-    }
-    .btn-add-res:hover { background: var(--p-primary); color: #fff; }
-    .btn-del-small {
-      background: none;
-      border: none;
-      color: #c0392b;
-      font-size: 0.76rem;
-      cursor: pointer;
-      padding: 2px 6px;
-      flex-shrink: 0;
-    }
-    .btn-del-small:hover { text-decoration: underline; }
-    .btn-save {
-      background: var(--p-primary);
-      color: #fff;
-      border: none;
-      padding: 9px 22px;
-      font-size: 0.82rem;
-      cursor: pointer;
-    }
-    .btn-save:hover { background: var(--p-accent); }
-    .btn-cancel {
-      background: #fff;
-      color: #666;
-      border: 1px solid #ddd;
-      padding: 9px 22px;
-      font-size: 0.82rem;
-      cursor: pointer;
-    }
-
-    /* ── Form elements ── */
-    .form-ctrl {
-      width: 100%;
-      border: 1px solid #e0e0e0;
-      padding: 8px 10px;
-      font-size: 0.88rem;
-      border-radius: 0;
-      outline: none;
-      transition: border-color 0.2s;
-      font-family: inherit;
-    }
-    .form-ctrl:focus { border-color: var(--p-primary); }
+    .more-badge { font-size: 0.65rem; color: #aaa; padding-left: 5px; }
 
     /* ── Modal ── */
     .modal-content { border-radius: 0; border: none; }
@@ -261,8 +173,7 @@
     /* ── Toast ── */
     .toast-msg {
       position: fixed;
-      bottom: 30px;
-      left: 50%;
+      bottom: 30px; left: 50%;
       transform: translateX(-50%);
       background: var(--p-dark);
       color: #fff;
@@ -277,40 +188,21 @@
       to   { opacity: 1; transform: translate(-50%, 0); }
     }
 
-    /* ── Day modal ── */
-    .day-modal-section {
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.09em;
-      text-transform: uppercase;
-      color: var(--p-primary);
-      margin-bottom: 10px;
-    }
-
-    .se-event-item {
+    /* ── 예약 카드 ── */
+    .res-card {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 7px 10px;
+      gap: 10px;
+      padding: 9px 12px;
       background: var(--p-light);
       border-radius: 5px;
-      margin-bottom: 5px;
+      margin-bottom: 6px;
       border-left: 3px solid var(--p-primary);
     }
-    .se-event-time { font-size: 0.78rem; font-weight: 700; color: var(--p-primary); min-width: 42px; }
-    .se-event-name { flex: 1; font-size: 0.83rem; }
-    .se-event-del {
-      background: none;
-      border: none;
-      color: #ccc;
-      cursor: pointer;
-      font-size: 0.9rem;
-      padding: 0 2px;
-      line-height: 1;
-    }
-    .se-event-del:hover { color: #c0392b; }
-    .se-no-events { font-size: 0.82rem; color: #aaa; padding: 6px 0 10px; }
-
+    .res-time { font-size: 0.78rem; font-weight: 700; color: var(--p-primary); min-width: 42px; }
+    .res-info { flex: 1; }
+    .res-class { font-size: 0.85rem; font-weight: 600; }
+    .res-customer { font-size: 0.75rem; color: #888; margin-top: 2px; }
     .badge-repeat {
       font-size: 0.62rem;
       background: rgba(139,115,85,0.12);
@@ -327,27 +219,34 @@
       border-radius: 10px;
       white-space: nowrap;
     }
+    .btn-del-res {
+      background: none; border: none;
+      color: #ccc; cursor: pointer;
+      font-size: 0.9rem; padding: 0 2px; line-height: 1;
+    }
+    .btn-del-res:hover { color: #c0392b; }
 
-    .se-add-form {
+    /* ── 예약 추가 폼 ── */
+    .add-form {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid #e8eaed;
       display: flex;
       flex-direction: column;
       gap: 10px;
-      margin-top: 14px;
-      padding-top: 12px;
-      border-top: 1px solid #e8eaed;
     }
-    .se-add-row {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      align-items: center;
+    .add-form-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--p-primary);
+      margin-bottom: 2px;
     }
-    .se-add-form select,
-    .se-add-form input[type="text"],
-    .se-add-form input[type="number"],
-    .se-add-form input[type="date"] {
+    .add-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .add-form input, .add-form select, .add-form textarea {
       font-size: 0.82rem;
-      padding: 6px 8px;
+      padding: 7px 9px;
       border: 1px solid #dadce0;
       border-radius: 4px;
       background: #fff;
@@ -355,41 +254,34 @@
       outline: none;
       font-family: inherit;
     }
-    .se-add-form select:focus,
-    .se-add-form input:focus { border-color: var(--p-primary); }
-    .se-add-btn {
-      background: var(--p-primary);
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      padding: 7px 16px;
-      font-size: 0.82rem;
-      cursor: pointer;
-      white-space: nowrap;
-      align-self: flex-start;
-    }
-    .se-add-btn:hover { background: var(--p-accent); }
-
+    .add-form input:focus,
+    .add-form select:focus,
+    .add-form textarea:focus { border-color: var(--p-primary); }
+    .add-form textarea { resize: vertical; }
     .recur-range {
       display: none;
       align-items: center;
       gap: 6px;
       flex-wrap: wrap;
+      margin-top: 4px;
     }
     .recur-range.show { display: flex; }
-
-    /* ── Reservation items ── */
-    .res-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 7px 0;
-      border-bottom: 1px solid #f5f5f5;
-      font-size: 0.86rem;
+    .btn-add {
+      background: var(--p-primary);
+      color: #fff; border: none;
+      border-radius: 4px;
+      padding: 8px 18px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      align-self: flex-start;
     }
-    .res-item:last-child { border-bottom: none; }
-    .res-phone { color: #888; margin-left: 10px; font-size: 0.8rem; }
-    .res-memo  { color: #aaa; margin-left: 8px; font-size: 0.78rem; font-style: italic; }
+    .btn-add:hover { background: var(--p-accent); }
+    .btn-cancel {
+      background: #fff; color: #666;
+      border: 1px solid #ddd;
+      padding: 9px 22px; font-size: 0.82rem; cursor: pointer;
+    }
+    .no-res { font-size: 0.82rem; color: #aaa; padding: 6px 0 10px; }
   </style>
 </head>
 <body>
@@ -398,14 +290,12 @@
 <header class="admin-header">
   <a href="admin.html" class="brand">채움 PILATES <small>관리자</small></a>
   <div style="display:flex; gap:8px;">
-    <a href="index.html" target="_blank" class="btn-logout" style="text-decoration:none;">사이트 보기</a>
+    <a href="index.html" target="_blank" class="btn-logout">사이트 보기</a>
     <button class="btn-logout" onclick="logout()">로그아웃</button>
   </div>
 </header>
 
 <div class="main-wrap">
-
-  <!-- ── Calendar controls ── -->
   <div class="cal-controls">
     <div class="cal-nav">
       <button class="btn-nav" onclick="changeMonth(-1)">&#8249;</button>
@@ -414,7 +304,6 @@
     </div>
   </div>
 
-  <!-- ── Calendar ── -->
   <div class="cal-wrap">
     <div class="cal-header-row">
       <div class="sun">일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div>
@@ -422,63 +311,21 @@
     </div>
     <div id="calGrid"></div>
   </div>
-
 </div>
 
-<!-- ── Modal: 날짜 팝업 ── -->
+<!-- ── 날짜 팝업 ── -->
 <div class="modal fade" id="dayModal" tabindex="-1">
-  <div class="modal-dialog modal-lg">
+  <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="dayModalTitle"></h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" style="padding:16px 20px;">
-
-        <!-- 수업 일정 -->
-        <div class="day-modal-section">수업 일정</div>
-        <div id="dayModalSchedule"></div>
-
-        <hr style="margin:16px 0; border-color:#e8eaed;">
-
-        <!-- 예약 현황 -->
-        <div class="day-modal-section">예약 현황</div>
-        <div id="dayModalReservations"></div>
-
+        <div id="dayModalBody"></div>
       </div>
       <div class="modal-footer">
         <button class="btn-cancel" data-bs-dismiss="modal">닫기</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ── Modal: 예약 추가 ── -->
-<div class="modal fade" id="resModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="resModalTitle">예약 추가</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <input type="hidden" id="resClassId">
-        <div class="mb-3">
-          <label class="form-label-sm" style="font-size:0.73rem;letter-spacing:0.1em;text-transform:uppercase;color:#999;display:block;margin-bottom:4px;">고객명 *</label>
-          <input type="text" id="resCustomerName" class="form-ctrl">
-        </div>
-        <div class="mb-3">
-          <label class="form-label-sm" style="font-size:0.73rem;letter-spacing:0.1em;text-transform:uppercase;color:#999;display:block;margin-bottom:4px;">연락처</label>
-          <input type="tel" id="resCustomerPhone" class="form-ctrl" placeholder="010-0000-0000">
-        </div>
-        <div class="mb-3">
-          <label class="form-label-sm" style="font-size:0.73rem;letter-spacing:0.1em;text-transform:uppercase;color:#999;display:block;margin-bottom:4px;">메모</label>
-          <textarea id="resMemo" class="form-ctrl" rows="2" style="resize:vertical;"></textarea>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn-cancel" data-bs-dismiss="modal">취소</button>
-        <button class="btn-save" onclick="saveReservation()">예약 추가</button>
       </div>
     </div>
   </div>
@@ -492,9 +339,8 @@
   const MONTH_NAMES = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
 
   let currentYear, currentMonth;
-  let monthReservations = [];
-  let allClasses        = [];   // 이번 달에 표시할 수업 목록
-  let selectedDateStr   = null;
+  let allReservations = [];
+  let selectedDateStr = null;
 
   const formatDate = d =>
     `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
@@ -523,48 +369,35 @@
 
   // ── 데이터 로딩 ──────────────────────────────────────
   async function loadMonthData() {
-    const firstDay = new Date(currentYear, currentMonth, 1);
-    const lastDay  = new Date(currentYear, currentMonth + 1, 0);
-    const firstStr = formatDate(firstDay);
-    const lastStr  = formatDate(lastDay);
+    const firstStr = formatDate(new Date(currentYear, currentMonth, 1));
+    const lastStr  = formatDate(new Date(currentYear, currentMonth + 1, 0));
 
-    // 예약
-    const { data: resData } = await _supabase
-      .from('reservations').select('*')
-      .gte('reservation_date', firstStr)
-      .lte('reservation_date', lastStr)
-      .eq('status', 'confirmed');
-    monthReservations = resData || [];
-
-    // 단일 수업 (이번 달)
     const { data: singleData } = await _supabase
-      .from('classes').select('*')
+      .from('reservations').select('*')
       .eq('is_recurring', false)
-      .eq('is_active', true)
-      .gte('class_date', firstStr)
-      .lte('class_date', lastStr);
+      .eq('status', 'confirmed')
+      .gte('reservation_date', firstStr)
+      .lte('reservation_date', lastStr);
 
-    // 반복 수업 (이번 달과 기간이 겹치는)
     const { data: recurData } = await _supabase
-      .from('classes').select('*')
+      .from('reservations').select('*')
       .eq('is_recurring', true)
-      .eq('is_active', true)
+      .eq('status', 'confirmed')
       .lte('recurring_from', lastStr)
       .gte('recurring_until', firstStr);
 
-    allClasses = [...(singleData || []), ...(recurData || [])];
+    allReservations = [...(singleData || []), ...(recurData || [])];
     renderCalendar();
   }
 
-  // 특정 날짜의 수업 필터링
-  function getClassesForDate(dateStr) {
-    const date = new Date(dateStr + 'T00:00:00');
-    const dow  = date.getDay();
-    return allClasses.filter(c => {
-      if (!c.is_recurring) return c.class_date === dateStr;
-      return c.day_of_week === dow &&
-             c.recurring_from  <= dateStr &&
-             c.recurring_until >= dateStr;
+  // 특정 날짜의 예약 필터링
+  function getReservationsForDate(dateStr) {
+    const dow = new Date(dateStr + 'T00:00:00').getDay();
+    return allReservations.filter(r => {
+      if (!r.is_recurring) return r.reservation_date === dateStr;
+      return r.day_of_week === dow &&
+             r.recurring_from  <= dateStr &&
+             r.recurring_until >= dateStr;
     }).sort((a, b) => a.start_time.localeCompare(b.start_time));
   }
 
@@ -576,13 +409,10 @@
     const today   = formatDate(new Date());
     const first   = new Date(currentYear, currentMonth, 1);
     const lastDay = new Date(currentYear, currentMonth + 1, 0).getDate();
-    const offset  = first.getDay(); // 일요일 시작
+    const offset  = first.getDay();
 
     let html = '';
-
-    for (let i = 0; i < offset; i++) {
-      html += '<div class="cal-cell empty"></div>';
-    }
+    for (let i = 0; i < offset; i++) html += '<div class="cal-cell empty"></div>';
 
     for (let d = 1; d <= lastDay; d++) {
       const date    = new Date(currentYear, currentMonth, d);
@@ -590,29 +420,21 @@
       const calDay  = date.getDay();
       const isToday    = dateStr === today;
       const isSelected = dateStr === selectedDateStr;
-      const isSat = calDay === 6;
-      const isSun = calDay === 0;
 
-      const dayClasses = getClassesForDate(dateStr);
-      const dayRes     = monthReservations.filter(r => r.reservation_date === dateStr);
-
+      const dayRes = getReservationsForDate(dateStr);
       let badges = '';
-      dayClasses.slice(0, 2).forEach(c => {
-        badges += `<div class="slot-badge">${c.start_time.substring(0,5)} ${escHtml(c.class_name)}</div>`;
+      dayRes.slice(0, 2).forEach(r => {
+        badges += `<div class="slot-badge">${r.start_time.substring(0,5)} ${escHtml(r.class_name)}</div>`;
       });
-      if (dayClasses.length > 2)
-        badges += `<div class="more-badge">+${dayClasses.length - 2}개</div>`;
-      if (dayRes.length)
-        badges += `<div class="slot-badge"><span class="res-dot">${dayRes.length}</span> 예약</div>`;
+      if (dayRes.length > 2) badges += `<div class="more-badge">+${dayRes.length - 2}개</div>`;
 
       html += `
-        <div class="cal-cell ${isToday?'today':''} ${isSelected?'selected':''} ${isSat?'sat':''} ${isSun?'sun':''}"
+        <div class="cal-cell ${isToday?'today':''} ${isSelected?'selected':''} ${calDay===6?'sat':''} ${calDay===0?'sun':''}"
              onclick="selectDay('${dateStr}')">
           <div class="cal-date">${d}</div>
           ${badges}
         </div>`;
     }
-
     document.getElementById('calGrid').innerHTML = html;
   }
 
@@ -627,20 +449,17 @@
   function selectDay(dateStr) {
     selectedDateStr = dateStr;
     renderCalendar();
-
     const date = new Date(dateStr + 'T00:00:00');
     const [y, m, d] = dateStr.split('-');
     document.getElementById('dayModalTitle').textContent =
       `${parseInt(y)}년 ${parseInt(m)}월 ${parseInt(d)}일 (${DAY_NAMES[date.getDay()]})`;
-
-    renderModalSchedule();
-    renderModalReservations();
+    renderDayModal();
     new bootstrap.Modal(document.getElementById('dayModal')).show();
   }
 
   // ── 시간 옵션 ────────────────────────────────────────
   function makeTimeOptions(selected) {
-    let opts = '<option value="">-- 시간 선택 --</option>';
+    let opts = '<option value="">시간 선택</option>';
     for (let h = 6; h <= 22; h++) {
       for (let m = 0; m < 60; m += 30) {
         if (h === 22 && m > 0) break;
@@ -651,10 +470,10 @@
     return opts;
   }
 
-  // ── 매주 반복 체크박스 ────────────────────────────────
+  // ── 매주 반복 토글 ────────────────────────────────────
   function toggleRecurring() {
-    const checked   = document.getElementById('seRecurring').checked;
-    const rangeDiv  = document.getElementById('seRecurringRange');
+    const checked  = document.getElementById('seRecurring').checked;
+    const rangeDiv = document.getElementById('seRecurringRange');
     if (checked) {
       rangeDiv.classList.add('show');
       document.getElementById('seRecurFrom').value = selectedDateStr;
@@ -666,161 +485,114 @@
     }
   }
 
-  // ── 수업 일정 렌더링 ─────────────────────────────────
-  function renderModalSchedule() {
-    const dayClasses = getClassesForDate(selectedDateStr);
-    const cont = document.getElementById('dayModalSchedule');
-
+  // ── 팝업 렌더링 ──────────────────────────────────────
+  function renderDayModal() {
+    const rsvs = getReservationsForDate(selectedDateStr);
     let html = '';
-    if (dayClasses.length) {
-      dayClasses.forEach(c => {
-        const typeBadge = c.is_recurring
-          ? `<span class="badge-repeat">매주반복</span>`
-          : `<span class="badge-once">단일</span>`;
+
+    if (rsvs.length) {
+      rsvs.forEach(r => {
+        const badge = r.is_recurring
+          ? '<span class="badge-repeat">매주반복</span>'
+          : '<span class="badge-once">단일</span>';
+        const customer = [r.customer_name, r.customer_phone].filter(Boolean).join(' · ');
         html += `
-          <div class="se-event-item">
-            <span class="se-event-time">${c.start_time.substring(0,5)}</span>
-            <span class="se-event-name">${escHtml(c.class_name)}</span>
-            ${typeBadge}
-            <button class="btn-add-res" onclick="openResModal('${c.id}','${escHtml(c.class_name)}')">예약+</button>
-            <button class="se-event-del" onclick="deleteClass('${c.id}')" title="삭제">✕</button>
+          <div class="res-card">
+            <span class="res-time">${r.start_time.substring(0,5)}</span>
+            <div class="res-info">
+              <div class="res-class">${escHtml(r.class_name)}</div>
+              <div class="res-customer">${escHtml(customer)}${r.memo ? ' — ' + escHtml(r.memo) : ''}</div>
+            </div>
+            ${badge}
+            <button class="btn-del-res" onclick="deleteReservation('${r.id}')" title="삭제">✕</button>
           </div>`;
       });
     } else {
-      html = '<div class="se-no-events">등록된 수업이 없습니다.</div>';
+      html = '<div class="no-res">이 날 예약이 없습니다.</div>';
     }
 
-    // 수업 추가 폼
     html += `
-      <div class="se-add-form">
-        <div class="se-add-row">
-          <select id="seAddTime">${makeTimeOptions('')}</select>
-          <input type="text" id="seAddName" placeholder="수업 이름" maxlength="30" style="flex:1; min-width:120px;"
-            onkeydown="if(event.key==='Enter')addClass()">
+      <div class="add-form">
+        <div class="add-form-title">예약 추가</div>
+        <div class="add-row">
+          <select id="seTime" style="min-width:110px;">${makeTimeOptions('')}</select>
+          <input type="text" id="seClass" placeholder="수업명" style="flex:1; min-width:100px;">
         </div>
-        <div class="se-add-row" style="align-items:flex-start; flex-wrap:wrap; gap:12px;">
-          <label style="display:flex; align-items:center; gap:5px; font-size:0.83rem; cursor:pointer; margin:0;">
+        <div class="add-row">
+          <input type="text" id="seName" placeholder="고객명 *" style="flex:1;">
+          <input type="tel" id="sePhone" placeholder="연락처" style="flex:1;">
+        </div>
+        <input type="text" id="seMemo" placeholder="메모" style="width:100%;">
+        <div>
+          <label style="display:flex; align-items:center; gap:6px; font-size:0.83rem; cursor:pointer;">
             <input type="checkbox" id="seRecurring" onchange="toggleRecurring()"> 매주 반복
           </label>
-          <div id="seRecurringRange" class="recur-range" style="gap:6px; align-items:center;">
+          <div id="seRecurringRange" class="recur-range" style="margin-top:8px;">
             <input type="date" id="seRecurFrom">
-            <span style="color:#aaa; font-size:0.82rem;">~</span>
+            <span style="color:#aaa;">~</span>
             <input type="date" id="seRecurUntil">
           </div>
         </div>
-        <button class="se-add-btn" onclick="addClass()">+ 수업 추가</button>
+        <button class="btn-add" onclick="addReservation()">+ 예약 추가</button>
       </div>`;
 
-    cont.innerHTML = html;
+    document.getElementById('dayModalBody').innerHTML = html;
   }
 
-  // ── 예약 현황 렌더링 ─────────────────────────────────
-  function renderModalReservations() {
-    const dayRes = monthReservations.filter(r => r.reservation_date === selectedDateStr);
-    const cont   = document.getElementById('dayModalReservations');
-    if (!dayRes.length) {
-      cont.innerHTML = '<div class="se-no-events">이 날 예약이 없습니다.</div>';
-      return;
-    }
-    cont.innerHTML = dayRes.map(r => `
-      <div class="res-item">
-        <div>
-          <strong>${escHtml(r.customer_name)}</strong>
-          ${r.customer_phone ? `<span class="res-phone">${escHtml(r.customer_phone)}</span>` : ''}
-          ${r.memo ? `<span class="res-memo">${escHtml(r.memo)}</span>` : ''}
-        </div>
-        <button class="btn-del-small" onclick="deleteReservation('${r.id}')">삭제</button>
-      </div>`).join('');
-  }
-
-  // ── 수업 추가 ────────────────────────────────────────
-  async function addClass() {
-    const time     = document.getElementById('seAddTime').value;
-    const name     = document.getElementById('seAddName').value.trim();
+  // ── 예약 추가 ────────────────────────────────────────
+  async function addReservation() {
+    const time      = document.getElementById('seTime').value;
+    const className = document.getElementById('seClass').value.trim();
+    const name      = document.getElementById('seName').value.trim();
+    const phone     = document.getElementById('sePhone').value.trim();
+    const memo      = document.getElementById('seMemo').value.trim();
     const isRecurring = document.getElementById('seRecurring').checked;
 
-    if (!time) { showToast('시간을 선택하세요.', 'error'); return; }
-    if (!name) { showToast('수업 이름을 입력하세요.', 'error'); return; }
+    if (!time)      { showToast('시간을 선택하세요.', 'error'); return; }
+    if (!className) { showToast('수업명을 입력하세요.', 'error'); return; }
+    if (!name)      { showToast('고객명을 입력하세요.', 'error'); return; }
 
-    const date = new Date(selectedDateStr + 'T00:00:00');
-    const dow  = date.getDay();
+    const dow = new Date(selectedDateStr + 'T00:00:00').getDay();
 
-    const classData = {
-      start_time:   time + ':00',
-      class_name:   name,
-      is_recurring: isRecurring,
-      is_active:    true,
+    const data = {
+      customer_name:  name,
+      customer_phone: phone || null,
+      class_name:     className,
+      start_time:     time + ':00',
+      memo:           memo || null,
+      status:         'confirmed',
+      is_recurring:   isRecurring,
     };
 
     if (isRecurring) {
-      const recurFrom  = document.getElementById('seRecurFrom').value;
-      const recurUntil = document.getElementById('seRecurUntil').value;
-      if (!recurFrom || !recurUntil) { showToast('반복 기간을 입력하세요.', 'error'); return; }
-      if (recurFrom > recurUntil)    { showToast('시작일이 종료일보다 늦습니다.', 'error'); return; }
-      classData.day_of_week    = dow;
-      classData.recurring_from  = recurFrom;
-      classData.recurring_until = recurUntil;
+      const from  = document.getElementById('seRecurFrom').value;
+      const until = document.getElementById('seRecurUntil').value;
+      if (!from || !until) { showToast('반복 기간을 입력하세요.', 'error'); return; }
+      if (from > until)    { showToast('시작일이 종료일보다 늦습니다.', 'error'); return; }
+      data.day_of_week    = dow;
+      data.recurring_from  = from;
+      data.recurring_until = until;
     } else {
-      classData.class_date = selectedDateStr;
+      data.reservation_date = selectedDateStr;
     }
 
-    const { error } = await _supabase.from('classes').insert(classData);
+    const { error } = await _supabase.from('reservations').insert(data);
     if (error) { showToast('추가 실패: ' + error.message, 'error'); return; }
 
-    showToast('수업이 추가되었습니다.');
-    await loadMonthData();
-    renderModalSchedule();
-    renderModalReservations();
-  }
-
-  // ── 수업 삭제 ────────────────────────────────────────
-  async function deleteClass(id) {
-    const msg = '이 수업을 삭제하시겠습니까?\n(매주반복 수업의 경우 전체 일정이 삭제됩니다.)';
-    if (!confirm(msg)) return;
-    const { error } = await _supabase.from('classes').delete().eq('id', id);
-    if (error) { showToast('삭제 실패: ' + error.message, 'error'); return; }
-    showToast('삭제되었습니다.');
-    await loadMonthData();
-    renderModalSchedule();
-  }
-
-  // ── 예약 추가 모달 ───────────────────────────────────
-  function openResModal(classId, className) {
-    document.getElementById('resClassId').value         = classId;
-    document.getElementById('resModalTitle').textContent = `예약 추가 — ${className}`;
-    document.getElementById('resCustomerName').value    = '';
-    document.getElementById('resCustomerPhone').value   = '';
-    document.getElementById('resMemo').value            = '';
-    new bootstrap.Modal(document.getElementById('resModal')).show();
-  }
-
-  async function saveReservation() {
-    const name = document.getElementById('resCustomerName').value.trim();
-    if (!name) { alert('고객명을 입력하세요.'); return; }
-
-    const { error } = await _supabase.from('reservations').insert({
-      class_id:         document.getElementById('resClassId').value,
-      reservation_date: selectedDateStr,
-      customer_name:    name,
-      customer_phone:   document.getElementById('resCustomerPhone').value.trim() || null,
-      memo:             document.getElementById('resMemo').value.trim() || null,
-      status:           'confirmed',
-    });
-
-    if (error) { showToast('예약 추가 실패: ' + error.message, 'error'); return; }
-    bootstrap.Modal.getInstance(document.getElementById('resModal')).hide();
     showToast('예약이 추가되었습니다.');
     await loadMonthData();
-    renderModalReservations();
+    renderDayModal();
   }
 
+  // ── 예약 삭제 ────────────────────────────────────────
   async function deleteReservation(id) {
-    if (!confirm('이 예약을 삭제하시겠습니까?')) return;
+    const msg = '이 예약을 삭제하시겠습니까?\n(매주반복의 경우 전체 일정이 삭제됩니다.)';
+    if (!confirm(msg)) return;
     const { error } = await _supabase.from('reservations').delete().eq('id', id);
     if (error) { showToast('삭제 실패: ' + error.message, 'error'); return; }
     showToast('삭제되었습니다.');
     await loadMonthData();
-    renderModalReservations();
+    renderDayModal();
   }
 
   // ── 초기화 ──────────────────────────────────────────
