@@ -1564,20 +1564,30 @@
         const _t = new Date();
         const todayY = _t.getFullYear(), todayM = _t.getMonth(), todayD = _t.getDate();
         let calY = todayY, calM = todayM;
-        let dayMap = {}; // 0=월...5=토 → [{time, name}]
+        let allClasses = [];
+
+        const fmtDate = d =>
+          `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+
+        // 특정 날짜에 해당하는 수업 반환
+        function getClassesForDate(dateStr) {
+          const date = new Date(dateStr + 'T00:00:00');
+          const dow  = date.getDay();
+          return allClasses.filter(c => {
+            if (!c.is_recurring) return c.class_date === dateStr;
+            return c.day_of_week === dow &&
+                   c.recurring_from  <= dateStr &&
+                   c.recurring_until >= dateStr;
+          }).sort((a, b) => a.start_time.localeCompare(b.start_time));
+        }
 
         async function loadClasses() {
           try {
             const { data } = await _supabase
-              .from('site_settings').select('value').eq('key','schedule').single();
-            (data?.value?.rows || []).forEach(row => {
-              (row.cells || []).forEach((cell, d) => {
-                if (cell && cell.trim()) {
-                  if (!dayMap[d]) dayMap[d] = [];
-                  dayMap[d].push({ time: row.time, name: cell.trim() });
-                }
-              });
-            });
+              .from('classes')
+              .select('id, start_time, class_name, is_recurring, class_date, day_of_week, recurring_from, recurring_until')
+              .eq('is_active', true);
+            allClasses = data || [];
           } catch(e) {}
           render();
         }
@@ -1586,14 +1596,14 @@
           document.getElementById('pubCalTitle').textContent = `${calY}년 ${MONTHS[calM]}`;
           const first   = new Date(calY, calM, 1);
           const lastDay = new Date(calY, calM + 1, 0).getDate();
-          const offset  = first.getDay(); // 0=일 시작 (JS 기본값)
+          const offset  = first.getDay();
           const total   = Math.ceil((offset + lastDay) / 7) * 7;
 
           let html = '';
           for (let i = 0; i < total; i++) {
             const d       = i - offset + 1;
             const inMonth = d >= 1 && d <= lastDay;
-            const dow     = inMonth ? new Date(calY, calM, d).getDay() : -1; // 0=일...6=토
+            const dow     = inMonth ? new Date(calY, calM, d).getDay() : -1;
             const isToday = inMonth && calY === todayY && calM === todayM && d === todayD;
             const isSat   = dow === 6;
             const isSun   = dow === 0;
@@ -1610,15 +1620,15 @@
               ].filter(Boolean).join(' ');
               inner += `<div class="${numCls}">${d}</div>`;
 
-              // cells 인덱스: 0=월~5=토, JS dow: 1=월~6=토
-              const cellIdx = dow - 1;
-              if (!isSun && dayMap[cellIdx]) {
+              const dateStr    = fmtDate(new Date(calY, calM, d));
+              const dayClasses = getClassesForDate(dateStr);
+              if (dayClasses.length) {
                 const MAX = 3;
-                dayMap[cellIdx].slice(0, MAX).forEach(ev => {
-                  inner += `<span class="gcal-event">${ev.time} ${ev.name}</span>`;
+                dayClasses.slice(0, MAX).forEach(ev => {
+                  inner += `<span class="gcal-event">${ev.start_time.substring(0,5)} ${ev.class_name}</span>`;
                 });
-                if (dayMap[cellIdx].length > MAX)
-                  inner += `<span class="gcal-more">+${dayMap[cellIdx].length - MAX}개</span>`;
+                if (dayClasses.length > MAX)
+                  inner += `<span class="gcal-more">+${dayClasses.length - MAX}개</span>`;
               }
             }
             html += `<div class="${cellCls}">${inner}</div>`;
