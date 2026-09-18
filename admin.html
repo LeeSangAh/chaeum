@@ -554,7 +554,6 @@
           <div class="res-card">
             <span class="res-time">${r.start_time.substring(0,5)}</span>
             <div class="res-info">
-              <div class="res-class">${escHtml(r.class_name)}</div>
               <div class="res-customer">${escHtml(customer)}${r.memo ? ' — ' + escHtml(r.memo) : ''}</div>
             </div>
             ${badge}
@@ -578,7 +577,6 @@
         </div>
         <div class="add-row">
           <select id="seTime" style="min-width:110px;">${makeTimeOptions('')}</select>
-          <input type="text" id="seClass" placeholder="수업명" style="flex:1; min-width:100px;">
         </div>
         <input type="text" id="seMemo" placeholder="메모" style="width:100%;">
         <div>
@@ -601,20 +599,17 @@
   async function addReservation() {
     const memberId  = document.getElementById('seMember').value;
     const time      = document.getElementById('seTime').value;
-    const className = document.getElementById('seClass').value.trim();
     const memo      = document.getElementById('seMemo').value.trim();
     const isRecurring = document.getElementById('seRecurring').checked;
 
-    if (!memberId)  { showToast('회원을 선택하세요.', 'error'); return; }
-    if (!time)      { showToast('시간을 선택하세요.', 'error'); return; }
-    if (!className) { showToast('수업명을 입력하세요.', 'error'); return; }
+    if (!memberId) { showToast('회원을 선택하세요.', 'error'); return; }
+    if (!time)     { showToast('시간을 선택하세요.', 'error'); return; }
 
     const dow = new Date(selectedDateStr + 'T00:00:00').getDay();
 
     const data = {
-      member_id:    memberId,
-      class_name:   className,
-      start_time:   time + ':00',
+      member_id:  memberId,
+      start_time: time + ':00',
       memo:         memo || null,
       status:       'confirmed',
       is_recurring: isRecurring,

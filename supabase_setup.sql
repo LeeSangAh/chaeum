@@ -24,7 +24,7 @@ CREATE TABLE members (
 CREATE TABLE reservations (
   id               uuid        DEFAULT gen_random_uuid() PRIMARY KEY,
   member_id        uuid        NOT NULL REFERENCES members(id) ON DELETE CASCADE,
-  class_name       varchar(100) NOT NULL,
+  class_name       varchar(100),
   start_time       time        NOT NULL,
   memo             text,
   status           varchar(20) DEFAULT 'confirmed' CHECK (status IN ('confirmed', 'cancelled')),
