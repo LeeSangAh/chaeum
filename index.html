@@ -333,9 +333,9 @@
       }
 
       .gcal-cell {
-        height: 140px;
+        height: 105px;
         background: #fff;
-        padding: 6px 5px 5px;
+        padding: 4px 4px 3px;
         box-sizing: border-box;
         text-align: center;
       }
@@ -343,15 +343,15 @@
       .gcal-cell.gcal-sunday  { background: #fff9f8; }
 
       .gcal-day-num {
-        width: 26px;
-        height: 26px;
+        width: 22px;
+        height: 22px;
         border-radius: 50%;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        font-size: 0.82rem;
+        font-size: 0.75rem;
         color: #3c4043;
-        margin-bottom: 4px;
+        margin-bottom: 2px;
         font-weight: 400;
       }
       .gcal-day-num.gcal-today-num {
@@ -364,33 +364,34 @@
 
       .gcal-event {
         display: block;
-        font-size: 0.67rem;
-        padding: 2px 5px;
+        font-size: 0.65rem;
+        padding: 1px 4px;
         border-radius: 3px;
-        margin-bottom: 2px;
+        margin-bottom: 1px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
         background: var(--pilates-light);
         color: var(--pilates-accent);
         border: 1px solid var(--pilates-secondary);
-        line-height: 1.6;
+        line-height: 1.35;
         text-align: center;
       }
 
       .gcal-more {
-        font-size: 0.65rem;
+        font-size: 0.62rem;
         color: #70757a;
-        padding: 1px 5px;
+        padding: 0 4px;
         display: block;
         text-align: center;
+        line-height: 1.4;
       }
 
       @media (max-width: 600px) {
-        .gcal-cell     { height: 90px; padding: 4px 2px 2px; }
-        .gcal-event    { font-size: 0.58rem; padding: 1px 2px; margin-bottom: 1px; }
-        .gcal-more     { font-size: 0.55rem; padding: 0 2px; }
-        .gcal-day-num  { width: 22px; height: 22px; font-size: 0.72rem; margin-bottom: 2px; }
+        .gcal-cell     { height: 78px; padding: 3px 2px 2px; }
+        .gcal-event    { font-size: 0.55rem; padding: 1px 2px; margin-bottom: 1px; line-height: 1.3; }
+        .gcal-more     { font-size: 0.52rem; padding: 0 2px; }
+        .gcal-day-num  { width: 18px; height: 18px; font-size: 0.65rem; margin-bottom: 1px; }
       }
 
       /* Instructor */
