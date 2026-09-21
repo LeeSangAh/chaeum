@@ -48,6 +48,10 @@
       var swiper = new Swiper(".main-swiper", {
         speed: 800,
         loop: true,
+        autoplay: {
+          delay: 4000,
+          disableOnInteraction: false,
+        },
         pagination: {
           el: ".main-slider-pagination",
           clickable: true,
