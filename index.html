@@ -750,27 +750,33 @@
             <div class="offcanvas-body">
               <ul id="navbar" class="navbar-nav w-100 d-flex justify-content-between align-items-center">
 
-                <ul class="list-unstyled d-lg-flex justify-content-md-between align-items-center">
-                  <li class="nav-item">
-                    <a class="nav-link text-uppercase ms-0" href="#about">스튜디오 소개</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link text-uppercase ms-0" href="#banner">프로그램</a>
-                  </li>
-                </ul>
+                <li class="nav-item list-unstyled d-lg-flex justify-content-md-between align-items-center" style="display:contents;">
+                  <ul class="list-unstyled d-lg-flex justify-content-md-between align-items-center mb-0">
+                    <li class="nav-item">
+                      <a class="nav-link text-uppercase ms-0" href="#about">스튜디오 소개</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link text-uppercase ms-0" href="#banner">프로그램</a>
+                    </li>
+                  </ul>
+                </li>
 
-                <a class="navbar-brand d-none d-lg-block me-0" href="index.html">
-                  <span style="font-family:'Noto Sans KR',sans-serif; font-size:1.6rem; letter-spacing:0.15em; color:#2c2c2c;">채움 PILATES</span>
-                </a>
+                <li class="nav-item d-none d-lg-block">
+                  <a class="navbar-brand me-0" href="index.html">
+                    <span style="font-family:'Noto Sans KR',sans-serif; font-size:1.6rem; letter-spacing:0.15em; color:#2c2c2c;">채움 PILATES</span>
+                  </a>
+                </li>
 
-                <ul class="list-unstyled d-lg-flex justify-content-between align-items-center">
-                  <li class="nav-item">
-                    <a class="nav-link text-uppercase me-0" href="#our-stores">오시는 길</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link text-uppercase me-0" href="login.html" style="border:1px solid #8b7355; padding:6px 16px; font-size:0.75rem; letter-spacing:0.1em;">수업 예약</a>
-                  </li>
-                </ul>
+                <li class="nav-item" style="display:contents;">
+                  <ul class="list-unstyled d-lg-flex justify-content-between align-items-center mb-0">
+                    <li class="nav-item">
+                      <a class="nav-link text-uppercase me-0" href="#our-stores">오시는 길</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link text-uppercase me-0" href="login.html" style="border:1px solid #8b7355; padding:6px 16px; font-size:0.75rem; letter-spacing:0.1em;">수업 예약</a>
+                    </li>
+                  </ul>
+                </li>
               </ul>
             </div>
           </div>
@@ -867,7 +873,7 @@
             <div class="icon-box text-center">
               <span class="icon-box-icon d-inline-flex p-4 border border-accent rounded-circle mb-4" style="width:80px;height:80px;align-items:center;justify-content:center;">
                 <svg width="28" height="28" style="color:#8b7355;">
-                  <use xlink:href="#icon-body">
+                  <use xlink:href="#icon-body"></use>
                 </svg>
               </span>
               <div class="icon-box-content">
@@ -880,7 +886,7 @@
             <div class="icon-box text-center">
               <span class="icon-box-icon d-inline-flex p-4 border border-accent rounded-circle mb-4" style="width:80px;height:80px;align-items:center;justify-content:center;">
                 <svg width="28" height="28" style="color:#8b7355;">
-                  <use xlink:href="#icon-apparatus">
+                  <use xlink:href="#icon-apparatus"></use>
                 </svg>
               </span>
               <div class="icon-box-content">
@@ -893,7 +899,7 @@
             <div class="icon-box text-center">
               <span class="icon-box-icon d-inline-flex p-4 border border-accent rounded-circle mb-4" style="width:80px;height:80px;align-items:center;justify-content:center;">
                 <svg width="28" height="28" style="color:#8b7355;">
-                  <use xlink:href="#icon-mat">
+                  <use xlink:href="#icon-mat"></use>
                 </svg>
               </span>
               <div class="icon-box-content">
@@ -906,7 +912,7 @@
             <div class="icon-box text-center">
               <span class="icon-box-icon d-inline-flex p-4 border border-accent rounded-circle mb-4" style="width:80px;height:80px;align-items:center;justify-content:center;">
                 <svg width="28" height="28" style="color:#8b7355;">
-                  <use xlink:href="#icon-balance">
+                  <use xlink:href="#icon-balance"></use>
                 </svg>
               </span>
               <div class="icon-box-content">
@@ -965,7 +971,7 @@
             <h3 style="font-family:'Noto Sans KR',sans-serif; font-size:2rem; font-weight:300; color:#2c2c2c; padding-top:0.5rem;">채움이<br>추구하는 것</h3>
             <div class="pilates-divider"></div>
             <p style="font-size:0.9rem; color:#666; line-height:1.9;">필라테스는 단순한 운동이 아닙니다.<br><br>몸과 마음의 연결, 호흡과 움직임의 조화를 통해 내면부터 강해지는 것입니다. 채움 클래식 필라테스는 정통 메소드를 바탕으로 당신의 몸이 본래 가진 힘을 되찾도록 돕습니다.</p>
-            <a href="about.html" class="btn mt-2">스튜디오 소개 →</a>
+            <a href="#about" class="btn mt-2">스튜디오 소개 →</a>
           </div>
         </div>
       </div>
@@ -1080,7 +1086,7 @@
                   <span class="section-label" style="margin-bottom:0.4rem;">Mat Pilates</span>
                   <h3 style="font-size:1.5rem;">매트 필라테스</h3>
                   <p style="font-size:0.85rem; color:#888; line-height:1.7;">조셉 필라테스의 오리지널 34가지 운동을 중심으로 몸의 파워하우스를 강화합니다.</p>
-                  <a href="shop.html" class="btn" style="font-size:0.75rem; padding:8px 18px;">자세히 보기 →</a>
+                  <a href="#banner" class="btn" style="font-size:0.75rem; padding:8px 18px;">자세히 보기 →</a>
                 </div>
               </div>
             </div>
@@ -1095,7 +1101,7 @@
                   <span class="section-label" style="margin-bottom:0.4rem;">Reformer</span>
                   <h3 style="font-size:1.5rem;">골반건강 필라테스</h3>
                   <p style="font-size:0.85rem; color:#888; line-height:1.7;">골반건강 필라테스 수업을 통해 전신의 건강을 바로 세웁니다.</p>
-                  <a href="shop.html" class="btn" style="font-size:0.75rem; padding:8px 18px;">자세히 보기 →</a>
+                  <a href="#banner" class="btn" style="font-size:0.75rem; padding:8px 18px;">자세히 보기 →</a>
                 </div>
               </div>
             </div>
@@ -1110,7 +1116,7 @@
                   <span class="section-label" style="margin-bottom:0.4rem;">Apparatus</span>
                   <h3 style="font-size:1.5rem;">기구 필라테스</h3>
                   <p style="font-size:0.85rem; color:#888; line-height:1.7;">캐딜락, 체어, 바렐 등 다양한 기구로 진행하는 심화 수업. 고급 과정에 적합합니다.</p>
-                  <a href="shop.html" class="btn" style="font-size:0.75rem; padding:8px 18px;">자세히 보기 →</a>
+                  <a href="#banner" class="btn" style="font-size:0.75rem; padding:8px 18px;">자세히 보기 →</a>
                 </div>
               </div>
             </div>
@@ -1125,7 +1131,7 @@
                   <span class="section-label" style="margin-bottom:0.4rem;">Rehabilitation</span>
                   <h3 style="font-size:1.5rem;">재활 필라테스</h3>
                   <p style="font-size:0.85rem; color:#888; line-height:1.7;">부상 후 회복이나 만성통증 개선을 위한 1:1 맞춤 재활 프로그램. 전문 강사가 담당합니다.</p>
-                  <a href="contact.html" class="btn" style="font-size:0.75rem; padding:8px 18px;">자세히 보기 →</a>
+                  <a href="#our-stores" class="btn" style="font-size:0.75rem; padding:8px 18px;">자세히 보기 →</a>
                 </div>
               </div>
             </div>
@@ -1303,7 +1309,7 @@
                       <li>
                         <a href="https://www.instagram.com/chaeum.classic.pilates/" target="_blank" rel="noopener">
                           <svg class="instagram" width="16" height="16">
-                            <use xlink:href="#instagram">
+                            <use xlink:href="#instagram"></use>
                           </svg>
                         </a>
                       </li>
@@ -1344,7 +1350,7 @@
           <div class="modal-body">
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             <div class="ratio ratio-16x9">
-              <iframe class="embed-responsive-item" src="" id="video" allowscriptaccess="always" allow="autoplay"></iframe>
+              <iframe class="embed-responsive-item" src="" id="video" allow="autoplay"></iframe>
             </div>
           </div>
         </div>
