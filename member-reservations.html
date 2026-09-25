@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <title>회원별 예약관리 | 채움 클래식 필라테스</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --p-primary:   #8b7355;
+      --p-secondary: #c9b99a;
+      --p-light:     #f7f3ee;
+      --p-dark:      #2c2c2c;
+      --p-accent:    #6b5d4f;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+      background: #f5f5f3;
+      color: var(--p-dark);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .admin-header {
+      background: var(--p-dark);
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
+    .brand {
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 1.3rem;
+      letter-spacing: 0.12em;
+      color: #fff;
+      text-decoration: none;
+    }
+    .brand small {
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--p-secondary);
+      margin-left: 10px;
+      vertical-align: middle;
+    }
+    .btn-header {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.25);
+      color: rgba(255,255,255,0.7);
+      padding: 6px 16px;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-header:hover { border-color: #fff; color: #fff; }
+
+    /* ── 탭 ── */
+    .tab-nav {
+      display: flex;
+      gap: 0;
+      margin-bottom: 24px;
+      border-bottom: 2px solid #e8e8e8;
+    }
+    .tab-nav a {
+      padding: 10px 22px;
+      font-size: 0.84rem;
+      text-decoration: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+    }
+    .tab-nav a.active { color: var(--p-primary); border-bottom-color: var(--p-primary); font-weight: 700; }
+    .tab-nav a:not(.active) { color: #aaa; }
+
+    /* ── Layout ── */
+    .main-wrap { max-width: 1200px; margin: 0 auto; padding: 28px 16px 60px; }
+    .content-wrap { display: flex; gap: 20px; align-items: flex-start; }
+
+    /* ── 사이드바 ── */
+    .member-sidebar {
+      width: 220px;
+      flex-shrink: 0;
+      background: #fff;
+      border: 1px solid #e8e8e8;
+    }
+    .sidebar-header {
+      padding: 14px 16px;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #999;
+    }
+    .sidebar-search { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; }
+    .sidebar-search input {
+      width: 100%;
+      border: 1px solid #e0e0e0;
+      padding: 6px 10px;
+      font-size: 0.82rem;
+      outline: none;
+      font-family: inherit;
+    }
+    .sidebar-search input:focus { border-color: var(--p-primary); }
+    .member-list-wrap { max-height: calc(100vh - 220px); overflow-y: auto; }
+    .member-item {
+      padding: 10px 16px;
+      border-bottom: 1px solid #f8f8f8;
+      cursor: pointer;
+      transition: background 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .member-item:hover { background: #faf8f5; }
+    .member-item.selected { background: var(--p-light); border-left: 3px solid var(--p-primary); }
+    .member-item.selected .member-item-name { color: var(--p-primary); font-weight: 700; }
+    .member-item-name { font-size: 0.88rem; }
+    .member-item-phone { font-size: 0.74rem; color: #aaa; margin-top: 1px; }
+    .member-item-meta { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+    .res-count-badge {
+      font-size: 0.65rem;
+      background: var(--p-light);
+      color: var(--p-accent);
+      border: 1px solid var(--p-secondary);
+      padding: 1px 6px;
+      border-radius: 10px;
+    }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; }
+    .status-dot.active   { background: #27ae60; }
+    .status-dot.inactive { background: #ccc; }
+    .empty-sidebar { text-align: center; color: #ccc; font-size: 0.84rem; padding: 32px 0; }
+
+    /* ── 패널 ── */
+    .reservation-panel { flex: 1; min-width: 0; }
+    .panel-empty {
+      background: #fff;
+      border: 1px solid #e8e8e8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 320px;
+      color: #ccc;
+      font-size: 0.9rem;
+    }
+
+    /* ── 회원 헤더 ── */
+    .panel-member-header {
+      background: #fff;
+      border: 1px solid #e8e8e8;
+      border-bottom: none;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .panel-member-name { font-size: 1.1rem; font-weight: 600; }
+    .panel-member-phone { font-size: 0.8rem; color: #aaa; }
+    .status-badge { font-size: 0.7rem; padding: 2px 9px; border-radius: 10px; }
+    .status-badge.active   { background: #eafaf1; color: #27ae60; }
+    .status-badge.inactive { background: #f5f5f5; color: #bbb; }
+
+    /* ── 달력 컨트롤 ── */
+    .cal-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-top: 20px;
+    }
+    .cal-nav { display: flex; align-items: center; gap: 14px; }
+    .cal-title {
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: var(--p-dark);
+      min-width: 140px;
+      text-align: center;
+    }
+    .btn-nav {
+      background: none;
+      border: 1px solid var(--p-secondary);
+      color: var(--p-primary);
+      width: 34px; height: 34px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+    }
+    .btn-nav:hover { background: var(--p-primary); color: #fff; border-color: var(--p-primary); }
+
+    /* ── 달력 그리드 ── */
+    .cal-wrap { background: #fff; border: 1px solid #e8e8e8; }
+    .cal-header-row {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      border-bottom: 2px solid var(--p-light);
+    }
+    .cal-header-row div {
+      text-align: center;
+      padding: 10px 4px;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #999;
+      font-weight: 700;
+    }
+    .cal-header-row div.sat { color: #3a7bd5; }
+    .cal-header-row div.sun { color: #c0392b; }
+
+    #calGrid { display: grid; grid-template-columns: repeat(7, 1fr); }
+    .cal-cell {
+      min-height: 110px;
+      border-right: 1px solid #f0f0f0;
+      border-bottom: 1px solid #f0f0f0;
+      padding: 8px 6px 6px;
+      cursor: pointer;
+      transition: background 0.15s;
+      position: relative;
+    }
+    .cal-cell:nth-child(7n) { border-right: none; }
+    .cal-cell:hover { background: #faf8f5; }
+    .cal-cell.empty { cursor: default; background: #fafafa; }
+    .cal-cell.today .cal-date {
+      background: var(--p-primary);
+      color: #fff;
+      border-radius: 50%;
+      width: 24px; height: 24px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .cal-cell.selected { background: #fdf6ee; }
+    .cal-cell.selected::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border: 2px solid var(--p-primary);
+      pointer-events: none;
+    }
+    .cal-date {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--p-dark);
+      margin-bottom: 5px;
+      width: 24px; height: 24px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .cal-cell.sat .cal-date { color: #3a7bd5; }
+    .cal-cell.sun .cal-date { color: #c0392b; }
+    .slot-badge {
+      font-size: 0.67rem;
+      background: var(--p-light);
+      color: var(--p-accent);
+      padding: 2px 5px;
+      margin-bottom: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: block;
+    }
+    .more-badge { font-size: 0.65rem; color: #aaa; padding-left: 5px; display: block; }
+
+    /* ── Modal ── */
+    .modal-content { border-radius: 0; border: none; }
+    .modal-header { background: var(--p-dark); color: #fff; border-radius: 0; }
+    .modal-title { font-size: 0.9rem; letter-spacing: 0.08em; }
+    .modal-header .btn-close { filter: invert(1); opacity: 0.7; }
+    .modal-footer { border-top: 1px solid #f0f0f0; gap: 8px; }
+
+    /* ── 예약 카드 ── */
+    .res-card {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      background: var(--p-light);
+      border-radius: 5px;
+      margin-bottom: 6px;
+      border-left: 3px solid var(--p-primary);
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+    .res-card:hover { background: #ede8e0; }
+    .res-time { font-size: 0.78rem; font-weight: 700; color: var(--p-primary); min-width: 42px; }
+    .res-info { flex: 1; }
+    .res-memo { font-size: 0.75rem; color: #888; margin-top: 2px; }
+    .badge-repeat {
+      font-size: 0.62rem;
+      background: rgba(139,115,85,0.12);
+      color: var(--p-primary);
+      padding: 1px 7px;
+      border-radius: 10px;
+      white-space: nowrap;
+    }
+    .badge-once {
+      font-size: 0.62rem;
+      background: #eef2ff;
+      color: #4a6fa5;
+      padding: 1px 7px;
+      border-radius: 10px;
+      white-space: nowrap;
+    }
+    .btn-del-res {
+      background: none; border: none;
+      color: #ccc; cursor: pointer;
+      font-size: 0.9rem; padding: 0 2px; line-height: 1;
+    }
+    .btn-del-res:hover { color: #c0392b; }
+
+    /* ── 인라인 편집 ── */
+    .edit-card {
+      background: #fff8f2;
+      border: 1px solid var(--p-secondary);
+      border-left: 3px solid var(--p-primary);
+      border-radius: 5px;
+      padding: 12px 14px;
+      margin-bottom: 6px;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .edit-card-title {
+      font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--p-primary);
+    }
+    .edit-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .edit-card input, .edit-card select {
+      font-size: 0.82rem; padding: 6px 9px;
+      border: 1px solid #dadce0; background: #fff;
+      color: var(--p-dark); outline: none; font-family: inherit; border-radius: 4px;
+    }
+    .edit-card input:focus, .edit-card select:focus { border-color: var(--p-primary); }
+    .edit-actions { display: flex; gap: 8px; }
+    .btn-save {
+      background: var(--p-primary); color: #fff; border: none;
+      border-radius: 4px; padding: 6px 18px; font-size: 0.8rem; cursor: pointer;
+    }
+    .btn-save:hover { background: var(--p-accent); }
+    .btn-edit-cancel {
+      background: #fff; color: #888; border: 1px solid #ddd;
+      border-radius: 4px; padding: 6px 14px; font-size: 0.8rem; cursor: pointer;
+    }
+
+    /* ── 예약 추가 폼 ── */
+    .add-form {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid #e8eaed;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .add-form-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--p-primary);
+      margin-bottom: 2px;
+    }
+    .add-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .add-form input, .add-form select {
+      font-size: 0.82rem;
+      padding: 7px 9px;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      background: #fff;
+      color: var(--p-dark);
+      outline: none;
+      font-family: inherit;
+    }
+    .add-form input:focus, .add-form select:focus { border-color: var(--p-primary); }
+    .recur-range {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+    .recur-range.show { display: flex; }
+    .btn-add {
+      background: var(--p-primary);
+      color: #fff; border: none;
+      border-radius: 4px;
+      padding: 8px 18px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      align-self: flex-start;
+    }
+    .btn-add:hover { background: var(--p-accent); }
+    .btn-cancel {
+      background: #fff; color: #666;
+      border: 1px solid #ddd;
+      padding: 9px 22px; font-size: 0.82rem; cursor: pointer;
+    }
+    .no-res { font-size: 0.82rem; color: #aaa; padding: 6px 0 10px; }
+
+    /* ── Toast ── */
+    .toast-msg {
+      position: fixed;
+      bottom: 30px; left: 50%;
+      transform: translateX(-50%);
+      background: var(--p-dark);
+      color: #fff;
+      padding: 12px 28px;
+      font-size: 0.84rem;
+      z-index: 9999;
+      animation: fadeUp 0.3s ease;
+    }
+    .toast-msg.error { background: #c0392b; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translate(-50%, 10px); }
+      to   { opacity: 1; transform: translate(-50%, 0); }
+    }
+
+    @media (max-width: 700px) {
+      .content-wrap { flex-direction: column; }
+      .member-sidebar { width: 100%; }
+      .member-list-wrap { max-height: 200px; }
+      .admin-header { padding: 10px 12px; }
+      .brand { font-size: 1.05rem; }
+      .brand small { display: none; }
+      .tab-nav a { padding: 8px 12px; font-size: 0.78rem; }
+      .cal-title { font-size: 1.1rem; min-width: 100px; }
+      .cal-header-row div { padding: 7px 2px; font-size: 0.65rem; }
+      .cal-cell { min-height: 64px; padding: 5px 3px 3px; }
+      .slot-badge { font-size: 0.63rem; padding: 1px 3px; margin-bottom: 2px; }
+      .more-badge { font-size: 0.6rem; }
+      .btn-nav { width: 28px; height: 28px; font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="admin-header">
+  <a href="admin.html" class="brand">채움 PILATES <small>관리자</small></a>
+  <div style="display:flex; gap:8px;">
+    <a href="index.html" target="_blank" class="btn-header">사이트 보기</a>
+    <button class="btn-header" onclick="logout()">로그아웃</button>
+  </div>
+</header>
+
+<div class="main-wrap">
+
+  <div class="tab-nav">
+    <a href="admin.html">예약 관리</a>
+    <a href="members.html">회원 관리</a>
+    <a href="member-reservations.html" class="active">회원별 예약관리</a>
+  </div>
+
+  <div class="content-wrap">
+    <!-- 사이드바 -->
+    <div class="member-sidebar">
+      <div class="sidebar-header">회원 목록</div>
+      <div class="sidebar-search">
+        <input type="text" id="sidebarSearch" placeholder="이름 검색" oninput="filterSidebar(this.value)">
+      </div>
+      <div class="member-list-wrap" id="memberSidebar"></div>
+    </div>
+
+    <!-- 오른쪽 패널 -->
+    <div class="reservation-panel" id="reservationPanel">
+      <div class="panel-empty">회원을 선택하면 예약 현황이 표시됩니다.</div>
+    </div>
+  </div>
+</div>
+
+<!-- 날짜 팝업 -->
+<div class="modal fade" id="dayModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="dayModalTitle"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:16px 20px;">
+        <div id="dayModalBody"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" data-bs-dismiss="modal">닫기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/bootstrap.bundle.min.js"></script>
+<script src="js/supabase-client.js"></script>
+<script>
+  const DAY_NAMES   = ['일','월','화','수','목','금','토'];
+  const MONTH_NAMES = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+
+  let allMembers      = [];
+  let allReservations = [];
+  let selectedMemberId  = null;
+  let sidebarFilter     = '';
+  let calYear, calMonth;
+  let selectedDateStr   = null;
+
+  const escHtml = s =>
+    String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  const formatDate = d =>
+    `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  const todayStr = formatDate(new Date());
+
+  // ── Auth ──────────────────────────────────────────────
+  async function checkAuth() {
+    const { data: { session } } = await _supabase.auth.getSession();
+    if (!session) window.location.href = 'login.html';
+  }
+  async function logout() {
+    await _supabase.auth.signOut();
+    window.location.href = 'login.html';
+  }
+
+  // ── Toast ──────────────────────────────────────────────
+  function showToast(msg, type = 'success') {
+    const el = document.createElement('div');
+    el.className = 'toast-msg' + (type === 'error' ? ' error' : '');
+    el.textContent = msg;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 2600);
+  }
+
+  // ── 데이터 로딩 ────────────────────────────────────────
+  async function loadAll() {
+    const [{ data: mData }, { data: rData }] = await Promise.all([
+      _supabase.from('members').select('*').order('name'),
+      _supabase.from('reservations').select('*').eq('status', 'confirmed')
+    ]);
+    allMembers      = mData || [];
+    allReservations = rData || [];
+    renderSidebar();
+    if (selectedMemberId) renderPanel(selectedMemberId);
+  }
+
+  // ── 펼친 예약 총 횟수 계산 ────────────────────────────
+  function countExpandedEntries(memberRes) {
+    let count = 0;
+    memberRes.forEach(r => {
+      if (!r.is_recurring) { count++; return; }
+      const until = new Date(r.recurring_until + 'T00:00:00');
+      const d = new Date(r.recurring_from + 'T00:00:00');
+      while (d.getDay() !== r.day_of_week) d.setDate(d.getDate() + 1);
+      while (d <= until) { count++; d.setDate(d.getDate() + 7); }
+    });
+    return count;
+  }
+
+  // ── 사이드바 ────────────────────────────────────────────
+  function getResCountForMember(memberId) {
+    return countExpandedEntries(allReservations.filter(r => r.member_id === memberId));
+  }
+  function filterSidebar(text) {
+    sidebarFilter = text.toLowerCase();
+    renderSidebar();
+  }
+  function renderSidebar() {
+    const filtered = allMembers.filter(m => m.name.toLowerCase().includes(sidebarFilter));
+    if (!filtered.length) {
+      document.getElementById('memberSidebar').innerHTML = '<div class="empty-sidebar">회원이 없습니다.</div>';
+      return;
+    }
+    document.getElementById('memberSidebar').innerHTML = filtered.map(m => {
+      const cnt = getResCountForMember(m.id);
+      return `
+        <div class="member-item ${m.id === selectedMemberId ? 'selected' : ''}" onclick="selectMember('${m.id}')">
+          <div>
+            <div class="member-item-name">${escHtml(m.name)}</div>
+            ${m.phone ? `<div class="member-item-phone">${escHtml(m.phone)}</div>` : ''}
+          </div>
+          <div class="member-item-meta">
+            ${cnt > 0 ? `<span class="res-count-badge">${cnt}건</span>` : ''}
+            <span class="status-dot ${m.status}"></span>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  // ── 회원 선택 ──────────────────────────────────────────
+  function selectMember(memberId) {
+    selectedMemberId = memberId;
+    selectedDateStr  = null;
+    const now = new Date();
+    calYear  = now.getFullYear();
+    calMonth = now.getMonth();
+    renderSidebar();
+    renderPanel(memberId);
+  }
+
+  // ── 특정 날짜의 예약 가져오기 ──────────────────────────
+  function getResForDate(memberId, dateStr) {
+    const dow = new Date(dateStr + 'T00:00:00').getDay();
+    return allReservations
+      .filter(r => r.member_id === memberId && (
+        (!r.is_recurring && r.reservation_date === dateStr) ||
+        (r.is_recurring && r.day_of_week === dow &&
+         r.recurring_from <= dateStr && r.recurring_until >= dateStr)
+      ))
+      .sort((a, b) => a.start_time.localeCompare(b.start_time));
+  }
+
+  // ── 패널 전체 렌더링 ───────────────────────────────────
+  function renderPanel(memberId) {
+    const member = allMembers.find(m => m.id === memberId);
+    if (!member) return;
+
+    const memberRes   = allReservations.filter(r => r.member_id === memberId);
+    const totalEntries = countExpandedEntries(memberRes);
+
+    document.getElementById('reservationPanel').innerHTML = `
+      <div class="panel-member-header">
+        <div>
+          <div class="panel-member-name">${escHtml(member.name)}</div>
+          ${member.phone ? `<div class="panel-member-phone">${escHtml(member.phone)}</div>` : ''}
+          ${member.memo ? `<div style="font-size:0.8rem;color:#8b7355;margin-top:5px;background:var(--p-light);padding:4px 8px;border-left:2px solid var(--p-secondary);">📋 ${escHtml(member.memo)}</div>` : ''}
+        </div>
+        <span class="status-badge ${member.status}">${member.status === 'active' ? '활성' : '비활성'}</span>
+        <span style="margin-left:auto;font-size:0.8rem;color:#aaa;">총 ${totalEntries}회</span>
+      </div>
+
+      <div class="cal-controls">
+        <div class="cal-nav">
+          <button class="btn-nav" onclick="changeMonth(-1)">&#8249;</button>
+          <span class="cal-title" id="calTitle"></span>
+          <button class="btn-nav" onclick="changeMonth(1)">&#8250;</button>
+        </div>
+      </div>
+
+      <div class="cal-wrap">
+        <div class="cal-header-row">
+          <div class="sun">일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div>
+          <div class="sat">토</div>
+        </div>
+        <div id="calGrid"></div>
+      </div>`;
+
+    renderCalendar();
+  }
+
+  // ── 달력 렌더링 ────────────────────────────────────────
+  function renderCalendar() {
+    const titleEl = document.getElementById('calTitle');
+    if (titleEl) titleEl.textContent = `${calYear}년 ${MONTH_NAMES[calMonth]}`;
+
+    const first   = new Date(calYear, calMonth, 1);
+    const lastDay = new Date(calYear, calMonth + 1, 0).getDate();
+    const offset  = first.getDay();
+
+    let html = '';
+    for (let i = 0; i < offset; i++) html += '<div class="cal-cell empty"></div>';
+
+    for (let d = 1; d <= lastDay; d++) {
+      const date    = new Date(calYear, calMonth, d);
+      const dateStr = formatDate(date);
+      const dow     = date.getDay();
+      const isToday    = dateStr === todayStr;
+      const isSelected = dateStr === selectedDateStr;
+      const dayRes  = getResForDate(selectedMemberId, dateStr);
+
+      let badges = '';
+      dayRes.slice(0, 3).forEach(r => {
+        badges += `<span class="slot-badge">${r.start_time.substring(0,5)}${r.is_recurring ? ' ↻' : ''}</span>`;
+      });
+      if (dayRes.length > 3) badges += `<span class="more-badge">+${dayRes.length - 3}개</span>`;
+
+      html += `
+        <div class="cal-cell ${isToday?'today':''} ${isSelected?'selected':''} ${dow===6?'sat':''} ${dow===0?'sun':''}"
+             onclick="selectDay('${dateStr}')">
+          <div class="cal-date">${d}</div>
+          ${badges}
+        </div>`;
+    }
+
+    const gridEl = document.getElementById('calGrid');
+    if (gridEl) gridEl.innerHTML = html;
+  }
+
+  // ── 월 이동 ────────────────────────────────────────────
+  function changeMonth(delta) {
+    calMonth += delta;
+    if (calMonth < 0)  { calMonth = 11; calYear--; }
+    if (calMonth > 11) { calMonth = 0;  calYear++; }
+    renderCalendar();
+  }
+
+  // ── 날짜 선택 → 모달 ──────────────────────────────────
+  function selectDay(dateStr) {
+    selectedDateStr = dateStr;
+    renderCalendar();
+    const date = new Date(dateStr + 'T00:00:00');
+    const [y, m, d] = dateStr.split('-');
+    const member = allMembers.find(x => x.id === selectedMemberId);
+    document.getElementById('dayModalTitle').textContent =
+      `${member ? escHtml(member.name) + ' · ' : ''}${parseInt(y)}년 ${parseInt(m)}월 ${parseInt(d)}일 (${DAY_NAMES[date.getDay()]})`;
+    renderDayModal();
+    new bootstrap.Modal(document.getElementById('dayModal')).show();
+  }
+
+  // ── 팝업 렌더링 ────────────────────────────────────────
+  function renderDayModal() {
+    const rsvs = getResForDate(selectedMemberId, selectedDateStr);
+    let html = '';
+
+    if (rsvs.length) {
+      rsvs.forEach(r => {
+        const badge = r.is_recurring
+          ? '<span class="badge-repeat">매주반복</span>'
+          : '<span class="badge-once">단일</span>';
+        html += `
+          <div class="res-card" onclick="openEdit('${r.id}', event)">
+            <span class="res-time">${r.start_time.substring(0,5)}</span>
+            <div class="res-info">
+              ${r.memo ? `<div class="res-memo">${escHtml(r.memo)}</div>` : ''}
+            </div>
+            ${badge}
+            <button class="btn-del-res" onclick="deleteReservation('${r.id}')" title="삭제">✕</button>
+          </div>`;
+      });
+    } else {
+      html = '<div class="no-res">이 날 예약이 없습니다.</div>';
+    }
+
+    html += `
+      <div class="add-form">
+        <div class="add-form-title">예약 추가</div>
+        <div class="add-row">
+          <select id="pfTime" style="min-width:110px;">${makeTimeOptions()}</select>
+          <input type="text" id="pfMemo" placeholder="메모" style="flex:1;min-width:160px;">
+        </div>
+        <div>
+          <label style="display:flex;align-items:center;gap:6px;font-size:0.83rem;cursor:pointer;">
+            <input type="checkbox" id="pfRecurring" onchange="togglePfRecurring('${selectedDateStr}')"> 매주 반복
+          </label>
+          <div id="pfRecurRange" class="recur-range" style="margin-top:8px;">
+            <input type="date" id="pfRecurFrom">
+            <span style="color:#aaa;">~</span>
+            <input type="date" id="pfRecurUntil">
+          </div>
+        </div>
+        <button class="btn-add" onclick="addReservation('${selectedDateStr}')">+ 예약 추가</button>
+      </div>`;
+
+    document.getElementById('dayModalBody').innerHTML = html;
+  }
+
+  // ── 시간 옵션 ──────────────────────────────────────────
+  function makeTimeOptions(selected = '') {
+    let opts = selected ? '' : '<option value="">시간 선택 *</option>';
+    for (let h = 6; h <= 22; h++) {
+      for (let m = 0; m < 60; m += 30) {
+        if (h === 22 && m > 0) break;
+        const t = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+        opts += `<option value="${t}"${t === selected ? ' selected' : ''}>${t}</option>`;
+      }
+    }
+    return opts;
+  }
+
+  // ── 반복 토글 ──────────────────────────────────────────
+  function togglePfRecurring(dateStr) {
+    const checked = document.getElementById('pfRecurring').checked;
+    const range   = document.getElementById('pfRecurRange');
+    if (checked) {
+      range.classList.add('show');
+      document.getElementById('pfRecurFrom').value = dateStr;
+      const until = new Date(dateStr + 'T00:00:00');
+      until.setMonth(until.getMonth() + 3);
+      document.getElementById('pfRecurUntil').value = formatDate(until);
+    } else {
+      range.classList.remove('show');
+    }
+  }
+
+  // ── 예약 추가 ──────────────────────────────────────────
+  async function addReservation(dateStr) {
+    const time        = document.getElementById('pfTime').value;
+    const memo        = document.getElementById('pfMemo').value.trim();
+    const isRecurring = document.getElementById('pfRecurring').checked;
+    if (!time) { showToast('시간을 선택하세요.', 'error'); return; }
+
+    const dow  = new Date(dateStr + 'T00:00:00').getDay();
+    const data = {
+      member_id:    selectedMemberId,
+      start_time:   time + ':00',
+      memo:         memo || null,
+      status:       'confirmed',
+      is_recurring: isRecurring,
+    };
+
+    if (isRecurring) {
+      const from  = document.getElementById('pfRecurFrom').value;
+      const until = document.getElementById('pfRecurUntil').value;
+      if (!from || !until) { showToast('반복 기간을 입력하세요.', 'error'); return; }
+      if (from > until)    { showToast('시작일이 종료일보다 늦습니다.', 'error'); return; }
+      data.day_of_week    = dow;
+      data.recurring_from  = from;
+      data.recurring_until = until;
+    } else {
+      data.reservation_date = dateStr;
+    }
+
+    const { error } = await _supabase.from('reservations').insert(data);
+    if (error) { showToast('추가 실패: ' + error.message, 'error'); return; }
+    showToast('예약이 추가되었습니다.');
+    await loadAll();
+    renderDayModal();
+  }
+
+  // ── 인라인 편집 열기 ────────────────────────────────────
+  function openEdit(id, event) {
+    if (event.target.classList.contains('btn-del-res')) return;
+    const r = allReservations.find(x => x.id === id);
+    if (!r) return;
+    const cardEl = event.currentTarget;
+
+    let formHtml = `<div class="edit-card"><div class="edit-card-title">예약 수정</div>`;
+
+    if (r.is_recurring) {
+      formHtml += `
+        <div class="edit-row">
+          <select id="et-time-${id}" style="min-width:110px;">${makeTimeOptions(r.start_time.substring(0,5))}</select>
+        </div>
+        <div class="edit-row">
+          <span style="font-size:0.8rem;color:#aaa;">반복 기간</span>
+          <input type="date" id="et-from-${id}" value="${r.recurring_from||''}">
+          <span style="color:#aaa;">~</span>
+          <input type="date" id="et-until-${id}" value="${r.recurring_until||''}">
+        </div>`;
+    } else {
+      formHtml += `
+        <div class="edit-row">
+          <input type="date" id="et-date-${id}" value="${r.reservation_date||''}">
+          <select id="et-time-${id}" style="min-width:110px;">${makeTimeOptions(r.start_time.substring(0,5))}</select>
+        </div>`;
+    }
+
+    formHtml += `
+      <div class="edit-row">
+        <input type="text" id="et-memo-${id}" placeholder="메모" value="${escHtml(r.memo||'')}" style="flex:1;min-width:200px;">
+      </div>
+      <div class="edit-actions">
+        <button class="btn-save" onclick="saveEdit('${id}')">저장</button>
+        <button class="btn-edit-cancel" onclick="renderDayModal()">취소</button>
+      </div>
+    </div>`;
+
+    cardEl.outerHTML = formHtml;
+  }
+
+  // ── 편집 저장 ──────────────────────────────────────────
+  async function saveEdit(id) {
+    const r = allReservations.find(x => x.id === id);
+    if (!r) return;
+    const time = document.getElementById(`et-time-${id}`).value;
+    const memo = document.getElementById(`et-memo-${id}`).value.trim();
+    if (!time) { showToast('시간을 선택하세요.', 'error'); return; }
+
+    const updates = { start_time: time + ':00', memo: memo || null };
+    if (r.is_recurring) {
+      const from  = document.getElementById(`et-from-${id}`).value;
+      const until = document.getElementById(`et-until-${id}`).value;
+      if (!from || !until) { showToast('반복 기간을 입력하세요.', 'error'); return; }
+      if (from > until)    { showToast('시작일이 종료일보다 늦습니다.', 'error'); return; }
+      updates.recurring_from  = from;
+      updates.recurring_until = until;
+    } else {
+      const date = document.getElementById(`et-date-${id}`).value;
+      if (!date) { showToast('날짜를 선택하세요.', 'error'); return; }
+      updates.reservation_date = date;
+    }
+
+    const { error } = await _supabase.from('reservations').update(updates).eq('id', id);
+    if (error) { showToast('저장 실패: ' + error.message, 'error'); return; }
+    showToast('수정되었습니다.');
+    await loadAll();
+    renderDayModal();
+  }
+
+  // ── 예약 삭제 ──────────────────────────────────────────
+  async function deleteReservation(id) {
+    if (!confirm('이 예약을 삭제하시겠습니까?\n(매주반복의 경우 전체 일정이 삭제됩니다.)')) return;
+    const { error } = await _supabase.from('reservations').delete().eq('id', id);
+    if (error) { showToast('삭제 실패: ' + error.message, 'error'); return; }
+    showToast('삭제되었습니다.');
+    await loadAll();
+    renderDayModal();
+  }
+
+  // ── 초기화 ────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', async () => {
+    await checkAuth();
+    await loadAll();
+  });
+</script>
+</body>
+</html>
