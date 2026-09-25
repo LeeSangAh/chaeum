@@ -5,6 +5,7 @@
 
 -- 기존 테이블 삭제
 DROP TABLE IF EXISTS reservations CASCADE;
+DROP TABLE IF EXISTS payments CASCADE;
 DROP TABLE IF EXISTS members CASCADE;
 DROP TABLE IF EXISTS classes CASCADE;
 DROP TABLE IF EXISTS class_slots CASCADE;
@@ -36,11 +37,23 @@ CREATE TABLE reservations (
   created_at       timestamptz DEFAULT now()
 );
 
--- 3. RLS 활성화
+-- 3. 결제 이력 테이블
+CREATE TABLE payments (
+  id           uuid        DEFAULT gen_random_uuid() PRIMARY KEY,
+  member_id    uuid        NOT NULL REFERENCES members(id) ON DELETE CASCADE,
+  payment_date date        NOT NULL DEFAULT CURRENT_DATE,
+  amount       integer     NOT NULL,
+  sessions     integer     NOT NULL,
+  memo         text,
+  created_at   timestamptz DEFAULT now()
+);
+
+-- 4. RLS 활성화
 ALTER TABLE members      ENABLE ROW LEVEL SECURITY;
 ALTER TABLE reservations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE payments     ENABLE ROW LEVEL SECURITY;
 
--- 4. RLS 정책
+-- 5. RLS 정책
 -- members: 관리자만 접근
 CREATE POLICY "admin_all_members"
   ON members FOR ALL TO authenticated USING (true) WITH CHECK (true);
@@ -51,8 +64,13 @@ CREATE POLICY "public_read_reservations"
 CREATE POLICY "admin_all_reservations"
   ON reservations FOR ALL TO authenticated USING (true) WITH CHECK (true);
 
--- 5. 권한 부여
+-- payments: 관리자만 접근
+CREATE POLICY "admin_all_payments"
+  ON payments FOR ALL TO authenticated USING (true) WITH CHECK (true);
+
+-- 6. 권한 부여
 GRANT USAGE ON SCHEMA public TO anon, authenticated;
 GRANT SELECT, INSERT, UPDATE, DELETE ON members TO authenticated;
 GRANT SELECT ON reservations TO anon;
 GRANT SELECT, INSERT, UPDATE, DELETE ON reservations TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON payments TO authenticated;

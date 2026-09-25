@@ -125,7 +125,7 @@
     .member-item.selected .member-item-name { color: var(--p-primary); font-weight: 700; }
     .member-item-name { font-size: 0.88rem; }
     .member-item-phone { font-size: 0.74rem; color: #aaa; margin-top: 1px; }
-    .member-item-meta { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+    .member-item-meta { display: flex; align-items: center; gap: 5px; flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }
     .res-count-badge {
       font-size: 0.65rem;
       background: var(--p-light);
@@ -134,7 +134,16 @@
       padding: 1px 6px;
       border-radius: 10px;
     }
-    .status-dot { width: 7px; height: 7px; border-radius: 50%; }
+    .remain-badge {
+      font-size: 0.65rem;
+      padding: 1px 6px;
+      border-radius: 10px;
+      white-space: nowrap;
+    }
+    .remain-badge.ok  { background: #eafaf1; color: #27ae60; border: 1px solid #a9dfbf; }
+    .remain-badge.low { background: #fef9e7; color: #e67e22; border: 1px solid #f9d26e; }
+    .remain-badge.out { background: #fef5f5; color: #c0392b; border: 1px solid #f1948a; }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
     .status-dot.active   { background: #27ae60; }
     .status-dot.inactive { background: #ccc; }
     .empty-sidebar { text-align: center; color: #ccc; font-size: 0.84rem; padding: 32px 0; }
@@ -168,6 +177,188 @@
     .status-badge { font-size: 0.7rem; padding: 2px 9px; border-radius: 10px; }
     .status-badge.active   { background: #eafaf1; color: #27ae60; }
     .status-badge.inactive { background: #f5f5f5; color: #bbb; }
+
+    /* ── 결제 이력 섹션 ── */
+    .payment-section {
+      background: #fff;
+      border: 1px solid #e8e8e8;
+      border-top: none;
+      padding: 14px 20px 16px;
+    }
+    .ps-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .ps-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #999;
+    }
+    .ps-summary { font-size: 0.82rem; color: #666; }
+    .remain-ok   { color: var(--p-primary); }
+    .remain-warn { color: #c0392b; }
+
+    .payment-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      margin-bottom: 12px;
+    }
+    .payment-table th {
+      font-size: 0.7rem;
+      letter-spacing: 0.06em;
+      color: #aaa;
+      font-weight: 600;
+      padding: 5px 8px;
+      border-bottom: 1px solid #f0f0f0;
+      text-align: left;
+    }
+    .payment-table td {
+      padding: 7px 8px;
+      border-bottom: 1px solid #f8f8f8;
+      vertical-align: middle;
+    }
+    .payment-table tr:last-child td { border-bottom: none; }
+    .empty-row { text-align: center; color: #ccc; padding: 14px 0 !important; }
+
+    .ps-add-row { padding-top: 10px; border-top: 1px solid #f0f0f0; }
+    .ps-add-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--p-primary);
+      margin-bottom: 8px;
+    }
+    .ps-add-fields { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .ps-add-fields input {
+      font-size: 0.82rem;
+      padding: 6px 9px;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      background: #fff;
+      color: var(--p-dark);
+      outline: none;
+      font-family: inherit;
+    }
+    .ps-add-fields input:focus { border-color: var(--p-primary); }
+    .btn-pay-add {
+      background: var(--p-primary);
+      color: #fff; border: none;
+      border-radius: 4px;
+      padding: 7px 16px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .btn-pay-add:hover { background: var(--p-accent); }
+
+    /* ── 결제 삭제 버튼 ── */
+    .btn-sm {
+      background: none;
+      border: 1px solid #ddd;
+      padding: 3px 8px;
+      font-size: 0.72rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    .btn-sm.btn-del { color: #c0392b; }
+    .btn-sm.btn-del:hover { border-color: #c0392b; background: #fef5f5; }
+
+    /* ── 결제 카드 (모달) ── */
+    .pay-card {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      background: #f0faf2;
+      border-left: 3px solid #4caf50;
+      border-radius: 4px;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
+    }
+    .pay-card-amount  { font-size: 0.85rem; font-weight: 700; color: #27ae60; }
+    .pay-card-sessions { font-size: 0.82rem; }
+    .pay-card-memo    { font-size: 0.78rem; color: #888; }
+    .pay-edit-form {
+      background: #f0faf2;
+      border: 1px solid #a9dfbf;
+      border-left: 3px solid #4caf50;
+      border-radius: 4px;
+      padding: 10px 12px;
+      margin-bottom: 6px;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .pay-edit-form input {
+      font-size: 0.82rem; padding: 6px 9px;
+      border: 1px solid #dadce0; background: #fff;
+      color: var(--p-dark); outline: none; font-family: inherit; border-radius: 4px;
+    }
+    .pay-edit-form input:focus { border-color: #4caf50; }
+
+    /* ── 모달 섹션 ── */
+    .modal-section { margin-bottom: 0; }
+    .modal-section + .modal-section {
+      border-top: 1px solid #f0f0f0;
+      padding-top: 16px;
+      margin-top: 16px;
+    }
+    .modal-section-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .modal-section-title.res { color: var(--p-accent); }
+    .modal-section-title.pay { color: #27ae60; }
+    .card-actions { margin-left: auto; display: flex; gap: 4px; flex-shrink: 0; }
+    .btn-modal-toggle {
+      display: block;
+      width: 100%;
+      margin-top: 10px;
+      padding: 6px 0;
+      font-size: 0.78rem;
+      border: 1px dashed #ddd;
+      background: none;
+      cursor: pointer;
+      color: #bbb;
+      font-family: inherit;
+      transition: all 0.15s;
+      border-radius: 3px;
+    }
+    .btn-modal-toggle:hover { border-color: var(--p-primary); color: var(--p-primary); background: #fdf9f5; }
+    .btn-modal-toggle.pay:hover { border-color: #4caf50; color: #27ae60; background: #f0faf2; }
+    .modal-add-fields {
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 8px;
+      padding: 12px;
+      background: #fafafa;
+      border: 1px solid #efefef;
+      border-radius: 4px;
+    }
+    .modal-add-fields.pay { background: #f8fdf9; border-color: #d5eeda; }
+    .modal-add-fields input, .modal-add-fields select {
+      font-size: 0.82rem;
+      padding: 7px 9px;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      background: #fff;
+      color: var(--p-dark);
+      outline: none;
+      font-family: inherit;
+    }
+    .modal-add-fields input:focus, .modal-add-fields select:focus { border-color: var(--p-primary); }
+    .modal-add-fields.pay input:focus { border-color: #4caf50; }
 
     /* ── 달력 컨트롤 ── */
     .cal-controls {
@@ -255,6 +446,8 @@
     }
     .cal-cell.sat .cal-date { color: #3a7bd5; }
     .cal-cell.sun .cal-date { color: #c0392b; }
+
+    /* 예약 뱃지 */
     .slot-badge {
       font-size: 0.67rem;
       background: var(--p-light);
@@ -267,6 +460,20 @@
       display: block;
     }
     .more-badge { font-size: 0.65rem; color: #aaa; padding-left: 5px; display: block; }
+
+    /* 결제 뱃지 (달력) */
+    .pay-badge {
+      display: block;
+      font-size: 0.62rem;
+      background: #e8f5e9;
+      color: #27ae60;
+      border-left: 2px solid #4caf50;
+      padding: 1px 4px;
+      margin-bottom: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
     /* ── Modal ── */
     .modal-content { border-radius: 0; border: none; }
@@ -285,10 +492,7 @@
       border-radius: 5px;
       margin-bottom: 6px;
       border-left: 3px solid var(--p-primary);
-      cursor: pointer;
-      transition: background 0.12s;
     }
-    .res-card:hover { background: #ede8e0; }
     .res-time { font-size: 0.78rem; font-weight: 700; color: var(--p-primary); min-width: 42px; }
     .res-info { flex: 1; }
     .res-memo { font-size: 0.75rem; color: #888; margin-top: 2px; }
@@ -432,8 +636,11 @@
       .cal-header-row div { padding: 7px 2px; font-size: 0.65rem; }
       .cal-cell { min-height: 64px; padding: 5px 3px 3px; }
       .slot-badge { font-size: 0.63rem; padding: 1px 3px; margin-bottom: 2px; }
+      .pay-badge  { font-size: 0.6rem; padding: 1px 3px; }
       .more-badge { font-size: 0.6rem; }
       .btn-nav { width: 28px; height: 28px; font-size: 1rem; }
+      .ps-add-fields { flex-direction: column; align-items: stretch; }
+      .ps-add-fields input { width: 100% !important; }
     }
   </style>
 </head>
@@ -499,6 +706,7 @@
 
   let allMembers      = [];
   let allReservations = [];
+  let allPayments     = [];
   let selectedMemberId  = null;
   let sidebarFilter     = '';
   let calYear, calMonth;
@@ -508,6 +716,7 @@
     String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   const formatDate = d =>
     `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  const formatAmount = n => Number(n).toLocaleString('ko-KR') + '원';
   const todayStr = formatDate(new Date());
 
   // ── Auth ──────────────────────────────────────────────
@@ -531,14 +740,37 @@
 
   // ── 데이터 로딩 ────────────────────────────────────────
   async function loadAll() {
-    const [{ data: mData }, { data: rData }] = await Promise.all([
+    const [{ data: mData }, { data: rData }, { data: pData }] = await Promise.all([
       _supabase.from('members').select('*').order('name'),
-      _supabase.from('reservations').select('*').eq('status', 'confirmed')
+      _supabase.from('reservations').select('*').eq('status', 'confirmed'),
+      _supabase.from('payments').select('*').order('payment_date', { ascending: false })
     ]);
     allMembers      = mData || [];
     allReservations = rData || [];
+    allPayments     = pData || [];
     renderSidebar();
     if (selectedMemberId) renderPanel(selectedMemberId);
+  }
+
+  // ── 결제 헬퍼 ──────────────────────────────────────────
+  function getMemberPayments(memberId) {
+    return allPayments
+      .filter(p => p.member_id === memberId)
+      .sort((a, b) => b.payment_date.localeCompare(a.payment_date));
+  }
+
+  function getTotalPaidSessions(memberId) {
+    return allPayments
+      .filter(p => p.member_id === memberId)
+      .reduce((sum, p) => sum + p.sessions, 0);
+  }
+
+  function countUsedSessions(memberId) {
+    return countExpandedEntries(allReservations.filter(r => r.member_id === memberId));
+  }
+
+  function getRemainingSessions(memberId) {
+    return getTotalPaidSessions(memberId) - countUsedSessions(memberId);
   }
 
   // ── 펼친 예약 총 횟수 계산 ────────────────────────────
@@ -552,6 +784,50 @@
       while (d <= until) { count++; d.setDate(d.getDate() + 7); }
     });
     return count;
+  }
+
+  // ── 결제 섹션 HTML 생성 ───────────────────────────────
+  function buildPaymentSectionHtml(memberId) {
+    const payments  = getMemberPayments(memberId);
+    const totalPaid = getTotalPaidSessions(memberId);
+    const used      = countUsedSessions(memberId);
+    const remaining = totalPaid - used;
+
+    let rows;
+    if (payments.length) {
+      rows = payments.map(p => `
+        <tr>
+          <td>${escHtml(p.payment_date)}</td>
+          <td>${formatAmount(p.amount)}</td>
+          <td style="text-align:center;">${p.sessions}회</td>
+          <td>${p.memo ? escHtml(p.memo) : '<span style="color:#ccc;">-</span>'}</td>
+          <td><button class="btn-sm btn-del" onclick="deletePayment('${p.id}')">삭제</button></td>
+        </tr>`).join('');
+    } else {
+      rows = '<tr><td colspan="5" class="empty-row">결제 이력이 없습니다.</td></tr>';
+    }
+
+    let summaryHtml;
+    if (totalPaid > 0) {
+      const remClass = remaining >= 0 ? 'remain-ok' : 'remain-warn';
+      summaryHtml = `총 <strong>${totalPaid}회</strong> 구매 · 사용 <strong>${used}회</strong> · 잔여 <strong class="${remClass}">${remaining}회</strong>`;
+    } else {
+      summaryHtml = '<span style="color:#ccc;">결제 이력 없음</span>';
+    }
+
+    return `
+      <div class="payment-section">
+        <div class="ps-header">
+          <div class="ps-title">결제 이력</div>
+          <div class="ps-summary">${summaryHtml}</div>
+        </div>
+        <table class="payment-table">
+          <thead>
+            <tr><th>결제일</th><th>금액</th><th>횟수</th><th>메모</th><th></th></tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+        </div>`;
   }
 
   // ── 사이드바 ────────────────────────────────────────────
@@ -570,6 +846,13 @@
     }
     document.getElementById('memberSidebar').innerHTML = filtered.map(m => {
       const cnt = getResCountForMember(m.id);
+      const totalPaid = getTotalPaidSessions(m.id);
+      let remainBadge = '';
+      if (totalPaid > 0) {
+        const rem = getRemainingSessions(m.id);
+        const cls = rem > 5 ? 'ok' : rem > 0 ? 'low' : 'out';
+        remainBadge = `<span class="remain-badge ${cls}">잔여 ${rem}회</span>`;
+      }
       return `
         <div class="member-item ${m.id === selectedMemberId ? 'selected' : ''}" onclick="selectMember('${m.id}')">
           <div>
@@ -577,6 +860,7 @@
             ${m.phone ? `<div class="member-item-phone">${escHtml(m.phone)}</div>` : ''}
           </div>
           <div class="member-item-meta">
+            ${remainBadge}
             ${cnt > 0 ? `<span class="res-count-badge">${cnt}건</span>` : ''}
             <span class="status-dot ${m.status}"></span>
           </div>
@@ -612,7 +896,7 @@
     const member = allMembers.find(m => m.id === memberId);
     if (!member) return;
 
-    const memberRes   = allReservations.filter(r => r.member_id === memberId);
+    const memberRes    = allReservations.filter(r => r.member_id === memberId);
     const totalEntries = countExpandedEntries(memberRes);
 
     document.getElementById('reservationPanel').innerHTML = `
@@ -620,10 +904,10 @@
         <div>
           <div class="panel-member-name">${escHtml(member.name)}</div>
           ${member.phone ? `<div class="panel-member-phone">${escHtml(member.phone)}</div>` : ''}
-          ${member.memo ? `<div style="font-size:0.8rem;color:#8b7355;margin-top:5px;background:var(--p-light);padding:4px 8px;border-left:2px solid var(--p-secondary);">📋 ${escHtml(member.memo)}</div>` : ''}
+          ${member.memo ? `<div style="font-size:0.8rem;color:#8b7355;margin-top:5px;background:var(--p-light);padding:4px 8px;border-left:2px solid var(--p-secondary);">${escHtml(member.memo)}</div>` : ''}
         </div>
         <span class="status-badge ${member.status}">${member.status === 'active' ? '활성' : '비활성'}</span>
-        <span style="margin-left:auto;font-size:0.8rem;color:#aaa;">총 ${totalEntries}회</span>
+        <span style="margin-left:auto;font-size:0.8rem;color:#aaa;">총 ${totalEntries}회 예약</span>
       </div>
 
       <div class="cal-controls">
@@ -663,19 +947,30 @@
       const dow     = date.getDay();
       const isToday    = dateStr === todayStr;
       const isSelected = dateStr === selectedDateStr;
-      const dayRes  = getResForDate(selectedMemberId, dateStr);
 
-      let badges = '';
-      dayRes.slice(0, 3).forEach(r => {
-        badges += `<span class="slot-badge">${r.start_time.substring(0,5)}${r.is_recurring ? ' ↻' : ''}</span>`;
+      // 결제 뱃지
+      const dayPayments = allPayments.filter(p =>
+        p.member_id === selectedMemberId && p.payment_date === dateStr
+      );
+      let payBadges = '';
+      dayPayments.forEach(p => {
+        payBadges += `<span class="pay-badge">${formatAmount(p.amount)} · ${p.sessions}회</span>`;
       });
-      if (dayRes.length > 3) badges += `<span class="more-badge">+${dayRes.length - 3}개</span>`;
+
+      // 예약 뱃지
+      const dayRes = getResForDate(selectedMemberId, dateStr);
+      let resBadges = '';
+      dayRes.slice(0, 2).forEach(r => {
+        resBadges += `<span class="slot-badge">${r.start_time.substring(0,5)}${r.is_recurring ? ' ↻' : ''}</span>`;
+      });
+      if (dayRes.length > 2) resBadges += `<span class="more-badge">+${dayRes.length - 2}개</span>`;
 
       html += `
         <div class="cal-cell ${isToday?'today':''} ${isSelected?'selected':''} ${dow===6?'sat':''} ${dow===0?'sun':''}"
              onclick="selectDay('${dateStr}')">
           <div class="cal-date">${d}</div>
-          ${badges}
+          ${payBadges}
+          ${resBadges}
         </div>`;
     }
 
@@ -706,49 +1001,89 @@
 
   // ── 팝업 렌더링 ────────────────────────────────────────
   function renderDayModal() {
-    const rsvs = getResForDate(selectedMemberId, selectedDateStr);
-    let html = '';
+    const rsvs        = getResForDate(selectedMemberId, selectedDateStr);
+    const dayPayments = allPayments.filter(p =>
+      p.member_id === selectedMemberId && p.payment_date === selectedDateStr
+    );
 
-    if (rsvs.length) {
-      rsvs.forEach(r => {
-        const badge = r.is_recurring
-          ? '<span class="badge-repeat">매주반복</span>'
-          : '<span class="badge-once">단일</span>';
-        html += `
-          <div class="res-card" onclick="openEdit('${r.id}', event)">
-            <span class="res-time">${r.start_time.substring(0,5)}</span>
-            <div class="res-info">
-              ${r.memo ? `<div class="res-memo">${escHtml(r.memo)}</div>` : ''}
+    // 예약 카드
+    let resCards = rsvs.length
+      ? rsvs.map(r => {
+          const badge = r.is_recurring
+            ? '<span class="badge-repeat">매주반복</span>'
+            : '<span class="badge-once">단일</span>';
+          return `
+            <div class="res-card" id="res-card-${r.id}">
+              <span class="res-time">${r.start_time.substring(0,5)}</span>
+              <div class="res-info">
+                ${r.memo ? `<div class="res-memo">${escHtml(r.memo)}</div>` : ''}
+              </div>
+              ${badge}
+              <div class="card-actions">
+                <button class="btn-sm" onclick="openEdit('${r.id}')">수정</button>
+                <button class="btn-sm btn-del" onclick="deleteReservation('${r.id}')">삭제</button>
+              </div>
+            </div>`;
+        }).join('')
+      : '<div class="no-res">이 날 예약이 없습니다.</div>';
+
+    // 결제 카드
+    let payCards = dayPayments.length
+      ? dayPayments.map(p => `
+          <div class="pay-card" id="pay-card-${p.id}">
+            <span class="pay-card-amount">${formatAmount(p.amount)}</span>
+            <span class="pay-card-sessions">${p.sessions}회</span>
+            ${p.memo ? `<span class="pay-card-memo">· ${escHtml(p.memo)}</span>` : ''}
+            <div class="card-actions">
+              <button class="btn-sm" onclick="openPayEdit('${p.id}')">수정</button>
+              <button class="btn-sm btn-del" onclick="deletePayment('${p.id}')">삭제</button>
             </div>
-            ${badge}
-            <button class="btn-del-res" onclick="deleteReservation('${r.id}')" title="삭제">✕</button>
-          </div>`;
-      });
-    } else {
-      html = '<div class="no-res">이 날 예약이 없습니다.</div>';
-    }
+          </div>`).join('')
+      : '<div class="no-res">이 날 결제 내역이 없습니다.</div>';
 
-    html += `
-      <div class="add-form">
-        <div class="add-form-title">예약 추가</div>
-        <div class="add-row">
-          <select id="pfTime" style="min-width:110px;">${makeTimeOptions()}</select>
-          <input type="text" id="pfMemo" placeholder="메모" style="flex:1;min-width:160px;">
-        </div>
-        <div>
+    document.getElementById('dayModalBody').innerHTML = `
+      <div class="modal-section">
+        <div class="modal-section-title res">예약</div>
+        ${resCards}
+        <button class="btn-modal-toggle" onclick="toggleModalForm('resAddForm')">+ 예약 추가</button>
+        <div id="resAddForm" class="modal-add-fields">
+          <div class="add-row">
+            <select id="pfTime" style="min-width:110px;">${makeTimeOptions()}</select>
+            <input type="text" id="pfMemo" placeholder="메모" style="flex:1;min-width:160px;">
+          </div>
           <label style="display:flex;align-items:center;gap:6px;font-size:0.83rem;cursor:pointer;">
             <input type="checkbox" id="pfRecurring" onchange="togglePfRecurring('${selectedDateStr}')"> 매주 반복
           </label>
-          <div id="pfRecurRange" class="recur-range" style="margin-top:8px;">
+          <div id="pfRecurRange" class="recur-range">
             <input type="date" id="pfRecurFrom">
             <span style="color:#aaa;">~</span>
             <input type="date" id="pfRecurUntil">
           </div>
+          <button class="btn-add" onclick="addReservation('${selectedDateStr}')">추가</button>
         </div>
-        <button class="btn-add" onclick="addReservation('${selectedDateStr}')">+ 예약 추가</button>
-      </div>`;
+      </div>
 
-    document.getElementById('dayModalBody').innerHTML = html;
+      <div class="modal-section">
+        <div class="modal-section-title pay">결제</div>
+        ${payCards}
+        <button class="btn-modal-toggle pay" onclick="toggleModalForm('payAddForm')">+ 결제 추가</button>
+        <div id="payAddForm" class="modal-add-fields pay">
+          <div class="add-row">
+            <input type="date" id="mdPayDate" value="${selectedDateStr}">
+            <input type="number" id="mdPayAmount" placeholder="금액 (원)" min="0" style="width:130px;">
+            <input type="number" id="mdPaySessions" placeholder="횟수" min="1" style="width:70px;">
+            <input type="text" id="mdPayMemo" placeholder="메모" style="flex:1;min-width:80px;"
+              onkeydown="if(event.key==='Enter') addPaymentFromModal()">
+          </div>
+          <button class="btn-add" style="background:#27ae60;" onclick="addPaymentFromModal()">등록</button>
+        </div>
+      </div>`;
+  }
+
+  function toggleModalForm(id) {
+    const el = document.getElementById(id);
+    const opening = el.style.display !== 'flex';
+    el.style.display = opening ? 'flex' : 'none';
   }
 
   // ── 시간 옵션 ──────────────────────────────────────────
@@ -815,11 +1150,10 @@
   }
 
   // ── 인라인 편집 열기 ────────────────────────────────────
-  function openEdit(id, event) {
-    if (event.target.classList.contains('btn-del-res')) return;
+  function openEdit(id) {
     const r = allReservations.find(x => x.id === id);
     if (!r) return;
-    const cardEl = event.currentTarget;
+    const cardEl = document.getElementById('res-card-' + id);
 
     let formHtml = `<div class="edit-card"><div class="edit-card-title">예약 수정</div>`;
 
@@ -892,6 +1226,103 @@
     showToast('삭제되었습니다.');
     await loadAll();
     renderDayModal();
+  }
+
+  // ── 결제 수정 ──────────────────────────────────────────
+  function openPayEdit(id) {
+    const p = allPayments.find(x => x.id === id);
+    if (!p) return;
+    document.getElementById('pay-card-' + id).outerHTML = `
+      <div class="pay-edit-form" id="pay-card-${id}">
+        <div class="add-row">
+          <input type="date" id="pe-date-${id}" value="${p.payment_date}">
+          <input type="number" id="pe-amount-${id}" value="${p.amount}" placeholder="금액 (원)" style="width:130px;">
+          <input type="number" id="pe-sessions-${id}" value="${p.sessions}" placeholder="횟수" style="width:70px;">
+          <input type="text" id="pe-memo-${id}" value="${escHtml(p.memo||'')}" placeholder="메모" style="flex:1;min-width:80px;">
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn-save" onclick="savePayEdit('${id}')">저장</button>
+          <button class="btn-edit-cancel" onclick="renderDayModal()">취소</button>
+        </div>
+      </div>`;
+  }
+
+  async function savePayEdit(id) {
+    const date     = document.getElementById(`pe-date-${id}`).value;
+    const amount   = parseInt(document.getElementById(`pe-amount-${id}`).value, 10);
+    const sessions = parseInt(document.getElementById(`pe-sessions-${id}`).value, 10);
+    const memo     = document.getElementById(`pe-memo-${id}`).value.trim();
+
+    if (!date)                      { showToast('결제일을 입력하세요.', 'error'); return; }
+    if (!amount || amount <= 0)     { showToast('결제금액을 입력하세요.', 'error'); return; }
+    if (!sessions || sessions <= 0) { showToast('횟수를 입력하세요.', 'error'); return; }
+
+    const { error } = await _supabase.from('payments').update({
+      payment_date: date,
+      amount,
+      sessions,
+      memo: memo || null
+    }).eq('id', id);
+    if (error) { showToast('저장 실패: ' + error.message, 'error'); return; }
+    showToast('수정되었습니다.');
+    await loadAll();
+    renderDayModal();
+  }
+
+  // ── 결제 추가 (모달에서) ───────────────────────────────
+  async function addPaymentFromModal() {
+    const date     = document.getElementById('mdPayDate').value;
+    const amount   = parseInt(document.getElementById('mdPayAmount').value, 10);
+    const sessions = parseInt(document.getElementById('mdPaySessions').value, 10);
+    const memo     = document.getElementById('mdPayMemo').value.trim();
+
+    if (!date)                      { showToast('결제일을 입력하세요.', 'error'); return; }
+    if (!amount || amount <= 0)     { showToast('결제금액을 입력하세요.', 'error'); return; }
+    if (!sessions || sessions <= 0) { showToast('횟수를 입력하세요.', 'error'); return; }
+
+    const { error } = await _supabase.from('payments').insert({
+      member_id:    selectedMemberId,
+      payment_date: date,
+      amount,
+      sessions,
+      memo: memo || null
+    });
+    if (error) { showToast('추가 실패: ' + error.message, 'error'); return; }
+    showToast('결제가 등록되었습니다.');
+    await loadAll();
+    renderDayModal();
+  }
+
+  // ── 결제 추가 (패널에서) ───────────────────────────────
+  async function addPayment() {
+    const date     = document.getElementById('payDate').value;
+    const amount   = parseInt(document.getElementById('payAmount').value, 10);
+    const sessions = parseInt(document.getElementById('paySessions').value, 10);
+    const memo     = document.getElementById('payMemo').value.trim();
+
+    if (!date)              { showToast('결제일을 입력하세요.', 'error'); return; }
+    if (!amount || amount <= 0)   { showToast('결제금액을 입력하세요.', 'error'); return; }
+    if (!sessions || sessions <= 0) { showToast('횟수를 입력하세요.', 'error'); return; }
+
+    const { error } = await _supabase.from('payments').insert({
+      member_id:    selectedMemberId,
+      payment_date: date,
+      amount,
+      sessions,
+      memo: memo || null
+    });
+    if (error) { showToast('추가 실패: ' + error.message, 'error'); return; }
+    showToast('결제가 등록되었습니다.');
+    await loadAll();
+  }
+
+  // ── 결제 삭제 ──────────────────────────────────────────
+  async function deletePayment(id) {
+    if (!confirm('이 결제 이력을 삭제하시겠습니까?')) return;
+    const { error } = await _supabase.from('payments').delete().eq('id', id);
+    if (error) { showToast('삭제 실패: ' + error.message, 'error'); return; }
+    showToast('삭제되었습니다.');
+    await loadAll();
   }
 
   // ── 초기화 ────────────────────────────────────────────
