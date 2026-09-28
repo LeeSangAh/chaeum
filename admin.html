@@ -671,10 +671,18 @@
 
     if (r.is_recurring) {
       formHtml += `
+        <div class="edit-row" style="gap:14px;">
+          <label style="display:flex;align-items:center;gap:5px;font-size:0.8rem;cursor:pointer;">
+            <input type="radio" name="editScope_${id}" value="single" id="editScopeS_${id}" onchange="toggleEditScope('${id}')"> 이 날만 변경
+          </label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:0.8rem;cursor:pointer;">
+            <input type="radio" name="editScope_${id}" value="all" id="editScopeA_${id}" onchange="toggleEditScope('${id}')" checked> 전체 일정 변경
+          </label>
+        </div>
         <div class="edit-row">
           <select id="et-time-${id}" style="min-width:110px;">${makeTimeOptions(r.start_time.substring(0,5))}</select>
         </div>
-        <div class="edit-row">
+        <div id="et-period-${id}" class="edit-row">
           <span style="font-size:0.8rem;color:#aaa;">반복 기간</span>
           <input type="date" id="et-from-${id}" value="${r.recurring_from||''}">
           <span style="color:#aaa;">~</span>
@@ -701,6 +709,12 @@
     cardEl.outerHTML = formHtml;
   }
 
+  function toggleEditScope(id) {
+    const isSingle = document.getElementById('editScopeS_' + id).checked;
+    const periodEl = document.getElementById('et-period-' + id);
+    if (periodEl) periodEl.style.display = isSingle ? 'none' : '';
+  }
+
   // ── 편집 저장 ────────────────────────────────────────
   async function saveEdit(id) {
     const r = allReservations.find(x => x.id === id);
@@ -708,6 +722,12 @@
     const time = document.getElementById(`et-time-${id}`).value;
     const memo = document.getElementById(`et-memo-${id}`).value.trim();
     if (!time) { showToast('시간을 선택하세요.', 'error'); return; }
+
+    const scopeEl = document.getElementById('editScopeS_' + id);
+    if (r.is_recurring && scopeEl && scopeEl.checked) {
+      await saveSingleDateEdit(r, time, memo);
+      return;
+    }
 
     const updates = { start_time: time + ':00', memo: memo || null };
     if (r.is_recurring) {
@@ -726,6 +746,63 @@
     const { error } = await _supabase.from('reservations').update(updates).eq('id', id);
     if (error) { showToast('저장 실패: ' + error.message, 'error'); return; }
     showToast('수정되었습니다.');
+    await loadMonthData();
+    renderDayModal();
+  }
+
+  // ── 해당 날짜만 수정 (반복 예약) ─────────────────────
+  async function saveSingleDateEdit(r, newTime, newMemo) {
+    const cancelDate = selectedDateStr;
+
+    const oneWeek  = 7 * 24 * 60 * 60 * 1000;
+    const cancelMs = new Date(cancelDate + 'T00:00:00').getTime();
+    const prevDate = formatDate(new Date(cancelMs - oneWeek));
+    const nextDate = formatDate(new Date(cancelMs + oneWeek));
+
+    const hasPrev = prevDate >= r.recurring_from;
+    const hasNext = nextDate <= r.recurring_until;
+
+    let err;
+    if (!hasPrev && !hasNext) {
+      ({ error: err } = await _supabase.from('reservations').delete().eq('id', r.id));
+    } else if (!hasPrev) {
+      ({ error: err } = await _supabase.from('reservations')
+        .update({ recurring_from: nextDate }).eq('id', r.id));
+    } else if (!hasNext) {
+      ({ error: err } = await _supabase.from('reservations')
+        .update({ recurring_until: prevDate }).eq('id', r.id));
+    } else {
+      ({ error: err } = await _supabase.from('reservations')
+        .update({ recurring_until: prevDate }).eq('id', r.id));
+      if (!err) {
+        ({ error: err } = await _supabase.from('reservations').insert({
+          member_id:       r.member_id,
+          class_name:      r.class_name,
+          start_time:      r.start_time,
+          memo:            r.memo,
+          status:          'confirmed',
+          is_recurring:    true,
+          day_of_week:     r.day_of_week,
+          recurring_from:  nextDate,
+          recurring_until: r.recurring_until,
+        }));
+      }
+    }
+
+    if (err) { showToast('저장 실패: ' + err.message, 'error'); return; }
+
+    ({ error: err } = await _supabase.from('reservations').insert({
+      member_id:        r.member_id,
+      class_name:       r.class_name,
+      start_time:       newTime + ':00',
+      memo:             newMemo || null,
+      status:           'confirmed',
+      is_recurring:     false,
+      reservation_date: cancelDate,
+    }));
+
+    if (err) { showToast('저장 실패: ' + err.message, 'error'); return; }
+    showToast('해당 날짜의 예약이 수정되었습니다.');
     await loadMonthData();
     renderDayModal();
   }
