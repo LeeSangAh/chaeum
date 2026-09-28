@@ -344,6 +344,34 @@
       border-radius: 4px;
     }
 
+    /* ── 방문자 통계 ── */
+    .visitor-stats {
+      display: flex;
+      align-items: center;
+      background: #fff;
+      border: 1px solid #e8e8e8;
+      margin-bottom: 20px;
+      padding: 14px 20px;
+      flex-wrap: wrap;
+      gap: 0;
+    }
+    .vstat-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #999;
+      margin-right: 6px;
+      white-space: nowrap;
+    }
+    .vstat-group { display: flex; align-items: center; gap: 0; flex-wrap: wrap; flex: 1; }
+    .vstat-item { display: flex; align-items: baseline; gap: 5px; padding: 0 16px; }
+    .vstat-item:first-child { padding-left: 0; }
+    .vstat-name { font-size: 0.72rem; color: #bbb; white-space: nowrap; }
+    .vstat-val  { font-size: 1.25rem; font-weight: 700; color: var(--p-primary); min-width: 24px; }
+    .vstat-sub  { font-size: 0.7rem; color: #bbb; white-space: nowrap; }
+    .vstat-sep  { width: 1px; height: 28px; background: #f0f0f0; }
+
     @media (max-width: 640px) {
       .admin-header { padding: 10px 12px; }
       .brand { font-size: 1.05rem; }
@@ -357,6 +385,8 @@
       .slot-badge { font-size: 0.63rem; padding: 1px 3px; margin-bottom: 2px; }
       .more-badge { font-size: 0.6rem; }
       .btn-nav { width: 28px; height: 28px; font-size: 1rem; }
+      .visitor-stats { padding: 10px 12px; }
+      .vstat-item { padding: 0 10px; }
     }
   </style>
 </head>
@@ -377,6 +407,36 @@
     <a href="admin.html" class="active">예약 관리</a>
     <a href="members.html">회원 관리</a>
     <a href="member-reservations.html">회원별 예약관리</a>
+  </div>
+
+  <!-- 방문자 통계 -->
+  <div class="visitor-stats">
+    <span class="vstat-label">방문자</span>
+    <div class="vstat-group">
+      <div class="vstat-item">
+        <span class="vstat-name">오늘</span>
+        <span class="vstat-val" id="statToday">—</span>
+        <span class="vstat-sub" id="statTodayU"></span>
+      </div>
+      <div class="vstat-sep"></div>
+      <div class="vstat-item">
+        <span class="vstat-name">이번 주</span>
+        <span class="vstat-val" id="statWeek">—</span>
+        <span class="vstat-sub" id="statWeekU"></span>
+      </div>
+      <div class="vstat-sep"></div>
+      <div class="vstat-item">
+        <span class="vstat-name">이번 달</span>
+        <span class="vstat-val" id="statMonth">—</span>
+        <span class="vstat-sub" id="statMonthU"></span>
+      </div>
+      <div class="vstat-sep"></div>
+      <div class="vstat-item">
+        <span class="vstat-name">전체</span>
+        <span class="vstat-val" id="statTotal">—</span>
+        <span class="vstat-sub" id="statTotalU"></span>
+      </div>
+    </div>
   </div>
 
   <div class="cal-controls">
@@ -922,13 +982,52 @@
     renderDayModal();
   }
 
+  // ── 방문자 통계 ──────────────────────────────────────
+  function uniqueCount(rows) {
+    return new Set((rows || []).map(r => r.visitor_id)).size;
+  }
+
+  async function loadVisitorStats() {
+    const now   = new Date();
+    const today = formatDate(now);
+
+    const weekStart = new Date(now);
+    weekStart.setDate(now.getDate() - now.getDay());
+    const weekStartStr  = formatDate(weekStart);
+    const monthStartStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-01`;
+
+    try {
+      const [allRes, todayRes, weekRes, monthRes] = await Promise.all([
+        _supabase.from('page_views').select('visitor_id'),
+        _supabase.from('page_views').select('visitor_id').gte('visited_at', today + 'T00:00:00+09:00'),
+        _supabase.from('page_views').select('visitor_id').gte('visited_at', weekStartStr  + 'T00:00:00+09:00'),
+        _supabase.from('page_views').select('visitor_id').gte('visited_at', monthStartStr + 'T00:00:00+09:00'),
+      ]);
+
+      const sets = [allRes, todayRes, weekRes, monthRes].map(r => r.data || []);
+      const [allD, todayD, weekD, monthD] = sets;
+
+      const fmt = n => n.toLocaleString();
+      const sub = (views, uniq) => uniq < views ? `(순방문자 ${fmt(uniq)})` : '';
+
+      document.getElementById('statToday').textContent  = fmt(todayD.length);
+      document.getElementById('statTodayU').textContent = sub(todayD.length, uniqueCount(todayD));
+      document.getElementById('statWeek').textContent   = fmt(weekD.length);
+      document.getElementById('statWeekU').textContent  = sub(weekD.length, uniqueCount(weekD));
+      document.getElementById('statMonth').textContent  = fmt(monthD.length);
+      document.getElementById('statMonthU').textContent = sub(monthD.length, uniqueCount(monthD));
+      document.getElementById('statTotal').textContent  = fmt(allD.length);
+      document.getElementById('statTotalU').textContent = sub(allD.length, uniqueCount(allD));
+    } catch(e) {}
+  }
+
   // ── 초기화 ──────────────────────────────────────────
   document.addEventListener('DOMContentLoaded', async () => {
     await checkAuth();
     const now = new Date();
     currentYear  = now.getFullYear();
     currentMonth = now.getMonth();
-    await Promise.all([loadMembers(), loadMonthData()]);
+    await Promise.all([loadMembers(), loadMonthData(), loadVisitorStats()]);
   });
 </script>
 </body>

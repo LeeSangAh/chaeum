@@ -1373,6 +1373,19 @@
     <!-- 달력 -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-client.js"></script>
+
+    <!-- 방문자 기록 -->
+    <script>
+      try {
+        let vid = localStorage.getItem('chaeum_vid');
+        if (!vid) {
+          vid = crypto.randomUUID();
+          localStorage.setItem('chaeum_vid', vid);
+        }
+        _supabase.from('page_views').insert({ visitor_id: vid });
+      } catch(e) {}
+    </script>
+
     <script>
       // ── Google Calendar 스타일 달력 ────────────────────
       (function() {

@@ -74,3 +74,23 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON members TO authenticated;
 GRANT SELECT ON reservations TO anon;
 GRANT SELECT, INSERT, UPDATE, DELETE ON reservations TO authenticated;
 GRANT SELECT, INSERT, UPDATE, DELETE ON payments TO authenticated;
+
+-- ================================================
+-- 방문자 통계 테이블 (별도 실행 — 기존 데이터 삭제 없음)
+-- 위 DROP TABLE 구문들과 분리하여 이 블록만 따로 실행하세요.
+-- ================================================
+
+CREATE TABLE IF NOT EXISTS page_views (
+  visitor_id uuid        NOT NULL,
+  visited_at timestamptz DEFAULT now() NOT NULL
+);
+
+ALTER TABLE page_views ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "anon_insert_page_views"
+  ON page_views FOR INSERT TO anon WITH CHECK (true);
+CREATE POLICY "admin_select_page_views"
+  ON page_views FOR SELECT TO authenticated USING (true);
+
+GRANT INSERT ON page_views TO anon;
+GRANT SELECT ON page_views TO authenticated;
