@@ -3,6 +3,8 @@
   <head>
     <title>채움 클래식 필라테스 | Chaeum Classic Pilates</title>
     <meta charset="utf-8">
+    <link rel="icon" type="image/png" sizes="256x256" href="favicon.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="images/chaeum_favicon_512.png">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="format-detection" content="telephone=no">
@@ -738,12 +740,14 @@
       <nav id="header-nav" class="navbar navbar-expand-lg px-3">
         <div class="container">
           <a class="navbar-brand d-lg-none" href="index.html">
+            <img src="images/CI-chaeum-logo.svg" alt="" style="height:38px; width:auto; vertical-align:middle; margin-right:6px;">
             <span style="font-family:'Noto Sans KR',sans-serif; font-size:1.4rem; letter-spacing:0.1em; color:#2c2c2c;">채움 PILATES</span>
           </a>
           <button class="navbar-toggler d-flex d-lg-none order-3 p-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#bdNavbar" aria-controls="bdNavbar" aria-expanded="false" aria-label="Toggle navigation">Menu</button>
           <div class="offcanvas offcanvas-end" tabindex="-1" id="bdNavbar" aria-labelledby="bdNavbarOffcanvasLabel">
             <div class="offcanvas-header px-4 pb-0">
               <a class="navbar-brand" href="index.html">
+                <img src="images/CI-chaeum-logo.svg" alt="" style="height:38px; width:auto; vertical-align:middle; margin-right:6px;">
                 <span style="font-family:'Noto Sans KR',sans-serif; font-size:1.4rem; letter-spacing:0.1em; color:#2c2c2c;">채움 PILATES</span>
               </a>
               <button type="button" class="btn-close btn-close-black" data-bs-dismiss="offcanvas" aria-label="Close" data-bs-target="#bdNavbar"></button>
@@ -764,6 +768,7 @@
 
                 <li class="nav-item d-none d-lg-block">
                   <a class="navbar-brand me-0" href="index.html">
+                    <img src="images/CI-chaeum-logo.svg" alt="" style="height:44px; width:auto; vertical-align:middle; margin-right:8px;">
                     <span style="font-family:'Noto Sans KR',sans-serif; font-size:1.6rem; letter-spacing:0.15em; color:#2c2c2c;">채움 PILATES</span>
                   </a>
                 </li>
@@ -1117,7 +1122,7 @@
                   <span class="section-label" style="margin-bottom:0.4rem;">Apparatus</span>
                   <h3 style="font-size:1.5rem;">기구 필라테스</h3>
                   <p style="font-size:0.85rem; color:#888; line-height:1.7;">캐딜락, 체어, 바렐 등 다양한 기구로 진행하는 심화 수업. 고급 과정에 적합합니다.</p>
-                  <a href="#banner" class="btn" style="font-size:0.75rem; padding:8px 18px;">자세히 보기 →</a>
+                  <a href="https://m.blog.naver.com/chaeumclassicpilates/224418349109" target="_blank" rel="noopener" class="btn" style="font-size:0.75rem; padding:8px 18px;">자세히 보기 →</a>
                 </div>
               </div>
             </div>
@@ -1251,7 +1256,10 @@
             <div class="row d-flex flex-wrap justify-content-between">
               <div class="col-lg-3 col-sm-6 pb-3">
                 <div class="footer-menu">
-                  <div style="font-family:'Noto Sans KR',sans-serif; font-size:1.5rem; letter-spacing:0.15em; color:#fff; margin-bottom:1rem;">채움 PILATES</div>
+                  <div style="display:flex; align-items:center; gap:8px; margin-bottom:1rem;">
+                    <img src="images/CI-chaeum-logo-moredark.svg" alt="" style="height:42px; width:auto;">
+                    <span style="font-family:'Noto Sans KR',sans-serif; font-size:1.5rem; letter-spacing:0.15em; color:#fff;">채움 PILATES</span>
+                  </div>
                   <p>조셉 필라테스의 정통 클래식 메소드를 계승하여, 몸과 마음의 균형을 찾아드립니다.</p>
                 </div>
               </div>
@@ -1377,14 +1385,14 @@
     <!-- 방문자 기록 -->
     <script>
       (async () => {
-        let vid = localStorage.getItem('chaeum_vid');
-        if (!vid) {
-          vid = crypto.randomUUID();
-          localStorage.setItem('chaeum_vid', vid);
-        }
-        const { error } = await _supabase.from('page_views').insert({ visitor_id: vid });
-        if (error) console.error('[page_views error]', error);
-        else console.log('[page_views ok] visitor_id:', vid);
+        try {
+          let vid = localStorage.getItem('chaeum_vid');
+          if (!vid) {
+            vid = crypto.randomUUID();
+            localStorage.setItem('chaeum_vid', vid);
+          }
+          await _supabase.from('page_views').insert({ visitor_id: vid });
+        } catch(e) {}
       })();
     </script>
 
