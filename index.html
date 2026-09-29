@@ -1376,14 +1376,16 @@
 
     <!-- 방문자 기록 -->
     <script>
-      try {
+      (async () => {
         let vid = localStorage.getItem('chaeum_vid');
         if (!vid) {
           vid = crypto.randomUUID();
           localStorage.setItem('chaeum_vid', vid);
         }
-        _supabase.from('page_views').insert({ visitor_id: vid });
-      } catch(e) {}
+        const { error } = await _supabase.from('page_views').insert({ visitor_id: vid });
+        if (error) console.error('[page_views error]', error);
+        else console.log('[page_views ok] visitor_id:', vid);
+      })();
     </script>
 
     <script>
