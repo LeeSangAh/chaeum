@@ -693,7 +693,6 @@
     <!-- script
     ================================================== -->
     <script src="js/modernizr.js"></script>
-    <script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=kbfzcwxe2k"></script>
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -1256,7 +1255,9 @@
         </div>
         <div class="row align-items-center justify-content-center">
           <div class="col-lg-5 col-md-6 mb-4 mb-md-0">
-            <div id="naver-map" style="width:100%; height:360px;"></div>
+            <div style="overflow:hidden; width:100%; height:360px;">
+              <div id="daumRoughmapContainer1790247188304" class="root_daum_roughmap root_daum_roughmap_landing"></div>
+            </div>
           </div>
           <div class="col-lg-4 col-md-5 offset-lg-1">
             <span class="section-label">Location</span>
@@ -1536,22 +1537,15 @@
       })();
     </script>
 
-    <script>
-      window.addEventListener('load', function() {
-        var center = new naver.maps.LatLng(37.6441551, 127.1245721);
-        var map = new naver.maps.Map('naver-map', {
-          center: center,
-          zoom: 16
-        });
-        var marker = new naver.maps.Marker({
-          position: center,
-          map: map,
-          title: '채움 클래식 필라테스'
-        });
-        naver.maps.Event.addListener(marker, 'click', function() {
-          window.open('https://m.place.naver.com/place/2091128717/home', '_blank');
-        });
-      });
+    <!-- 카카오맵 퍼가기 -->
+    <script charset="UTF-8" class="daum_roughmap_loader_script" src="https://t1.kakaocdn.net/kakaomapweb/roughmap/loader/prod/roughmapLoader.js"></script>
+    <script charset="UTF-8">
+      new daum.roughmap.Lander({
+        "timestamp" : "1790247188304",
+        "key" : "2wpm9zsfi33z",
+        "mapWidth" : "640",
+        "mapHeight" : "360"
+      }).render();
     </script>
   </body>
 </html>
