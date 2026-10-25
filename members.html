@@ -170,6 +170,38 @@
     .btn-sm.btn-del { color: #c0392b; }
     .btn-sm.btn-del:hover { border-color: #c0392b; background: #fef5f5; }
 
+    .edit-input {
+      border: 1px solid var(--p-secondary);
+      padding: 5px 8px;
+      font-size: 0.84rem;
+      outline: none;
+      font-family: inherit;
+      width: 100%;
+      border-radius: 0;
+    }
+    .edit-input:focus { border-color: var(--p-primary); }
+    .btn-save {
+      background: var(--p-primary);
+      color: #fff; border: none;
+      padding: 4px 12px;
+      font-size: 0.74rem;
+      cursor: pointer;
+      font-family: inherit;
+      margin-right: 4px;
+      white-space: nowrap;
+    }
+    .btn-save:hover { background: var(--p-accent); }
+    .btn-cancel-edit {
+      background: #fff; color: #888;
+      border: 1px solid #ddd;
+      padding: 4px 10px;
+      font-size: 0.74rem;
+      cursor: pointer;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+    .edit-row td { background: #fffdf9; }
+
     .empty-msg { text-align: center; color: #bbb; font-size: 0.88rem; padding: 40px 0; }
 
     /* ── Toast ── */
@@ -319,12 +351,13 @@
     }
 
     const rows = filtered.map(m => `
-      <tr class="${m.status === 'inactive' ? 'inactive' : ''}">
+      <tr id="row-${m.id}" class="${m.status === 'inactive' ? 'inactive' : ''}">
         <td><strong>${escHtml(m.name)}</strong></td>
         <td>${m.phone ? escHtml(m.phone) : '<span style="color:#ccc;">-</span>'}</td>
         <td>${m.memo ? escHtml(m.memo) : '<span style="color:#ccc;">-</span>'}</td>
         <td><span class="status-badge ${m.status}">${m.status === 'active' ? '활성' : '비활성'}</span></td>
         <td style="white-space:nowrap;">
+          <button class="btn-sm" onclick="openEdit('${m.id}')">수정</button>
           <button class="btn-sm" onclick="toggleStatus('${m.id}','${m.status}')">
             ${m.status === 'active' ? '비활성화' : '활성화'}
           </button>
@@ -360,6 +393,42 @@
     document.getElementById('addPhone').value = '';
     document.getElementById('addMemo').value  = '';
     showToast(`${name} 회원이 등록되었습니다.`);
+    await loadMembers();
+  }
+
+  // ── 인라인 수정 ──────────────────────────────────────
+  function openEdit(id) {
+    const m = allMembers.find(x => x.id === id);
+    if (!m) return;
+    const row = document.getElementById('row-' + id);
+    row.classList.add('edit-row');
+    row.innerHTML = `
+      <td><input class="edit-input" id="en-${id}" value="${escHtml(m.name)}" placeholder="이름 *" style="min-width:90px;"></td>
+      <td><input class="edit-input" id="ep-${id}" value="${escHtml(m.phone||'')}" placeholder="010-0000-0000" style="min-width:120px;"></td>
+      <td><input class="edit-input" id="em-${id}" value="${escHtml(m.memo||'')}" placeholder="메모" style="min-width:120px;"
+            onkeydown="if(event.key==='Enter') saveEdit('${id}')"></td>
+      <td><span class="status-badge ${m.status}">${m.status === 'active' ? '활성' : '비활성'}</span></td>
+      <td style="white-space:nowrap;">
+        <button class="btn-save" onclick="saveEdit('${id}')">저장</button>
+        <button class="btn-cancel-edit" onclick="renderMembers()">취소</button>
+      </td>`;
+    document.getElementById('en-' + id).focus();
+  }
+
+  async function saveEdit(id) {
+    const name  = document.getElementById('en-' + id).value.trim();
+    const phone = document.getElementById('ep-' + id).value.trim();
+    const memo  = document.getElementById('em-' + id).value.trim();
+    if (!name) { showToast('이름을 입력하세요.', 'error'); return; }
+
+    const { error } = await _supabase.from('members').update({
+      name,
+      phone: phone || null,
+      memo:  memo  || null,
+    }).eq('id', id);
+    if (error) { showToast('저장 실패: ' + error.message, 'error'); return; }
+
+    showToast('수정되었습니다.');
     await loadMembers();
   }
 

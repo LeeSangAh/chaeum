@@ -374,6 +374,74 @@
     .vstat-sub  { font-size: 0.7rem; color: #bbb; white-space: nowrap; }
     .vstat-sep  { width: 1px; height: 28px; background: #f0f0f0; }
 
+    /* ── 예약 요청 섹션 ── */
+    .req-section {
+      background: #fff;
+      border: 1px solid #e8e8e8;
+      margin-bottom: 20px;
+    }
+    .req-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .req-section-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--p-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .req-pending-badge {
+      background: #c0392b;
+      color: #fff;
+      border-radius: 10px;
+      padding: 1px 8px;
+      font-size: 0.68rem;
+      font-weight: 700;
+    }
+    .req-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 20px;
+      border-top: 1px solid #f5f5f5;
+      font-size: 0.84rem;
+    }
+    .req-card-info { flex: 1; }
+    .req-date-time { font-weight: 600; color: var(--p-dark); }
+    .req-name-phone { font-size: 0.76rem; color: #888; margin-top: 2px; }
+    .req-created { font-size: 0.68rem; color: #bbb; margin-top: 2px; }
+    .btn-approve {
+      background: var(--p-primary);
+      color: #fff; border: none;
+      padding: 5px 14px;
+      font-size: 0.76rem;
+      cursor: pointer;
+      font-family: inherit;
+      border-radius: 3px;
+      white-space: nowrap;
+    }
+    .btn-approve:hover { background: var(--p-accent); }
+    .btn-reject {
+      background: #fff;
+      color: #c0392b;
+      border: 1px solid #e8d5d5;
+      padding: 5px 10px;
+      font-size: 0.76rem;
+      cursor: pointer;
+      font-family: inherit;
+      border-radius: 3px;
+      white-space: nowrap;
+    }
+    .btn-reject:hover { background: #fef5f5; }
+
     @media (max-width: 640px) {
       .admin-header { padding: 10px 12px; }
       .brand { font-size: 1.05rem; }
@@ -441,6 +509,22 @@
         <span class="vstat-val" id="statTotal">—</span>
         <span class="vstat-sub" id="statTotalU"></span>
       </div>
+    </div>
+  </div>
+
+  <!-- 예약 요청 섹션 -->
+  <div class="req-section">
+    <div class="req-section-header" onclick="toggleReqSection()">
+      <span class="req-section-title">
+        예약 요청
+        <span class="req-pending-badge" id="reqCount" style="display:none;"></span>
+      </span>
+      <svg id="reqChevron" width="16" height="16" viewBox="0 0 24 24" style="color:#aaa; transition:transform 0.2s; flex-shrink:0;">
+        <path fill="currentColor" d="M7.41 8.58L12 13.17l4.59-4.59L18 10l-6 6l-6-6l1.41-1.42Z"/>
+      </svg>
+    </div>
+    <div id="reqBody" style="display:none;">
+      <div id="reqList"></div>
     </div>
   </div>
 
@@ -1036,13 +1120,127 @@
     } catch(e) {}
   }
 
+  // ── 예약 요청 ────────────────────────────────────────
+  let pendingRequests = [];
+  const REQ_MONTHS = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+
+  async function loadRequests() {
+    try {
+      const { data } = await _supabase
+        .from('reservation_requests')
+        .select('*')
+        .eq('status', 'pending')
+        .order('request_date', { ascending: true })
+        .order('request_time', { ascending: true });
+      pendingRequests = data || [];
+    } catch(e) { pendingRequests = []; }
+    renderRequests();
+  }
+
+  function renderRequests() {
+    const countEl  = document.getElementById('reqCount');
+    const bodyEl   = document.getElementById('reqBody');
+    const listEl   = document.getElementById('reqList');
+    const chevron  = document.getElementById('reqChevron');
+
+    if (pendingRequests.length > 0) {
+      countEl.textContent = pendingRequests.length;
+      countEl.style.display = 'inline-block';
+      bodyEl.style.display  = 'block';
+      chevron.style.transform = 'rotate(180deg)';
+    } else {
+      countEl.style.display = 'none';
+      chevron.style.transform = '';
+    }
+
+    if (!pendingRequests.length) {
+      listEl.innerHTML = '<div style="padding:12px 20px; font-size:0.82rem; color:#aaa; border-top:1px solid #f5f5f5;">대기 중인 예약 요청이 없습니다.</div>';
+      return;
+    }
+
+    listEl.innerHTML = pendingRequests.map(req => {
+      const d = new Date(req.request_date + 'T00:00:00');
+      const dateStr = `${d.getFullYear()}년 ${REQ_MONTHS[d.getMonth()]} ${d.getDate()}일`;
+      const timeStr = req.request_time.substring(0, 5);
+      const createdAt = new Date(req.created_at)
+        .toLocaleString('ko-KR', { month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit' });
+      return `
+        <div class="req-card" id="req-${req.id}">
+          <div class="req-card-info">
+            <div class="req-date-time">${dateStr} ${timeStr}</div>
+            <div class="req-name-phone">${escHtml(req.name)} · ${escHtml(req.phone)}</div>
+            <div class="req-created">신청일시: ${createdAt}</div>
+          </div>
+          <button class="btn-approve" onclick="approveRequest('${req.id}')">승인</button>
+          <button class="btn-reject"  onclick="rejectRequest('${req.id}')">거절</button>
+        </div>`;
+    }).join('');
+  }
+
+  function toggleReqSection() {
+    const bodyEl  = document.getElementById('reqBody');
+    const chevron = document.getElementById('reqChevron');
+    const isOpen  = bodyEl.style.display !== 'none';
+    bodyEl.style.display    = isOpen ? 'none' : 'block';
+    chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
+  }
+
+  async function approveRequest(id) {
+    const req = pendingRequests.find(r => r.id === id);
+    if (!req) return;
+
+    // 같은 번호 활성 회원 있으면 재사용, 없으면 신규 생성
+    let memberId;
+    const { data: existing } = await _supabase
+      .from('members').select('id').eq('phone', req.phone).eq('status', 'active').limit(1);
+    if (existing && existing.length > 0) {
+      memberId = existing[0].id;
+    } else {
+      const { data: newM, error: mErr } = await _supabase
+        .from('members')
+        .insert({ name: req.name, phone: req.phone, status: 'active' })
+        .select('id').single();
+      if (mErr) { showToast('회원 생성 실패: ' + mErr.message, 'error'); return; }
+      memberId = newM.id;
+    }
+
+    const { error: rErr } = await _supabase.from('reservations').insert({
+      member_id:        memberId,
+      start_time:       req.request_time,
+      status:           'confirmed',
+      is_recurring:     false,
+      reservation_date: req.request_date,
+    });
+    if (rErr) { showToast('예약 등록 실패: ' + rErr.message, 'error'); return; }
+
+    const { error: uErr } = await _supabase
+      .from('reservation_requests').update({ status: 'approved' }).eq('id', id);
+    if (uErr) { showToast('상태 업데이트 실패: ' + uErr.message, 'error'); return; }
+
+    showToast(`${req.name}님 예약이 승인되었습니다.`);
+    await Promise.all([loadRequests(), loadMonthData()]);
+  }
+
+  async function rejectRequest(id) {
+    const req = pendingRequests.find(r => r.id === id);
+    if (!req) return;
+    if (!confirm(`${req.name}님의 예약 요청을 거절하시겠습니까?`)) return;
+
+    const { error } = await _supabase
+      .from('reservation_requests').update({ status: 'rejected' }).eq('id', id);
+    if (error) { showToast('처리 실패: ' + error.message, 'error'); return; }
+
+    showToast('예약 요청을 거절했습니다.');
+    await loadRequests();
+  }
+
   // ── 초기화 ──────────────────────────────────────────
   document.addEventListener('DOMContentLoaded', async () => {
     await checkAuth();
     const now = new Date();
     currentYear  = now.getFullYear();
     currentMonth = now.getMonth();
-    await Promise.all([loadMembers(), loadMonthData(), loadVisitorStats()]);
+    await Promise.all([loadMembers(), loadMonthData(), loadVisitorStats(), loadRequests()]);
   });
 </script>
 </body>

@@ -94,3 +94,28 @@ CREATE POLICY "admin_select_page_views"
 
 GRANT INSERT ON page_views TO anon;
 GRANT SELECT ON page_views TO authenticated;
+
+-- ================================================
+-- 수업 예약 요청 테이블 (사용자 → 관리자 승인)
+-- 이 블록만 따로 실행하세요 (DROP 없음).
+-- ================================================
+
+CREATE TABLE IF NOT EXISTS reservation_requests (
+  id           uuid        DEFAULT gen_random_uuid() PRIMARY KEY,
+  request_date date        NOT NULL,
+  request_time time        NOT NULL,
+  name         varchar(100) NOT NULL,
+  phone        varchar(20)  NOT NULL,
+  status       varchar(20) DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
+  created_at   timestamptz DEFAULT now()
+);
+
+ALTER TABLE reservation_requests ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "anon_insert_requests"
+  ON reservation_requests FOR INSERT TO anon WITH CHECK (true);
+CREATE POLICY "admin_all_requests"
+  ON reservation_requests FOR ALL TO authenticated USING (true) WITH CHECK (true);
+
+GRANT INSERT ON reservation_requests TO anon;
+GRANT SELECT, INSERT, UPDATE, DELETE ON reservation_requests TO authenticated;

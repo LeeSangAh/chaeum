@@ -833,7 +833,7 @@
                       <a class="nav-link text-uppercase me-0" href="#our-stores">오시는 길</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link text-uppercase me-0" href="login.html" style="border:1px solid #8b7355; padding:6px 16px; font-size:0.75rem; letter-spacing:0.1em;">수업 예약</a>
+                      <a class="nav-link text-uppercase me-0" href="#" data-bs-toggle="modal" data-bs-target="#reservationRequestModal" style="border:1px solid #8b7355; padding:6px 16px; font-size:0.75rem; letter-spacing:0.1em;">수업 예약</a>
                     </li>
                   </ul>
                 </li>
@@ -1371,7 +1371,7 @@
                       <a href="#our-stores">오시는 길</a>
                     </li>
                     <li class="menu-item pb-2">
-                      <a href="login.html">수업 예약</a>
+                      <a href="#" data-bs-toggle="modal" data-bs-target="#reservationRequestModal">수업 예약</a>
                     </li>
                   </ul>
                 </div>
@@ -1433,12 +1433,11 @@
     </footer>
     <div id="footer-bottom">
       <div class="container">
-        <div class="row d-flex flex-wrap justify-content-between">
-          <div class="col-12">
-            <div class="copyright">
-              <p>© 2026 채움 클래식 필라테스. All Rights Reserved.</p>
-            </div>
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="copyright">
+            <p style="margin:0;">© 2026 채움 클래식 필라테스. All Rights Reserved.</p>
           </div>
+          <a href="login.html" target="_blank" rel="noopener" style="color:rgba(255,255,255,0.25); font-size:0.75rem; text-decoration:none;">관리자</a>
         </div>
       </div>
     </div>
@@ -1469,6 +1468,54 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter:invert(1); opacity:0.7;"></button>
           </div>
           <div class="modal-body" id="pubDayModalBody" style="padding:16px 20px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 수업 예약 신청 모달 -->
+    <div class="modal fade" id="reservationRequestModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content" style="border-radius:0; border:none;">
+          <div class="modal-header" style="background:#2c2c2c; color:#fff; border-radius:0; padding:14px 20px;">
+            <div>
+              <div style="font-size:0.65rem; letter-spacing:0.18em; text-transform:uppercase; color:#c9b99a; margin-bottom:3px;">Reservation</div>
+              <h5 class="modal-title" style="font-family:'Noto Sans KR',sans-serif; font-size:1rem; letter-spacing:0.06em; margin:0; color:#fff;">수업 예약 신청</h5>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter:invert(1); opacity:0.7;"></button>
+          </div>
+          <div class="modal-body" style="padding:24px 24px 8px;">
+            <p style="font-size:0.82rem; color:#888; margin-bottom:20px; line-height:1.7;">예약 신청 후 관리자 확인을 거쳐 일정에 등록됩니다.<br>문의: <a href="tel:010-2899-5015" style="color:#8b7355;">010-2899-5015</a></p>
+            <div id="reqFormArea">
+              <div class="mb-3">
+                <label style="font-size:0.78rem; font-weight:700; letter-spacing:0.06em; color:#8b7355; margin-bottom:6px; display:block;">날짜</label>
+                <input type="date" id="reqDate" class="form-control" style="border-radius:0; font-size:0.88rem;">
+              </div>
+              <div class="mb-3">
+                <label style="font-size:0.78rem; font-weight:700; letter-spacing:0.06em; color:#8b7355; margin-bottom:6px; display:block;">시간</label>
+                <select id="reqTime" class="form-control" style="border-radius:0; font-size:0.88rem;">
+                  <option value="">시간 선택</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label style="font-size:0.78rem; font-weight:700; letter-spacing:0.06em; color:#8b7355; margin-bottom:6px; display:block;">이름</label>
+                <input type="text" id="reqName" class="form-control" placeholder="이름을 입력해주세요" style="border-radius:0; font-size:0.88rem;">
+              </div>
+              <div class="mb-3">
+                <label style="font-size:0.78rem; font-weight:700; letter-spacing:0.06em; color:#8b7355; margin-bottom:6px; display:block;">휴대번호</label>
+                <input type="tel" id="reqPhone" class="form-control" placeholder="010-0000-0000" style="border-radius:0; font-size:0.88rem;">
+              </div>
+              <div id="reqMsg" style="font-size:0.82rem; margin-bottom:8px; display:none;"></div>
+            </div>
+            <div id="reqSuccess" style="display:none; text-align:center; padding:20px 0 10px;">
+              <div style="font-size:2.2rem; color:#8b7355; margin-bottom:12px;">✓</div>
+              <div style="font-size:0.95rem; font-weight:600; color:#2c2c2c; margin-bottom:8px;">예약 신청이 완료되었습니다</div>
+              <div style="font-size:0.82rem; color:#888;">관리자 확인 후 이달의 일정에 등록됩니다.</div>
+            </div>
+          </div>
+          <div class="modal-footer" style="padding:12px 24px 20px; border-top:1px solid #f0f0f0; justify-content:flex-end; gap:8px;">
+            <button type="button" class="btn" data-bs-dismiss="modal" style="border:1px solid #ddd; color:#888; padding:8px 20px; font-size:0.82rem;">닫기</button>
+            <button id="reqSubmitBtn" type="button" onclick="submitReservationRequest()" style="background:#8b7355; color:#fff; border:none; padding:9px 24px; font-size:0.82rem; cursor:pointer; letter-spacing:0.06em;">신청하기</button>
+          </div>
         </div>
       </div>
     </div>
@@ -1591,6 +1638,90 @@
 
         loadClasses();
       })();
+    </script>
+
+    <!-- 수업 예약 신청 -->
+    <script>
+      (function() {
+        var modal = document.getElementById('reservationRequestModal');
+
+        // 시간 옵션 생성
+        var sel = document.getElementById('reqTime');
+        for (var h = 6; h <= 22; h++) {
+          for (var m = 0; m < 60; m += 30) {
+            if (h === 22 && m > 0) break;
+            var t = (h < 10 ? '0' : '') + h + ':' + (m === 0 ? '00' : m);
+            var opt = document.createElement('option');
+            opt.value = t;
+            opt.textContent = t;
+            sel.appendChild(opt);
+          }
+        }
+
+        // 기본 날짜 = 오늘, 과거 날짜 선택 방지
+        var today = new Date();
+        var todayStr = today.getFullYear() + '-' +
+          String(today.getMonth() + 1).padStart(2, '0') + '-' +
+          String(today.getDate()).padStart(2, '0');
+        var dateInput = document.getElementById('reqDate');
+        dateInput.value = todayStr;
+        dateInput.min   = todayStr;
+
+        // 모달 닫힐 때 폼 초기화
+        modal.addEventListener('hidden.bs.modal', function() {
+          dateInput.value = todayStr;
+          document.getElementById('reqTime').selectedIndex = 0;
+          document.getElementById('reqName').value  = '';
+          document.getElementById('reqPhone').value = '';
+          document.getElementById('reqMsg').style.display    = 'none';
+          document.getElementById('reqFormArea').style.display = 'block';
+          document.getElementById('reqSuccess').style.display = 'none';
+          var btn = document.getElementById('reqSubmitBtn');
+          btn.disabled    = false;
+          btn.textContent = '신청하기';
+          btn.style.display = '';
+        });
+      })();
+
+      async function submitReservationRequest() {
+        var date  = document.getElementById('reqDate').value;
+        var time  = document.getElementById('reqTime').value;
+        var name  = document.getElementById('reqName').value.trim();
+        var phone = document.getElementById('reqPhone').value.trim();
+
+        if (!date)  { showReqMsg('날짜를 선택해주세요.'); return; }
+        if (!time)  { showReqMsg('시간을 선택해주세요.'); return; }
+        if (!name)  { showReqMsg('이름을 입력해주세요.'); return; }
+        if (!phone) { showReqMsg('휴대번호를 입력해주세요.'); return; }
+
+        var btn = document.getElementById('reqSubmitBtn');
+        btn.disabled    = true;
+        btn.textContent = '신청 중...';
+
+        try {
+          var result = await _supabase.from('reservation_requests').insert({
+            request_date: date,
+            request_time: time + ':00',
+            name:         name,
+            phone:        phone
+          });
+          if (result.error) throw result.error;
+          document.getElementById('reqFormArea').style.display = 'none';
+          document.getElementById('reqSuccess').style.display  = 'block';
+          btn.style.display = 'none';
+        } catch(e) {
+          showReqMsg('오류가 발생했습니다. 다시 시도해주세요.');
+          btn.disabled    = false;
+          btn.textContent = '신청하기';
+        }
+      }
+
+      function showReqMsg(msg) {
+        var el = document.getElementById('reqMsg');
+        el.textContent = msg;
+        el.style.color  = '#c0392b';
+        el.style.display = 'block';
+      }
     </script>
 
     <!-- 카카오맵 퍼가기 -->
