@@ -45,7 +45,7 @@
         $("#video").attr('src',$videoSrc); 
       })
 
-      var swiper = new Swiper(".main-swiper", {
+      window.mainSwiper = new Swiper(".main-swiper", {
         speed: 800,
         loop: true,
         autoplay: {

@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <title>배너 관리 | 채움 클래식 필라테스</title>
+  <meta charset="utf-8">
+  <link rel="icon" type="image/png" sizes="256x256" href="favicon.png">
+  <link rel="apple-touch-icon" sizes="512x512" href="images/chaeum_favicon_512.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --p-primary:   #8b7355;
+      --p-secondary: #c9b99a;
+      --p-light:     #f7f3ee;
+      --p-dark:      #2c2c2c;
+      --p-accent:    #6b5d4f;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+      background: #f5f5f3;
+      color: var(--p-dark);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .admin-header {
+      background: var(--p-dark);
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
+    .brand {
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 1.3rem;
+      letter-spacing: 0.12em;
+      color: #fff;
+      text-decoration: none;
+    }
+    .brand small {
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--p-secondary);
+      margin-left: 10px;
+      vertical-align: middle;
+    }
+    .btn-header {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.25);
+      color: rgba(255,255,255,0.7);
+      padding: 6px 16px;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-header:hover { border-color: #fff; color: #fff; }
+
+    /* ── Main ── */
+    .main-wrap { max-width: 900px; margin: 0 auto; padding: 28px 16px 60px; }
+
+    /* ── 탭 ── */
+    .tab-nav {
+      display: flex;
+      gap: 0;
+      margin-bottom: 24px;
+      border-bottom: 2px solid #e8e8e8;
+      flex-wrap: wrap;
+    }
+    .tab-nav a {
+      padding: 10px 22px;
+      font-size: 0.84rem;
+      text-decoration: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+    }
+    .tab-nav a.active { color: var(--p-primary); border-bottom-color: var(--p-primary); font-weight: 700; }
+    .tab-nav a:not(.active) { color: #aaa; }
+
+    /* ── Toast ── */
+    .toast-msg {
+      position: fixed;
+      bottom: 30px; left: 50%;
+      transform: translateX(-50%);
+      background: var(--p-dark);
+      color: #fff;
+      padding: 12px 28px;
+      font-size: 0.84rem;
+      z-index: 9999;
+      animation: fadeUp 0.3s ease;
+      white-space: nowrap;
+    }
+    .toast-msg.error { background: #c0392b; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translate(-50%, 10px); }
+      to   { opacity: 1; transform: translate(-50%, 0); }
+    }
+
+    /* ── 섹션 타이틀 ── */
+    .section-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--p-primary);
+      margin-bottom: 12px;
+    }
+
+    /* ── 배너 추가 폼 ── */
+    .add-card {
+      background: #fff;
+      border: 1px solid #e8e8e8;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    .add-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+    .field-group { display: flex; flex-direction: column; gap: 3px; }
+    .field-label { font-size: 0.68rem; color: #999; letter-spacing: 0.05em; }
+    .add-card input[type="text"],
+    .add-card input[type="file"] {
+      font-size: 0.82rem;
+      padding: 7px 9px;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      background: #fff;
+      color: var(--p-dark);
+      outline: none;
+      font-family: inherit;
+    }
+    .add-card input[type="text"]:focus { border-color: var(--p-primary); }
+    .add-card textarea {
+      font-size: 0.82rem;
+      padding: 7px 9px;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      resize: vertical;
+      outline: none;
+      font-family: inherit;
+      color: var(--p-dark);
+    }
+    .add-card textarea:focus { border-color: var(--p-primary); }
+    .radio-group { display: flex; gap: 16px; align-items: center; font-size: 0.82rem; color: var(--p-dark); }
+    .radio-group label { display: flex; align-items: center; gap: 5px; cursor: pointer; }
+    .btn-add {
+      background: var(--p-primary);
+      color: #fff; border: none;
+      border-radius: 4px;
+      padding: 9px 22px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .btn-add:hover { background: var(--p-accent); }
+    .add-msg { font-size: 0.8rem; padding: 4px 0; }
+    .add-msg.error { color: #c0392b; }
+    .add-msg.info  { color: #2e7d32; }
+    #addPreview img { height: 72px; object-fit: cover; border: 1px solid #eee; border-radius: 3px; }
+
+    /* ── 배너 아이템 ── */
+    .banner-item {
+      background: #fff;
+      border: 1px solid #e8e8e8;
+      margin-bottom: 8px;
+    }
+    .banner-display {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+    }
+    .banner-order-col {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      flex-shrink: 0;
+    }
+    .btn-order {
+      background: none;
+      border: 1px solid #e0e0e0;
+      width: 26px; height: 22px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      color: #aaa;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s;
+      padding: 0;
+      line-height: 1;
+    }
+    .btn-order:hover:not(:disabled) { border-color: var(--p-primary); color: var(--p-primary); }
+    .btn-order:disabled { opacity: 0.3; cursor: default; }
+    .banner-thumb {
+      width: 56px;
+      height: 70px;
+      object-fit: cover;
+      border: 1px solid #eee;
+      flex-shrink: 0;
+      background: #f5f5f5;
+    }
+    .banner-meta { flex: 1; min-width: 0; }
+    .banner-title-txt {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--p-dark);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .banner-sub-txt { font-size: 0.75rem; color: #999; margin-top: 2px; }
+    .banner-url-txt {
+      font-size: 0.65rem;
+      color: #ccc;
+      margin-top: 3px;
+      word-break: break-all;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 280px;
+    }
+    .toggle-active {
+      cursor: pointer;
+      font-size: 0.72rem;
+      padding: 4px 11px;
+      border-radius: 10px;
+      border: 1px solid;
+      white-space: nowrap;
+      flex-shrink: 0;
+      font-family: inherit;
+      background: none;
+    }
+    .toggle-active.on  { background: #e8f5e9; color: #2e7d32; border-color: #a5d6a7; }
+    .toggle-active.off { background: #f5f5f5; color: #bbb;    border-color: #ddd; }
+    .card-actions { display: flex; gap: 5px; flex-shrink: 0; }
+    .btn-sm {
+      background: none;
+      border: 1px solid #ddd;
+      padding: 4px 10px;
+      font-size: 0.72rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+      color: #666;
+      border-radius: 3px;
+    }
+    .btn-sm:hover { border-color: var(--p-primary); color: var(--p-primary); }
+    .btn-sm.btn-del { color: #c0392b; }
+    .btn-sm.btn-del:hover { border-color: #c0392b; background: #fef5f5; }
+
+    /* ── 인라인 편집 ── */
+    .edit-card {
+      background: #fff8f2;
+      border-top: 1px solid #f0e8dc;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .edit-card-title {
+      font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--p-primary);
+    }
+    .edit-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-start; }
+    .edit-card input[type="text"],
+    .edit-card textarea {
+      font-size: 0.82rem; padding: 6px 9px;
+      border: 1px solid #dadce0; background: #fff;
+      color: var(--p-dark); outline: none; font-family: inherit; border-radius: 4px;
+    }
+    .edit-card input:focus,
+    .edit-card textarea:focus { border-color: var(--p-primary); }
+    .edit-card textarea { resize: vertical; }
+    .edit-actions { display: flex; gap: 8px; }
+    .btn-save {
+      background: var(--p-primary); color: #fff; border: none;
+      border-radius: 4px; padding: 7px 20px; font-size: 0.8rem; cursor: pointer;
+      font-family: inherit;
+    }
+    .btn-save:hover { background: var(--p-accent); }
+    .btn-edit-cancel {
+      background: #fff; color: #888; border: 1px solid #ddd;
+      border-radius: 4px; padding: 7px 14px; font-size: 0.8rem; cursor: pointer;
+      font-family: inherit;
+    }
+
+    /* ── 안내 박스 ── */
+    .info-box {
+      margin-top: 20px;
+      padding: 12px 16px;
+      background: #fffbf0;
+      border: 1px solid #f0d9a0;
+      font-size: 0.78rem;
+      color: #8a6500;
+      border-radius: 3px;
+    }
+    .info-box code {
+      background: rgba(0,0,0,0.06);
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-size: 0.75rem;
+    }
+
+    .no-banner { font-size: 0.82rem; color: #aaa; padding: 14px 0; }
+
+    @media (max-width: 640px) {
+      .admin-header { padding: 10px 12px; }
+      .brand { font-size: 1.05rem; }
+      .brand small { display: none; }
+      .btn-header { padding: 5px 10px; font-size: 0.72rem; }
+      .main-wrap { padding: 16px 8px 40px; }
+      .tab-nav a { padding: 8px 12px; font-size: 0.78rem; }
+      .banner-url-txt { max-width: 140px; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="admin-header">
+  <a href="admin.html" class="brand" style="display:flex; align-items:center; gap:8px;">
+    <img src="images/CI-chaeum-logo-dark-bg.svg" alt="" style="height:36px; width:auto;">
+    <span>채움 PILATES <small>관리자</small></span>
+  </a>
+  <div style="display:flex; gap:8px;">
+    <a href="index.html" target="_blank" class="btn-header">사이트 보기</a>
+    <button class="btn-header" onclick="logout()">로그아웃</button>
+  </div>
+</header>
+
+<div class="main-wrap">
+
+  <!-- 탭 -->
+  <div class="tab-nav">
+    <a href="admin.html">예약 관리</a>
+    <a href="members.html">회원 관리</a>
+    <a href="member-reservations.html">회원별 예약관리</a>
+    <a href="banners.html" class="active">배너 관리</a>
+  </div>
+
+  <!-- 배너 추가 -->
+  <div class="section-title">배너 추가</div>
+  <div class="add-card">
+    <div class="add-row" style="margin-bottom:12px;">
+      <div class="radio-group">
+        <label><input type="radio" name="imgMode" value="file" checked> 이미지 업로드</label>
+        <label><input type="radio" name="imgMode" value="url"> URL / 경로 직접 입력</label>
+      </div>
+    </div>
+
+    <div id="imgFileSection" class="add-row" style="align-items:center;">
+      <input type="file" id="bannerFile" accept="image/*" onchange="previewAddImage(this)">
+      <div id="addPreview"></div>
+    </div>
+    <div id="imgUrlSection" class="add-row" style="display:none;">
+      <div class="field-group">
+        <span class="field-label">이미지 URL 또는 경로</span>
+        <input type="text" id="bannerUrl" placeholder="images/banner.png 또는 https://…" style="width:380px;">
+      </div>
+    </div>
+
+    <div class="add-row">
+      <div class="field-group">
+        <span class="field-label">Alt 텍스트 (이미지 설명)</span>
+        <input type="text" id="bannerAlt" placeholder="채움 필라테스 배너" style="width:220px;">
+      </div>
+      <div class="field-group">
+        <span class="field-label">서브타이틀 (선택)</span>
+        <input type="text" id="bannerSubtitle" placeholder="open! / Classic Method Since 1926" style="width:260px;">
+      </div>
+    </div>
+
+    <div class="add-row">
+      <div class="field-group" style="flex:1; min-width:260px;">
+        <span class="field-label">제목 (선택 — 없으면 이미지만 표시, 줄바꿈은 \n 입력)</span>
+        <input type="text" id="bannerTitle" placeholder="채움 필라테스\n오픈" style="width:100%;">
+      </div>
+    </div>
+
+    <div class="add-row">
+      <div class="field-group" style="flex:1; min-width:260px;">
+        <span class="field-label">본문 (선택)</span>
+        <textarea id="bannerBody" placeholder="수업에 대해 궁금한 점은 편하게 문의해 주세요." style="width:100%; height:60px;"></textarea>
+      </div>
+    </div>
+
+    <div class="add-row" style="margin-bottom:0;">
+      <button class="btn-add" onclick="addBanner()" id="addBtn">추가하기</button>
+    </div>
+    <div id="addMsg" class="add-msg" style="display:none; margin-top:6px;"></div>
+  </div>
+
+  <!-- 배너 목록 -->
+  <div class="section-title">
+    배너 목록
+    <span id="bannerCount" style="color:#aaa; font-weight:400; letter-spacing:0; text-transform:none; font-size:0.78rem;"></span>
+  </div>
+  <div id="bannerList"></div>
+
+  <div class="info-box">
+    <strong>이미지 업로드 사용 시:</strong> Supabase 대시보드 → Storage → New bucket → 이름: <code>banners</code>, Public: <strong>ON</strong> 으로 버킷을 먼저 생성해야 합니다.<br>
+    <strong>기존 이미지 사용 시:</strong> "URL / 경로 직접 입력"을 선택하고 <code>images/파일명.png</code> 형식으로 입력하세요.
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+<script>
+  const escHtml = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+  // ── Auth ─────────────────────────────────────────────
+  async function checkAuth() {
+    const { data: { session } } = await _supabase.auth.getSession();
+    if (!session) window.location.href = 'login.html';
+  }
+  async function logout() {
+    await _supabase.auth.signOut();
+    window.location.href = 'login.html';
+  }
+
+  // ── Toast ─────────────────────────────────────────────
+  function showToast(msg, type = 'success') {
+    const el = document.createElement('div');
+    el.className = 'toast-msg' + (type === 'error' ? ' error' : '');
+    el.textContent = msg;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 2600);
+  }
+
+  // ── 이미지 모드 전환 ──────────────────────────────────
+  document.querySelectorAll('input[name="imgMode"]').forEach(r => {
+    r.addEventListener('change', () => {
+      document.getElementById('imgFileSection').style.display = r.value === 'file' ? 'flex' : 'none';
+      document.getElementById('imgUrlSection').style.display  = r.value === 'url'  ? 'flex' : 'none';
+    });
+  });
+
+  function previewAddImage(input) {
+    const preview = document.getElementById('addPreview');
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        preview.innerHTML = `<img src="${e.target.result}" alt="">`;
+      };
+      reader.readAsDataURL(input.files[0]);
+    } else {
+      preview.innerHTML = '';
+    }
+  }
+
+  // ── 배너 목록 로딩 ────────────────────────────────────
+  let banners = [];
+
+  async function loadBanners() {
+    const { data, error } = await _supabase
+      .from('banners')
+      .select('*')
+      .order('sort_order');
+    if (error) { showToast('배너 로딩 실패', 'error'); return; }
+    banners = data || [];
+    renderList();
+  }
+
+  function renderList() {
+    const countEl = document.getElementById('bannerCount');
+    countEl.textContent = banners.length ? `(${banners.length}개)` : '';
+
+    const listEl = document.getElementById('bannerList');
+    if (!banners.length) {
+      listEl.innerHTML = '<div class="no-banner">등록된 배너가 없습니다. 위 폼으로 배너를 추가해보세요.</div>';
+      return;
+    }
+
+    listEl.innerHTML = banners.map((b, i) => `
+      <div class="banner-item" id="item-${b.id}">
+        <div class="banner-display">
+          <div class="banner-order-col">
+            <button class="btn-order" onclick="moveBanner('${b.id}',-1)" ${i === 0 ? 'disabled' : ''} title="위로">▲</button>
+            <button class="btn-order" onclick="moveBanner('${b.id}', 1)" ${i === banners.length - 1 ? 'disabled' : ''} title="아래로">▼</button>
+          </div>
+          <img class="banner-thumb" src="${escHtml(b.image_url)}" alt=""
+               onerror="this.style.opacity='0.3'">
+          <div class="banner-meta">
+            <div class="banner-title-txt">
+              ${b.title ? escHtml(b.title).replace(/\\n/g,'<br>') : '<span style="color:#bbb; font-weight:400;">(이미지만)</span>'}
+            </div>
+            ${b.subtitle ? `<div class="banner-sub-txt">${escHtml(b.subtitle)}</div>` : ''}
+            <div class="banner-url-txt">${escHtml(b.image_url)}</div>
+          </div>
+          <button class="toggle-active ${b.is_active ? 'on' : 'off'}"
+                  onclick="toggleActive('${b.id}', ${b.is_active})">
+            ${b.is_active ? '활성' : '비활성'}
+          </button>
+          <div class="card-actions">
+            <button class="btn-sm" onclick="startEdit('${b.id}')">수정</button>
+            <button class="btn-sm btn-del" onclick="deleteBanner('${b.id}')">삭제</button>
+          </div>
+        </div>
+        <div class="banner-edit" id="edit-${b.id}" style="display:none;"></div>
+      </div>
+    `).join('');
+  }
+
+  // ── 배너 추가 ─────────────────────────────────────────
+  async function addBanner() {
+    const mode     = document.querySelector('input[name="imgMode"]:checked').value;
+    const alt      = document.getElementById('bannerAlt').value.trim();
+    const subtitle = document.getElementById('bannerSubtitle').value.trim();
+    const title    = document.getElementById('bannerTitle').value.trim();
+    const body     = document.getElementById('bannerBody').value.trim();
+
+    let imageUrl = '';
+
+    if (mode === 'file') {
+      const file = document.getElementById('bannerFile').files[0];
+      if (!file) { showAddMsg('이미지 파일을 선택해주세요.', 'error'); return; }
+
+      const ext      = file.name.split('.').pop().toLowerCase();
+      const fileName = `banner_${Date.now()}.${ext}`;
+
+      showAddMsg('업로드 중…', 'info');
+      document.getElementById('addBtn').disabled = true;
+
+      const { error: uploadErr } = await _supabase.storage
+        .from('banners')
+        .upload(fileName, file, { contentType: file.type, upsert: false });
+
+      document.getElementById('addBtn').disabled = false;
+
+      if (uploadErr) {
+        showAddMsg('업로드 실패: ' + uploadErr.message, 'error');
+        return;
+      }
+
+      const { data: urlData } = _supabase.storage.from('banners').getPublicUrl(fileName);
+      imageUrl = urlData.publicUrl;
+    } else {
+      imageUrl = document.getElementById('bannerUrl').value.trim();
+      if (!imageUrl) { showAddMsg('이미지 URL을 입력해주세요.', 'error'); return; }
+    }
+
+    const maxOrder  = banners.length ? Math.max(...banners.map(b => b.sort_order)) : 0;
+    const sortOrder = maxOrder + 1;
+
+    const { error } = await _supabase.from('banners').insert({
+      image_url:  imageUrl,
+      alt_text:   alt,
+      subtitle,
+      title,
+      body,
+      sort_order: sortOrder,
+      is_active:  true,
+    });
+
+    if (error) { showAddMsg('추가 실패: ' + error.message, 'error'); return; }
+
+    // 폼 초기화
+    document.getElementById('bannerFile').value    = '';
+    document.getElementById('addPreview').innerHTML = '';
+    document.getElementById('bannerUrl').value      = '';
+    document.getElementById('bannerAlt').value      = '';
+    document.getElementById('bannerSubtitle').value = '';
+    document.getElementById('bannerTitle').value    = '';
+    document.getElementById('bannerBody').value     = '';
+
+    showAddMsg('', '');
+    showToast('배너가 추가되었습니다.');
+    loadBanners();
+  }
+
+  function showAddMsg(msg, type) {
+    const el = document.getElementById('addMsg');
+    if (!msg) { el.style.display = 'none'; return; }
+    el.style.display  = 'block';
+    el.className      = 'add-msg ' + type;
+    el.textContent    = msg;
+  }
+
+  // ── 활성/비활성 토글 ──────────────────────────────────
+  async function toggleActive(id, current) {
+    const { error } = await _supabase.from('banners').update({ is_active: !current }).eq('id', id);
+    if (error) { showToast('수정 실패', 'error'); return; }
+    loadBanners();
+  }
+
+  // ── 순서 변경 ─────────────────────────────────────────
+  async function moveBanner(id, dir) {
+    const idx   = banners.findIndex(b => b.id === id);
+    const other = banners[idx + dir];
+    if (!other) return;
+
+    const a = banners[idx];
+    await Promise.all([
+      _supabase.from('banners').update({ sort_order: other.sort_order }).eq('id', a.id),
+      _supabase.from('banners').update({ sort_order: a.sort_order     }).eq('id', other.id),
+    ]);
+    loadBanners();
+  }
+
+  // ── 삭제 ─────────────────────────────────────────────
+  async function deleteBanner(id) {
+    if (!confirm('배너를 삭제하시겠습니까?')) return;
+    const { error } = await _supabase.from('banners').delete().eq('id', id);
+    if (error) { showToast('삭제 실패', 'error'); return; }
+    showToast('삭제되었습니다.');
+    loadBanners();
+  }
+
+  // ── 수정 ─────────────────────────────────────────────
+  function startEdit(id) {
+    const b = banners.find(x => x.id === id);
+    if (!b) return;
+
+    document.querySelectorAll('.banner-edit').forEach(el => el.style.display = 'none');
+
+    const editEl = document.getElementById(`edit-${id}`);
+    editEl.innerHTML = `
+      <div class="edit-card">
+        <div class="edit-card-title">배너 수정</div>
+        <div class="edit-row">
+          <div class="field-group" style="flex:1; min-width:260px;">
+            <span class="field-label">이미지 URL 또는 경로</span>
+            <input type="text" id="eUrl-${id}" value="${escHtml(b.image_url)}" style="width:100%;">
+          </div>
+        </div>
+        <div class="edit-row">
+          <div class="field-group">
+            <span class="field-label">Alt 텍스트</span>
+            <input type="text" id="eAlt-${id}" value="${escHtml(b.alt_text || '')}" style="width:200px;">
+          </div>
+          <div class="field-group">
+            <span class="field-label">서브타이틀</span>
+            <input type="text" id="eSub-${id}" value="${escHtml(b.subtitle || '')}" style="width:220px;">
+          </div>
+        </div>
+        <div class="edit-row">
+          <div class="field-group" style="flex:1; min-width:260px;">
+            <span class="field-label">제목 (줄바꿈: \\n, 없으면 이미지만 표시)</span>
+            <input type="text" id="eTitle-${id}" value="${escHtml(b.title || '')}" style="width:100%;">
+          </div>
+        </div>
+        <div class="edit-row">
+          <div class="field-group" style="flex:1; min-width:260px;">
+            <span class="field-label">본문</span>
+            <textarea id="eBody-${id}" style="width:100%; height:60px;">${escHtml(b.body || '')}</textarea>
+          </div>
+        </div>
+        <div class="edit-actions">
+          <button class="btn-save" onclick="saveEdit('${id}')">저장</button>
+          <button class="btn-edit-cancel" onclick="cancelEdit('${id}')">취소</button>
+        </div>
+      </div>
+    `;
+    editEl.style.display = 'block';
+  }
+
+  function cancelEdit(id) {
+    document.getElementById(`edit-${id}`).style.display = 'none';
+  }
+
+  async function saveEdit(id) {
+    const url   = document.getElementById(`eUrl-${id}`).value.trim();
+    const alt   = document.getElementById(`eAlt-${id}`).value.trim();
+    const sub   = document.getElementById(`eSub-${id}`).value.trim();
+    const title = document.getElementById(`eTitle-${id}`).value.trim();
+    const body  = document.getElementById(`eBody-${id}`).value.trim();
+
+    if (!url) { showToast('이미지 URL을 입력해주세요.', 'error'); return; }
+
+    const { error } = await _supabase.from('banners').update({
+      image_url: url,
+      alt_text:  alt,
+      subtitle:  sub,
+      title,
+      body,
+    }).eq('id', id);
+
+    if (error) { showToast('저장 실패: ' + error.message, 'error'); return; }
+    showToast('저장되었습니다.');
+    loadBanners();
+  }
+
+  // ── 초기화 ────────────────────────────────────────────
+  checkAuth().then(loadBanners);
+</script>
+</body>
+</html>

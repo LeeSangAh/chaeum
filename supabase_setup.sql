@@ -119,3 +119,40 @@ CREATE POLICY "admin_all_requests"
 
 GRANT INSERT ON reservation_requests TO anon;
 GRANT SELECT, INSERT, UPDATE, DELETE ON reservation_requests TO authenticated;
+
+-- ================================================
+-- 배너 테이블 (이 블록만 따로 실행하세요 — DROP 없음)
+-- Supabase Storage: 대시보드 → Storage → New bucket
+--   이름: banners / Public: ON  (이미지 업로드 기능 사용 시)
+-- ================================================
+
+CREATE TABLE IF NOT EXISTS banners (
+  id         uuid         PRIMARY KEY DEFAULT gen_random_uuid(),
+  sort_order integer      NOT NULL DEFAULT 0,
+  image_url  text         NOT NULL,
+  alt_text   varchar(200) DEFAULT '',
+  subtitle   varchar(200) DEFAULT '',
+  title      varchar(300) DEFAULT '',
+  body       text         DEFAULT '',
+  is_active  boolean      NOT NULL DEFAULT true,
+  created_at timestamptz  DEFAULT now()
+);
+
+ALTER TABLE banners ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "public_read_banners"
+  ON banners FOR SELECT TO anon, authenticated USING (true);
+CREATE POLICY "admin_all_banners"
+  ON banners FOR ALL TO authenticated USING (true) WITH CHECK (true);
+
+GRANT SELECT ON banners TO anon;
+GRANT SELECT, INSERT, UPDATE, DELETE ON banners TO authenticated;
+
+-- (선택) 기존 하드코딩 배너 초기 데이터 삽입
+-- INSERT INTO banners (sort_order, image_url, alt_text, subtitle, title, body) VALUES
+--   (1, 'images/open_banner2.png',    '채움 필라테스 오픈',   'open!',                     '채움 필라테스\n오픈',          '수업에 대해 궁금한 점은 전화, 문자, 카카오톡 채널\n또는 인스타그램 DM으로 편하게 문의해 주세요.'),
+--   (2, 'images/banner2026111001.png','채움 필라테스',         '',                          '',                            ''),
+--   (3, 'images/banner2026102503.png','클래식 필라테스',       'Classic Method Since 1926', '몸의 중심을\n바로 세우다',     '조셉 필라테스의 정통 메소드를 계승한\n채움 클래식 필라테스에 오신 것을 환영합니다.'),
+--   (4, 'images/banner2026102501.png','리포머 필라테스',       'Apparatus',                 '클래식의 기준을 담은\nGRATZ 기구', 'Reformer · Cadillac · Ladder Barrel · Wunda Chair · High Chair · Baby Chair · Pedi Pole · Spine Corrector · Mini Barrel'),
+--   (5, 'images/banner2026102502.png','채움 스튜디오',         'Our Studio',                '채움만의\n특별한 공간',         '정통 클래식 필라테스의 철학을 담아\n세심하게 설계된 채움의 스튜디오를 소개합니다.'),
+--   (6, 'images/20261006.png',        '프라이빗 레슨',         'Private & Duet Sessions',   '나만을 위한\n맞춤 레슨',        '전문 강사와 1:1 또는 1:2 로\n체형과 목적에 맞는 개인 맞춤 수업.');

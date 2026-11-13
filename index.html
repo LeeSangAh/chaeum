@@ -1537,6 +1537,64 @@
       })();
     </script>
 
+    <!-- 배너 동적 로딩 -->
+    <script>
+      (async function() {
+        const escH = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+        function renderBannerSlide(b) {
+          const img = `<img src="${escH(b.image_url)}" alt="${escH(b.alt_text||'')}" class="img-fluid mb-3" style="object-fit:cover; width:100%; aspect-ratio:4/5;">`;
+          if (!b.title) {
+            return `<div class="swiper-slide">
+              <div class="container">
+                <div class="row align-items-center justify-content-center">
+                  <div class="col-md-5">${img}</div>
+                </div>
+              </div>
+            </div>`;
+          }
+          return `<div class="swiper-slide">
+            <div class="container">
+              <div class="row align-items-center">
+                <div class="offset-md-1 col-md-5 order-md-2">${img}</div>
+                <div class="col-md-5 order-md-1 d-flex align-items-center">
+                  <div class="banner-content">
+                    ${b.subtitle ? `<span class="subtitle">${escH(b.subtitle)}</span>` : ''}
+                    <h2>${escH(b.title).replace(/\\n/g,'<br>')}</h2>
+                    <div class="pilates-divider"></div>
+                    ${b.body ? `<p class="fs-5" style="font-size:0.95rem !important; color:#666; line-height:1.8;">${escH(b.body).replace(/\\n/g,'<br>')}</p>` : ''}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>`;
+        }
+
+        try {
+          const { data } = await _supabase
+            .from('banners')
+            .select('*')
+            .eq('is_active', true)
+            .order('sort_order');
+
+          if (!data || data.length === 0) return;
+
+          const wrapper = document.querySelector('.main-swiper .swiper-wrapper');
+          if (!wrapper) return;
+
+          wrapper.innerHTML = data.map(renderBannerSlide).join('');
+
+          if (window.mainSwiper) window.mainSwiper.destroy(true, true);
+          window.mainSwiper = new Swiper('.main-swiper', {
+            speed: 800,
+            loop: data.length > 1,
+            autoplay: data.length > 1 ? { delay: 4000, disableOnInteraction: false } : false,
+            pagination: { el: '.main-slider-pagination', clickable: true },
+          });
+        } catch(e) {}
+      })();
+    </script>
+
     <script>
       // ── Google Calendar 스타일 달력 ────────────────────
       (function() {
