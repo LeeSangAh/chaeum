@@ -148,6 +148,28 @@ CREATE POLICY "admin_all_banners"
 GRANT SELECT ON banners TO anon;
 GRANT SELECT, INSERT, UPDATE, DELETE ON banners TO authenticated;
 
+-- ================================================
+-- Storage RLS 정책 (banners 버킷 — 이 블록만 따로 실행하세요)
+-- 버킷을 먼저 생성한 후 실행하세요:
+--   대시보드 → Storage → New bucket → 이름: banners / Public: ON
+-- ================================================
+
+CREATE POLICY "public read banners storage"
+  ON storage.objects FOR SELECT TO anon, authenticated
+  USING (bucket_id = 'banners');
+
+CREATE POLICY "admin upload banners storage"
+  ON storage.objects FOR INSERT TO authenticated
+  WITH CHECK (bucket_id = 'banners');
+
+CREATE POLICY "admin update banners storage"
+  ON storage.objects FOR UPDATE TO authenticated
+  USING (bucket_id = 'banners');
+
+CREATE POLICY "admin delete banners storage"
+  ON storage.objects FOR DELETE TO authenticated
+  USING (bucket_id = 'banners');
+
 -- (선택) 기존 하드코딩 배너 초기 데이터 삽입
 -- INSERT INTO banners (sort_order, image_url, alt_text, subtitle, title, body) VALUES
 --   (1, 'images/open_banner2.png',    '채움 필라테스 오픈',   'open!',                     '채움 필라테스\n오픈',          '수업에 대해 궁금한 점은 전화, 문자, 카카오톡 채널\n또는 인스타그램 DM으로 편하게 문의해 주세요.'),

@@ -630,11 +630,24 @@
     editEl.innerHTML = `
       <div class="edit-card">
         <div class="edit-card-title">배너 수정</div>
-        <div class="edit-row">
+        <div class="edit-row" style="margin-bottom:4px;">
+          <div class="radio-group">
+            <label><input type="radio" name="eImgMode-${id}" value="url" checked onchange="toggleEditImgMode('${id}')"> URL / 경로 유지</label>
+            <label><input type="radio" name="eImgMode-${id}" value="file" onchange="toggleEditImgMode('${id}')"> 새 이미지 업로드</label>
+          </div>
+        </div>
+        <div id="eUrlSection-${id}" class="edit-row">
           <div class="field-group" style="flex:1; min-width:260px;">
             <span class="field-label">이미지 URL 또는 경로</span>
             <input type="text" id="eUrl-${id}" value="${escHtml(b.image_url)}" style="width:100%;">
           </div>
+        </div>
+        <div id="eFileSection-${id}" class="edit-row" style="display:none; align-items:center;">
+          <div class="field-group">
+            <span class="field-label">이미지 파일 선택</span>
+            <input type="file" id="eFile-${id}" accept="image/*" onchange="previewEditImage('${id}')">
+          </div>
+          <div id="ePreview-${id}" style="margin-left:10px;"></div>
         </div>
         <div class="edit-row">
           <div class="field-group">
@@ -659,7 +672,7 @@
           </div>
         </div>
         <div class="edit-actions">
-          <button class="btn-save" onclick="saveEdit('${id}')">저장</button>
+          <button class="btn-save" id="eSaveBtn-${id}" onclick="saveEdit('${id}')">저장</button>
           <button class="btn-edit-cancel" onclick="cancelEdit('${id}')">취소</button>
         </div>
       </div>
@@ -667,21 +680,66 @@
     editEl.style.display = 'block';
   }
 
+  function toggleEditImgMode(id) {
+    const mode = document.querySelector(`input[name="eImgMode-${id}"]:checked`).value;
+    document.getElementById(`eUrlSection-${id}`).style.display  = mode === 'url'  ? 'flex' : 'none';
+    document.getElementById(`eFileSection-${id}`).style.display = mode === 'file' ? 'flex' : 'none';
+  }
+
+  function previewEditImage(id) {
+    const input   = document.getElementById(`eFile-${id}`);
+    const preview = document.getElementById(`ePreview-${id}`);
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = e => { preview.innerHTML = `<img src="${e.target.result}" style="height:72px; object-fit:cover; border:1px solid #eee; border-radius:3px;">`; };
+      reader.readAsDataURL(input.files[0]);
+    } else {
+      preview.innerHTML = '';
+    }
+  }
+
   function cancelEdit(id) {
     document.getElementById(`edit-${id}`).style.display = 'none';
   }
 
   async function saveEdit(id) {
-    const url   = document.getElementById(`eUrl-${id}`).value.trim();
+    const mode  = document.querySelector(`input[name="eImgMode-${id}"]:checked`).value;
     const alt   = document.getElementById(`eAlt-${id}`).value.trim();
     const sub   = document.getElementById(`eSub-${id}`).value.trim();
     const title = document.getElementById(`eTitle-${id}`).value.trim();
     const body  = document.getElementById(`eBody-${id}`).value.trim();
 
-    if (!url) { showToast('이미지 URL을 입력해주세요.', 'error'); return; }
+    let imageUrl = '';
+
+    if (mode === 'file') {
+      const file = document.getElementById(`eFile-${id}`).files[0];
+      if (!file) { showToast('이미지 파일을 선택해주세요.', 'error'); return; }
+
+      const ext      = file.name.split('.').pop().toLowerCase();
+      const fileName = `banner_${Date.now()}.${ext}`;
+
+      const saveBtn = document.getElementById(`eSaveBtn-${id}`);
+      saveBtn.disabled = true;
+      saveBtn.textContent = '업로드 중…';
+
+      const { error: uploadErr } = await _supabase.storage
+        .from('banners')
+        .upload(fileName, file, { contentType: file.type, upsert: false });
+
+      saveBtn.disabled = false;
+      saveBtn.textContent = '저장';
+
+      if (uploadErr) { showToast('업로드 실패: ' + uploadErr.message, 'error'); return; }
+
+      const { data: urlData } = _supabase.storage.from('banners').getPublicUrl(fileName);
+      imageUrl = urlData.publicUrl;
+    } else {
+      imageUrl = document.getElementById(`eUrl-${id}`).value.trim();
+      if (!imageUrl) { showToast('이미지 URL을 입력해주세요.', 'error'); return; }
+    }
 
     const { error } = await _supabase.from('banners').update({
-      image_url: url,
+      image_url: imageUrl,
       alt_text:  alt,
       subtitle:  sub,
       title,
