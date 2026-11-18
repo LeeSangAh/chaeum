@@ -1282,6 +1282,24 @@
                 </div>
               </div>
 
+              <div class="accordion-item">
+                <h4 class="accordion-header" id="flush-headingSix">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseSix" aria-expanded="false" aria-controls="flush-collapseSix">
+                    예약 변경·취소는 어떻게 하나요?
+                  </button>
+                </h4>
+                <div id="flush-collapseSix" class="accordion-collapse collapse" aria-labelledby="flush-headingSix">
+                  <div class="accordion-body">
+                    <ul data-chaeum-policy style="padding-left:18px; line-height:1.9;">
+                      <li>예약 변경·취소는 수업 24시간 전까지 연락 주세요.</li>
+                      <li>수업 24시간 이내 취소 및 노쇼 시 1회 차감됩니다.</li>
+                      <li>체험 레슨은 처음 등록하시는 분에 한해 1회 이용 가능합니다.</li>
+                    </ul>
+                    <p>변경·취소는 전화(<a href="tel:010-2899-5015" style="color:#8b7355;">010-2899-5015</a>) 또는 카카오톡 채널로 연락 주세요.</p>
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
@@ -1431,7 +1449,10 @@
       <div class="container">
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <p style="margin:0; font-size:0.8rem; color:rgba(255,255,255,0.35);">© 2026 채움 클래식 필라테스. All Rights Reserved.</p>
-          <a href="login.html" target="_blank" rel="noopener" style="color:rgba(255,255,255,0.25); font-size:0.75rem; text-decoration:none;">관리자</a>
+          <div style="display:flex; gap:16px; align-items:center;">
+            <a href="privacy" style="color:rgba(255,255,255,0.55); font-size:0.75rem; text-decoration:none; font-weight:700;">개인정보처리방침</a>
+            <a href="login.html" target="_blank" rel="noopener" style="color:rgba(255,255,255,0.25); font-size:0.75rem; text-decoration:none;">관리자</a>
+          </div>
         </div>
       </div>
     </div>
@@ -1496,14 +1517,36 @@
               </div>
               <div class="mb-3">
                 <label style="font-size:0.78rem; font-weight:700; letter-spacing:0.06em; color:#8b7355; margin-bottom:6px; display:block;">휴대번호</label>
-                <input type="tel" id="reqPhone" class="form-control" placeholder="010-0000-0000" style="border-radius:0; font-size:0.88rem;">
+                <input type="tel" id="reqPhone" class="form-control" placeholder="010-0000-0000" inputmode="numeric" maxlength="13" autocomplete="tel" style="border-radius:0; font-size:0.88rem;">
+              </div>
+              <div style="background:#f7f3ee; padding:12px 14px; margin-bottom:14px;">
+                <div style="font-size:0.75rem; font-weight:700; letter-spacing:0.06em; color:#8b7355; margin-bottom:6px;">예약·취소 안내</div>
+                <ul data-chaeum-policy style="margin:0; padding-left:18px; font-size:0.78rem; color:#666; line-height:1.7;">
+                  <li>예약 변경·취소는 수업 24시간 전까지 연락 주세요.</li>
+                  <li>수업 24시간 이내 취소 및 노쇼 시 1회 차감됩니다.</li>
+                  <li>체험 레슨은 처음 등록하시는 분에 한해 1회 이용 가능합니다.</li>
+                </ul>
+              </div>
+              <div class="mb-2" style="font-size:0.8rem; color:#555;">
+                <label style="display:flex; align-items:flex-start; gap:8px; cursor:pointer; margin:0;">
+                  <input type="checkbox" id="reqAgree" style="margin-top:3px; accent-color:#8b7355;">
+                  <span><strong style="color:#8b7355;">[필수]</strong> 개인정보 수집·이용에 동의합니다.</span>
+                </label>
+                <button type="button" id="reqAgreeToggle" style="background:none; border:none; padding:0 0 0 22px; font-size:0.75rem; color:#999; text-decoration:underline; cursor:pointer;">내용 보기</button>
+                <div id="reqAgreeDetail" style="display:none; margin:6px 0 0 22px; font-size:0.75rem; color:#777; line-height:1.7;">
+                  · 수집 항목: 이름, 휴대번호, 희망 날짜·시간<br>
+                  · 이용 목적: 수업 예약 확인 및 안내 연락<br>
+                  · 보유 기간: <span id="reqRetention">정보주체의 파기 요청 시까지</span><br>
+                  · 동의를 거부하실 수 있으며, 이 경우 온라인 예약 신청 대신 전화로 예약하실 수 있습니다.<br>
+                  <a href="privacy" target="_blank" rel="noopener" style="color:#8b7355;">개인정보처리방침 전문 보기</a>
+                </div>
               </div>
               <div id="reqMsg" style="font-size:0.82rem; margin-bottom:8px; display:none;"></div>
             </div>
             <div id="reqSuccess" style="display:none; text-align:center; padding:20px 0 10px;">
               <div style="font-size:2.2rem; color:#8b7355; margin-bottom:12px;">✓</div>
               <div style="font-size:0.95rem; font-weight:600; color:#2c2c2c; margin-bottom:8px;">예약 신청이 완료되었습니다</div>
-<!--              <div style="font-size:0.82rem; color:#888;">관리자 확인 후 이달의 일정에 등록됩니다.</div>-->
+<div style="font-size:0.82rem; color:#888;">확인 후 입력하신 번호로 문자 안내드립니다.</div>
             </div>
           </div>
           <div class="modal-footer" style="padding:12px 24px 20px; border-top:1px solid #f0f0f0; justify-content:flex-end; gap:8px;">
@@ -1522,6 +1565,7 @@
     <!-- 달력 -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-client.js"></script>
+    <script src="js/booking-config.js"></script>
 
     <!-- 방문자 기록 -->
     <script>
@@ -1630,6 +1674,8 @@
         }
 
         function render() {
+          // '이달의 일정' 섹션이 주석 처리된 경우 렌더링 생략 (페이지 오류 방지)
+          if (!document.getElementById('pubCalTitle') || !document.getElementById('pubCalGrid')) return;
           document.getElementById('pubCalTitle').textContent = `${calY}년 ${MONTHS[calM]}`;
           const first   = new Date(calY, calM, 1);
           const lastDay = new Date(calY, calM + 1, 0).getDate();
@@ -1695,85 +1741,206 @@
     <!-- 수업 예약 신청 -->
     <script>
       (function() {
-        var modal = document.getElementById('reservationRequestModal');
+        var CFG       = window.CHAEUM_BOOKING || {};
+        var modal     = document.getElementById('reservationRequestModal');
+        var dateInput = document.getElementById('reqDate');
+        var timeSel   = document.getElementById('reqTime');
+        var phoneIn   = document.getElementById('reqPhone');
+        var agreeChk  = document.getElementById('reqAgree');
+        var PHONE_RE  = /^01[016789]-\d{3,4}-\d{4}$/;
+        var bookedCache = null;        // 확정 예약 목록 (마감 시간 계산용)
+        var bookedLoadFailed = false;
 
-        // 시간 옵션 생성
-        var sel = document.getElementById('reqTime');
-        for (var h = 6; h <= 22; h++) {
-          for (var m = 0; m < 60; m += 30) {
-            if (h === 22 && m > 0) break;
-            var t = (h < 10 ? '0' : '') + h + ':' + (m === 0 ? '00' : m);
+        function pad(n) { return (n < 10 ? '0' : '') + n; }
+        function toMin(t) { var p = t.split(':'); return parseInt(p[0], 10) * 60 + parseInt(p[1], 10); }
+        function toHHMM(m) { return pad(Math.floor(m / 60)) + ':' + pad(m % 60); }
+        function todayStr() {
+          var d = new Date();
+          return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+        }
+
+        // 예약·취소 규정 / 보유기간 (설정 파일 기준으로 갱신)
+        if (CFG.cancelPolicy && CFG.cancelPolicy.length) {
+          document.querySelectorAll('[data-chaeum-policy]').forEach(function(ul) {
+            ul.innerHTML = '';
+            CFG.cancelPolicy.forEach(function(line) {
+              var li = document.createElement('li');
+              li.textContent = line;
+              ul.appendChild(li);
+            });
+          });
+        }
+        if (CFG.privacyRetention) document.getElementById('reqRetention').textContent = CFG.privacyRetention;
+
+        document.getElementById('reqAgreeToggle').addEventListener('click', function() {
+          var el = document.getElementById('reqAgreeDetail');
+          var open = el.style.display !== 'none';
+          el.style.display = open ? 'none' : 'block';
+          this.textContent = open ? '내용 보기' : '내용 접기';
+        });
+
+        // 확정 예약 조회 (공개 컬럼만)
+        async function loadBooked(force) {
+          if (bookedCache && !force) return bookedCache;
+          try {
+            var res = await _supabase
+              .from('reservations')
+              .select('start_time, is_recurring, reservation_date, day_of_week, recurring_from, recurring_until')
+              .eq('status', 'confirmed');
+            if (res.error) throw res.error;
+            bookedCache = res.data || [];
+            bookedLoadFailed = false;
+          } catch (e) {
+            bookedLoadFailed = true;
+            return [];
+          }
+          return bookedCache;
+        }
+
+        // 해당 날짜의 확정 수업 시작 시간(분)
+        function bookedStartsFor(list, dateStr) {
+          var dow = new Date(dateStr + 'T00:00:00').getDay();
+          return list.filter(function(r) {
+            if (!r.is_recurring) return r.reservation_date === dateStr;
+            return r.day_of_week === dow &&
+                   r.recurring_from <= dateStr &&
+                   r.recurring_until >= dateStr;
+          }).map(function(r) { return toMin(r.start_time.substring(0, 5)); });
+        }
+
+        function slotState(list, dateStr, m) {
+          var classMin = CFG.classMinutes || 50;
+          if (dateStr === todayStr()) {
+            var n = new Date();
+            if (m <= n.getHours() * 60 + n.getMinutes()) return 'past';
+          }
+          var booked = bookedStartsFor(list, dateStr);
+          if (booked.some(function(b) { return Math.abs(b - m) < classMin; })) return 'booked';
+          return 'open';
+        }
+
+        async function buildTimeOptions() {
+          var dateStr = dateInput.value;
+          timeSel.innerHTML = '<option value="">시간 선택</option>';
+          hideReqMsg();
+          if (!dateStr) return;
+          if (dateStr < todayStr()) { showReqMsg('지난 날짜는 선택할 수 없습니다.'); return; }
+          timeSel.disabled = true;
+          var list = await loadBooked(false);
+          if (dateInput.value !== dateStr) return;   // 조회 중 날짜가 바뀐 경우
+          timeSel.disabled = false;
+          var available = 0;
+          var start = toMin(CFG.openTime || '07:00');
+          var last  = toMin(CFG.lastStartTime || '21:00');
+          var step  = CFG.slotMinutes || 30;
+          for (var m = start; m <= last; m += step) {
+            var t = toHHMM(m);
+            var state = slotState(list, dateStr, m);
             var opt = document.createElement('option');
             opt.value = t;
-            opt.textContent = t;
-            sel.appendChild(opt);
+            if (state === 'open') { opt.textContent = t; available++; }
+            else { opt.disabled = true; opt.textContent = t + (state === 'booked' ? ' (마감)' : ' (지난 시간)'); }
+            timeSel.appendChild(opt);
           }
+          if (bookedLoadFailed) showReqMsg('실시간 마감 정보를 불러오지 못했습니다. 신청 후 확인 연락을 드립니다.', '#8b7355');
+          else if (!available) showReqMsg('선택한 날짜는 예약 가능한 시간이 없습니다. 다른 날짜를 선택해주세요.');
         }
 
-        // 기본 날짜 = 오늘, 과거 날짜 선택 방지
-        var today = new Date();
-        var todayStr = today.getFullYear() + '-' +
-          String(today.getMonth() + 1).padStart(2, '0') + '-' +
-          String(today.getDate()).padStart(2, '0');
-        var dateInput = document.getElementById('reqDate');
-        dateInput.value = todayStr;
-        dateInput.min   = todayStr;
+        // 휴대번호 010-0000-0000 형식
+        function formatPhone(v) {
+          var d = String(v || '').replace(/\D/g, '').slice(0, 11);
+          if (d.length < 4) return d;
+          if (d.length < 8) return d.slice(0, 3) + '-' + d.slice(3);
+          if (d.length === 10) return d.slice(0, 3) + '-' + d.slice(3, 6) + '-' + d.slice(6);
+          return d.slice(0, 3) + '-' + d.slice(3, 7) + '-' + d.slice(7);
+        }
+        phoneIn.addEventListener('input', function() { phoneIn.value = formatPhone(phoneIn.value); });
 
-        // 모달 닫힐 때 폼 초기화
-        modal.addEventListener('hidden.bs.modal', function() {
-          dateInput.value = todayStr;
-          document.getElementById('reqTime').selectedIndex = 0;
-          document.getElementById('reqName').value  = '';
-          document.getElementById('reqPhone').value = '';
-          document.getElementById('reqMsg').style.display    = 'none';
-          document.getElementById('reqFormArea').style.display = 'block';
-          document.getElementById('reqSuccess').style.display = 'none';
+        dateInput.addEventListener('change', buildTimeOptions);
+
+        function resetForm() {
+          var t = todayStr();
+          dateInput.min   = t;
+          dateInput.value = t;
+          document.getElementById('reqName').value = '';
+          phoneIn.value    = '';
+          agreeChk.checked = false;
+          document.getElementById('reqAgreeDetail').style.display = 'none';
+          document.getElementById('reqAgreeToggle').textContent  = '내용 보기';
+          document.getElementById('reqMsg').style.display        = 'none';
+          document.getElementById('reqFormArea').style.display   = 'block';
+          document.getElementById('reqSuccess').style.display    = 'none';
           var btn = document.getElementById('reqSubmitBtn');
-          btn.disabled    = false;
-          btn.textContent = '신청하기';
+          btn.disabled      = false;
+          btn.textContent   = '신청하기';
           btn.style.display = '';
-        });
-      })();
-
-      async function submitReservationRequest() {
-        var date  = document.getElementById('reqDate').value;
-        var time  = document.getElementById('reqTime').value;
-        var name  = document.getElementById('reqName').value.trim();
-        var phone = document.getElementById('reqPhone').value.trim();
-
-        if (!date)  { showReqMsg('날짜를 선택해주세요.'); return; }
-        if (!time)  { showReqMsg('시간을 선택해주세요.'); return; }
-        if (!name)  { showReqMsg('이름을 입력해주세요.'); return; }
-        if (!phone) { showReqMsg('휴대번호를 입력해주세요.'); return; }
-
-        var btn = document.getElementById('reqSubmitBtn');
-        btn.disabled    = true;
-        btn.textContent = '신청 중...';
-
-        try {
-          var result = await _supabase.from('reservation_requests').insert({
-            request_date: date,
-            request_time: time + ':00',
-            name:         name,
-            phone:        phone
-          });
-          if (result.error) throw result.error;
-          document.getElementById('reqFormArea').style.display = 'none';
-          document.getElementById('reqSuccess').style.display  = 'block';
-          btn.style.display = 'none';
-        } catch(e) {
-          showReqMsg('오류가 발생했습니다. 다시 시도해주세요.');
-          btn.disabled    = false;
-          btn.textContent = '신청하기';
         }
-      }
 
-      function showReqMsg(msg) {
-        var el = document.getElementById('reqMsg');
-        el.textContent = msg;
-        el.style.color  = '#c0392b';
-        el.style.display = 'block';
-      }
+        // 창을 열 때마다 최신 예약 기준으로 시간 목록 갱신
+        modal.addEventListener('show.bs.modal', function() {
+          bookedCache = null;
+          resetForm();
+          buildTimeOptions();
+        });
+        modal.addEventListener('hidden.bs.modal', resetForm);
+        resetForm();
+
+        window.submitReservationRequest = async function() {
+          var date  = dateInput.value;
+          var time  = timeSel.value;
+          var name  = document.getElementById('reqName').value.trim();
+          var phone = formatPhone(phoneIn.value);
+          phoneIn.value = phone;
+
+          if (!date)               { showReqMsg('날짜를 선택해주세요.'); return; }
+          if (date < todayStr())   { showReqMsg('지난 날짜는 선택할 수 없습니다.'); return; }
+          if (!time)               { showReqMsg('시간을 선택해주세요.'); return; }
+          if (!name)               { showReqMsg('이름을 입력해주세요.'); return; }
+          if (!phone)              { showReqMsg('휴대번호를 입력해주세요.'); return; }
+          if (!PHONE_RE.test(phone)) { showReqMsg('휴대번호를 010-0000-0000 형식으로 입력해주세요.'); return; }
+          if (!agreeChk.checked)   { showReqMsg('개인정보 수집·이용에 동의해주세요.'); return; }
+
+          var btn = document.getElementById('reqSubmitBtn');
+          btn.disabled    = true;
+          btn.textContent = '신청 중...';
+
+          // 제출 직전 최신 예약으로 마감 여부 재확인
+          var latest = await loadBooked(true);
+          if (!bookedLoadFailed && slotState(latest, date, toMin(time)) !== 'open') {
+            await buildTimeOptions();
+            showReqMsg('방금 마감된 시간입니다. 다른 시간을 선택해주세요.');
+            btn.disabled    = false;
+            btn.textContent = '신청하기';
+            return;
+          }
+
+          try {
+            var result = await _supabase.from('reservation_requests').insert({
+              request_date: date,
+              request_time: time + ':00',
+              name:         name,
+              phone:        phone
+            });
+            if (result.error) throw result.error;
+            document.getElementById('reqFormArea').style.display = 'none';
+            document.getElementById('reqSuccess').style.display  = 'block';
+            btn.style.display = 'none';
+          } catch (e) {
+            showReqMsg('오류가 발생했습니다. 다시 시도해주세요.');
+            btn.disabled    = false;
+            btn.textContent = '신청하기';
+          }
+        };
+
+        function showReqMsg(msg, color) {
+          var el = document.getElementById('reqMsg');
+          el.textContent   = msg;
+          el.style.color   = color || '#c0392b';
+          el.style.display = 'block';
+        }
+        function hideReqMsg() { document.getElementById('reqMsg').style.display = 'none'; }
+        window.showReqMsg = showReqMsg;
+      })();
     </script>
 
     <!-- 카카오맵 퍼가기 -->

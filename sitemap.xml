@@ -6,4 +6,10 @@
     <priority>1.0</priority>
     <lastmod>2026-10-06</lastmod>
   </url>
+  <url>
+    <loc>https://www.chaeumclassic.com/privacy</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+    <lastmod>2026-11-18</lastmod>
+  </url>
 </urlset>

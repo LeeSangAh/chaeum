@@ -568,6 +568,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/bootstrap.bundle.min.js"></script>
 <script src="js/supabase-client.js"></script>
+<script src="js/booking-config.js"></script>
 <script>
   const DAY_NAMES   = ['일','월','화','수','목','금','토'];
   const MONTH_NAMES = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
@@ -1220,6 +1221,7 @@
 
     showToast(`${req.name}님 예약이 승인되었습니다.`);
     await Promise.all([loadRequests(), loadMonthData()]);
+    openSmsModal(req, 'approve');
   }
 
   async function rejectRequest(id) {
@@ -1233,6 +1235,85 @@
 
     showToast('예약 요청을 거절했습니다.');
     await loadRequests();
+    openSmsModal(req, 'reject');
+  }
+
+  // ── 승인/거절 안내 문자 ─────────────────────────────
+  const SMS_DOW = ['일','월','화','수','목','금','토'];
+
+  function buildSmsText(req, kind) {
+    const cfg  = window.CHAEUM_BOOKING || {};
+    const tpls = cfg.sms || {};
+    const tpl  = tpls[kind] || '';
+    const d    = new Date(req.request_date + 'T00:00:00');
+    const vars = {
+      name:  req.name,
+      date:  `${d.getMonth() + 1}월 ${d.getDate()}일(${SMS_DOW[d.getDay()]})`,
+      time:  req.request_time.substring(0, 5),
+      phone: cfg.phone || ''
+    };
+    return tpl.replace(/\{(name|date|time|phone)\}/g, (m, k) => vars[k]);
+  }
+
+  function ensureSmsModal() {
+    let el = document.getElementById('smsModal');
+    if (el) return el;
+    el = document.createElement('div');
+    el.className = 'modal fade';
+    el.id = 'smsModal';
+    el.tabIndex = -1;
+    el.innerHTML = `
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius:0; border:none;">
+          <div class="modal-header" style="background:#2c2c2c; color:#fff; border-radius:0; padding:14px 20px;">
+            <div>
+              <div style="font-size:0.65rem; letter-spacing:0.18em; color:#c9b99a; margin-bottom:3px;">SMS</div>
+              <h5 class="modal-title" id="smsModalTitle" style="font-size:1rem; margin:0; color:#fff;">안내 문자 보내기</h5>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter:invert(1); opacity:0.7;"></button>
+          </div>
+          <div class="modal-body" style="padding:20px;">
+            <div style="font-size:0.8rem; color:#888; margin-bottom:6px;">받는 번호 <strong id="smsTo" style="color:#2c2c2c;"></strong></div>
+            <textarea id="smsText" class="form-control" rows="5" style="border-radius:0; font-size:0.88rem; line-height:1.6;"></textarea>
+            <div id="smsHint" style="font-size:0.75rem; color:#999; margin-top:8px;">휴대폰에서는 [문자 보내기]로 문자 앱이 열립니다. PC에서는 [문구 복사] 후 휴대폰으로 보내주세요.</div>
+          </div>
+          <div class="modal-footer" style="padding:12px 20px 18px; border-top:1px solid #f0f0f0; gap:8px;">
+            <button type="button" class="btn" data-bs-dismiss="modal" style="border:1px solid #ddd; color:#888; padding:8px 18px; font-size:0.82rem;">닫기</button>
+            <button type="button" id="smsCopyBtn" class="btn" style="border:1px solid #8b7355; color:#8b7355; padding:8px 18px; font-size:0.82rem;">문구 복사</button>
+            <a id="smsSendLink" href="#" style="background:#8b7355; color:#fff; padding:9px 20px; font-size:0.82rem; text-decoration:none;">문자 보내기</a>
+          </div>
+        </div>
+      </div>`;
+    document.body.appendChild(el);
+
+    const textEl = el.querySelector('#smsText');
+    textEl.addEventListener('input', updateSmsLink);
+    el.querySelector('#smsCopyBtn').addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(textEl.value);
+        showToast('문구를 복사했습니다.');
+      } catch (e) {
+        textEl.focus();
+        textEl.select();
+        showToast('복사가 지원되지 않습니다. 선택된 문구를 Ctrl+C 로 복사하세요.', 'error');
+      }
+    });
+    return el;
+  }
+
+  function updateSmsLink() {
+    const to   = (document.getElementById('smsTo').textContent.match(/01[0-9][-0-9]+/) || [''])[0].replace(/[^0-9]/g, '');
+    const text = document.getElementById('smsText').value;
+    document.getElementById('smsSendLink').href = `sms:${to}?body=${encodeURIComponent(text)}`;
+  }
+
+  function openSmsModal(req, kind) {
+    const el = ensureSmsModal();
+    document.getElementById('smsModalTitle').textContent = kind === 'approve' ? '승인 안내 문자' : '거절 안내 문자';
+    document.getElementById('smsTo').textContent = `${req.name} ${req.phone}`;
+    document.getElementById('smsText').value = buildSmsText(req, kind);
+    updateSmsLink();
+    bootstrap.Modal.getOrCreateInstance(el).show();
   }
 
   // ── 초기화 ──────────────────────────────────────────
