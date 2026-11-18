@@ -1,0 +1,16 @@
+{
+  "name": "chaeum-harness",
+  "private": true,
+  "type": "module",
+  "description": "채움 사이트 개발 하네스 (그래프 엔지니어링 + 검증 루프). 사이트 배포와 무관 — 루트가 아닌 harness/ 에만 둔다.",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "status": "node gate.mjs status",
+    "verify": "node verify.mjs",
+    "qa": "node qa-smoke.mjs",
+    "browsers": "playwright install chromium"
+  },
+  "devDependencies": {
+    "playwright": "^1.48.0"
+  }
+}

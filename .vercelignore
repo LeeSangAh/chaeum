@@ -1,0 +1,7 @@
+# 개발 하네스·에이전트 파일은 운영 사이트로 배포하지 않음
+harness/
+.harness/
+.claude/
+.idea/
+CLAUDE.md
+supabase_setup.sql
