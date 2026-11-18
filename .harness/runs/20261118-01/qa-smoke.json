@@ -1,0 +1,79 @@
+{
+  "at": "2026-11-18T12:11:55.476Z",
+  "baseUrl": "http://127.0.0.1:35725",
+  "mode": "http",
+  "checks": [
+    {
+      "page": "index.html",
+      "check": "http",
+      "ok": true,
+      "detail": "200 http://127.0.0.1:35725/"
+    },
+    {
+      "page": "login.html",
+      "check": "http",
+      "ok": true,
+      "detail": "200 http://127.0.0.1:35725/login"
+    },
+    {
+      "page": "admin.html",
+      "check": "http",
+      "ok": true,
+      "detail": "200 http://127.0.0.1:35725/admin"
+    },
+    {
+      "page": "members.html",
+      "check": "http",
+      "ok": true,
+      "detail": "200 http://127.0.0.1:35725/members"
+    },
+    {
+      "page": "member-reservations.html",
+      "check": "http",
+      "ok": true,
+      "detail": "200 http://127.0.0.1:35725/member-reservations"
+    },
+    {
+      "page": "banners.html",
+      "check": "http",
+      "ok": true,
+      "detail": "200 http://127.0.0.1:35725/banners"
+    },
+    {
+      "page": "/robots.txt",
+      "check": "http",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "page": "/sitemap.xml",
+      "check": "http",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "page": "/.harness/state.json",
+      "check": "not-exposed",
+      "ok": true,
+      "detail": "404 (404 이어야 함)"
+    },
+    {
+      "page": "/harness/graph.json",
+      "check": "not-exposed",
+      "ok": true,
+      "detail": "404 (404 이어야 함)"
+    },
+    {
+      "page": "/CLAUDE.md",
+      "check": "not-exposed",
+      "ok": true,
+      "detail": "404 (404 이어야 함)"
+    }
+  ],
+  "summary": {
+    "total": 11,
+    "failed": 0,
+    "mode": "http"
+  },
+  "note": "브라우저 단계 생략 — harness 폴더에서 `npm install && npx playwright install chromium` 실행 시 활성화"
+}

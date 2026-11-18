@@ -5,7 +5,7 @@
     "20261118-01": {
       "id": "20261118-01",
       "title": "국내 필라테스 사이트 기능 조사 및 채움 사이트 적용",
-      "phase": "release_qa",
+      "phase": "deploy",
       "createdAt": "2026-11-18T20:34:10.405+09:00",
       "devLoop": 0,
       "gates": {
@@ -31,6 +31,14 @@
           "rounds": 1,
           "decidedAt": "2026-11-18T21:08:27.913+09:00",
           "comment": "승인 (Supabase 리전 서울 확인, privacy.html TODO 주석은 유지)",
+          "actor": "human-chat"
+        },
+        "G4": {
+          "status": "approved",
+          "requestedAt": "2026-11-18T21:19:35.806+09:00",
+          "rounds": 1,
+          "decidedAt": "2026-11-18T21:23:53.783+09:00",
+          "comment": "출시 승인 (프리뷰 직접 확인 완료)",
           "actor": "human-chat"
         }
       },
@@ -95,6 +103,20 @@
           "from": "G3",
           "to": "release_qa",
           "reason": "G3 승인: 승인 (Supabase 리전 서울 확인, privacy.html TODO 주석은 유지)"
+        },
+        {
+          "at": "2026-11-18T21:19:35.806+09:00",
+          "event": "transition",
+          "from": "release_qa",
+          "to": "G4",
+          "reason": "출시QA 완료"
+        },
+        {
+          "at": "2026-11-18T21:23:53.783+09:00",
+          "event": "transition",
+          "from": "G4",
+          "to": "deploy",
+          "reason": "G4 승인: 출시 승인 (프리뷰 직접 확인 완료)"
         }
       ],
       "verifications": [
