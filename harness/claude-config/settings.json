@@ -1,0 +1,52 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node harness/gate.mjs status:*)",
+      "Bash(node harness/gate.mjs start:*)",
+      "Bash(node harness/gate.mjs complete:*)",
+      "Bash(node harness/gate.mjs history:*)",
+      "Bash(node harness/verify.mjs:*)",
+      "Bash(node harness/qa-smoke.mjs:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)"
+    ],
+    "deny": [
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git reset --hard:*)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          { "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/harness/gate.mjs\" status --brief" }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          { "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/harness/hooks/prompt-gate.mjs\"" }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit|Bash",
+        "hooks": [
+          { "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/harness/hooks/guard.mjs\"" }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          { "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/harness/hooks/post-edit-verify.mjs\"" }
+        ]
+      }
+    ]
+  }
+}

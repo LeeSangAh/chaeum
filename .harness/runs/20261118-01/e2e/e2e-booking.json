@@ -1,0 +1,127 @@
+{
+  "at": "2026-11-18T11:58:35.917Z",
+  "total": 24,
+  "failed": 0,
+  "results": [
+    {
+      "name": "AC-12 index 로드 시 페이지 오류 없음",
+      "ok": true,
+      "detail": "전체 0건(템플릿 플러그인 제외)"
+    },
+    {
+      "name": "AC-2 하단 개인정보처리방침 링크",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "AC-8 FAQ 취소 규정 (설정 파일 기준 3줄)",
+      "ok": true,
+      "detail": "예약 변경·취소는 수업 24시간 전까지 연락 주세요. / 수업 24시간 이내 취소 및 노쇼 시 1회 차감됩니다. / 체험 레슨은 처음 등록하시는 분에 한해 1회 이용 가능합니다."
+    },
+    {
+      "name": "AC-8 예약 창 취소 규정 표시",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "수업종류/요청사항 입력 없음 (G2 조건)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "AC-5 오늘 지난 시간 비활성",
+      "ok": true,
+      "detail": "옵션 29개, 범위 07:00~21:00"
+    },
+    {
+      "name": "AC-5 예약된 시간 50분 겹침 마감",
+      "ok": true,
+      "detail": "09:00=false 09:30=true 10:00=true 10:30=true 11:00=false"
+    },
+    {
+      "name": "AC-5 반복 예약도 마감 반영",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "토·일·공휴일 선택 가능 (G2 조건)",
+      "ok": true,
+      "detail": "2026-11-21 가능 29개"
+    },
+    {
+      "name": "AC-6 휴대번호 자동 형식",
+      "ok": true,
+      "detail": "010-1234-5678"
+    },
+    {
+      "name": "AC-1 동의 없으면 신청 불가",
+      "ok": true,
+      "detail": "개인정보 수집·이용에 동의해주세요."
+    },
+    {
+      "name": "AC-6 휴대폰 형식 아니면 거부",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "B 동의 내용 보기 (보유기간 표기)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "신청 저장 (기존 컬럼만, DB 변경 불필요)",
+      "ok": true,
+      "detail": "{\"request_date\":\"2026-11-21\",\"request_time\":\"11:00:00\",\"name\":\"테스트\",\"phone\":\"010-9876-5432\"}"
+    },
+    {
+      "name": "신청 완료 문구",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "AC-11 모바일 가로 넘침 없음",
+      "ok": true,
+      "detail": "0px"
+    },
+    {
+      "name": "AC-2 /privacy 페이지 내용",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "privacy 모바일 가로 넘침 없음",
+      "ok": true,
+      "detail": "0px"
+    },
+    {
+      "name": "AC-9 승인 후 안내 문자 창",
+      "ok": true,
+      "detail": "[채움 클래식 필라테스] 홍길동님, 11월 19일(목) 14:00 예약이 확정되었습니다. 변경·취소는 수업 24시간 전까지 연락 부탁드립니다. 문의 010-2899-5015"
+    },
+    {
+      "name": "AC-9 문자 보내기 링크",
+      "ok": true,
+      "detail": "sms:01012345678?body=%5B%EC%B1%84%EC%9B%"
+    },
+    {
+      "name": "AC-9 문구 수정 시 링크 갱신",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "AC-10 승인 시 reservations 에 요청 정보 미복사",
+      "ok": true,
+      "detail": "{\"member_id\":\"new-members\",\"start_time\":\"14:00:00\",\"status\":\"confirmed\",\"is_recurring\":false,\"reservation_date\":\"2026-11-19\"}"
+    },
+    {
+      "name": "AC-9 거절 안내 문자",
+      "ok": true,
+      "detail": "[채움 클래식 필라테스] 김철수님, 요청하신 12월 1일(화) 09:00 예약은 확정이 어렵습니다. 가능한 시간은 010-2899-5015 로 문의해 주시면 안내드리겠습니다."
+    },
+    {
+      "name": "admin 페이지 오류 없음",
+      "ok": true,
+      "detail": ""
+    }
+  ]
+}

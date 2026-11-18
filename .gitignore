@@ -1,0 +1,9 @@
+# 하네스 도구 의존성 (Playwright 등)
+harness/node_modules/
+# 상태 파일 임시본
+.harness/state.json.tmp
+# QA 스크린샷은 용량이 커서 제외 (필요하면 이 줄 삭제)
+.harness/runs/*/screenshots/
+
+# 개인 로컬 설정 (Claude Code 권한)
+.claude/settings.local.json

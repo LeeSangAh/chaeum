@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "name": "chaeum-graph",
+  "description": "조사 → [G1] → 기획 → 설계 → [G2] → 개발 ⇄ 검증(루프) → [G3] → 출시QA → [G4] → 배포",
+  "maxDevLoops": 3,
+  "project": {
+    "publicPages": ["index.html"],
+    "adminPages": ["login.html", "admin.html", "members.html", "member-reservations.html", "banners.html"],
+    "authGuardedPages": ["admin.html", "members.html", "member-reservations.html", "banners.html"],
+    "schemaFile": "supabase_setup.sql",
+    "productionBranch": "main",
+    "releaseBranchPrefix": "release/",
+    "protectedPaths": ["harness/", ".claude/", "CLAUDE.md", ".vercelignore"]
+  },
+  "phases": {
+    "research":   { "label": "조사",     "agent": "researcher", "artifact": "01-research.md",       "sourceWrite": false },
+    "plan":       { "label": "기획",     "agent": "planner",    "artifact": "02-plan.md",           "sourceWrite": false },
+    "design":     { "label": "설계",     "agent": "architect",  "artifact": "03-design.md",         "sourceWrite": false },
+    "develop":    { "label": "개발",     "agent": "developer",  "artifact": "04-dev-log.md",        "sourceWrite": true  },
+    "verify":     { "label": "검증",     "agent": "verifier",   "artifact": "05-verify-report.md",  "sourceWrite": false },
+    "release_qa": { "label": "출시QA",   "agent": "qa-release", "artifact": "06-release-qa.md",     "sourceWrite": false, "push": "release" },
+    "deploy":     { "label": "배포",     "agent": null,         "artifact": null,                   "sourceWrite": false, "push": "production" },
+    "released":   { "label": "완료",     "agent": null,         "artifact": null,                   "sourceWrite": false }
+  },
+  "gates": {
+    "G1": { "label": "조사 승인",        "after": "research",   "review": ["01-research.md"] },
+    "G2": { "label": "기획·설계 승인",   "after": "design",     "review": ["02-plan.md", "03-design.md"] },
+    "G3": { "label": "개발·검증 승인",   "after": "verify",     "review": ["04-dev-log.md", "05-verify-report.md", "verify.json"] },
+    "G4": { "label": "출시QA 승인",      "after": "release_qa", "review": ["06-release-qa.md", "qa-smoke.json"] }
+  },
+  "edges": [
+    { "from": "research",   "to": "G1" },
+    { "from": "G1",         "to": "plan",       "on": "approve" },
+    { "from": "G1",         "to": "research",   "on": "reject" },
+
+    { "from": "plan",       "to": "design" },
+    { "from": "design",     "to": "G2" },
+    { "from": "G2",         "to": "develop",    "on": "approve" },
+    { "from": "G2",         "to": "plan",       "on": "reject", "alternatives": ["design"] },
+
+    { "from": "develop",    "to": "verify" },
+    { "from": "verify",     "to": "develop",    "on": "fail" },
+    { "from": "verify",     "to": "G3",         "on": "pass" },
+    { "from": "G3",         "to": "release_qa", "on": "approve" },
+    { "from": "G3",         "to": "develop",    "on": "reject", "alternatives": ["design"] },
+
+    { "from": "release_qa", "to": "G4" },
+    { "from": "G4",         "to": "deploy",     "on": "approve" },
+    { "from": "G4",         "to": "develop",    "on": "reject", "alternatives": ["release_qa", "design"] },
+
+    { "from": "deploy",     "to": "released" }
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "tool": "harness/verify.mjs",
+  "at": "2026-11-18T11:59:41.144Z",
+  "mode": "full",
+  "summary": {
+    "errors": 0,
+    "warnings": 10,
+    "checkedFiles": [
+      "admin.html",
+      "banners.html",
+      "index.html",
+      "login.html",
+      "member-reservations.html",
+      "members.html",
+      "naver97744fb8b86d92ad52724815813a6ce7.html",
+      "privacy.html",
+      "js/booking-config.js",
+      "js/script.js",
+      "js/supabase-client.js"
+    ]
+  },
+  "findings": [
+    {
+      "level": "warn",
+      "check": "schema-drift",
+      "file": "admin.html",
+      "line": 1093,
+      "message": "테이블/뷰 'visitor_stats' 가 supabase_setup.sql 에 정의되어 있지 않음 (DB 에만 존재하면 스키마 파일에 추가 필요)"
+    },
+    {
+      "level": "warn",
+      "check": "seo-admin",
+      "file": "banners.html",
+      "line": null,
+      "message": "관리자 페이지가 검색엔진에 노출될 수 있음 (robots.txt Disallow 또는 <meta name=\"robots\" content=\"noindex\"> 필요)"
+    },
+    {
+      "level": "warn",
+      "check": "seo-admin",
+      "file": "member-reservations.html",
+      "line": null,
+      "message": "관리자 페이지가 검색엔진에 노출될 수 있음 (robots.txt Disallow 또는 <meta name=\"robots\" content=\"noindex\"> 필요)"
+    },
+    {
+      "level": "warn",
+      "check": "large-image",
+      "file": "images/open_banner2.png",
+      "line": null,
+      "message": "1.8MB — 로딩 지연 우려 (WebP/리사이즈 권장, 사용처 index.html:853)"
+    },
+    {
+      "level": "warn",
+      "check": "large-image",
+      "file": "images/banner2026111001.png",
+      "line": null,
+      "message": "1.8MB — 로딩 지연 우려 (WebP/리사이즈 권장, 사용처 index.html:870)"
+    },
+    {
+      "level": "warn",
+      "check": "large-image",
+      "file": "images/banner2026102503.png",
+      "line": null,
+      "message": "2.8MB — 로딩 지연 우려 (WebP/리사이즈 권장, 사용처 index.html:879)"
+    },
+    {
+      "level": "warn",
+      "check": "large-image",
+      "file": "images/banner2026102501.png",
+      "line": null,
+      "message": "2.8MB — 로딩 지연 우려 (WebP/리사이즈 권장, 사용처 index.html:897)"
+    },
+    {
+      "level": "warn",
+      "check": "large-image",
+      "file": "images/banner2026102502.png",
+      "line": null,
+      "message": "2.4MB — 로딩 지연 우려 (WebP/리사이즈 권장, 사용처 index.html:916)"
+    },
+    {
+      "level": "warn",
+      "check": "large-image",
+      "file": "images/20261006.png",
+      "line": null,
+      "message": "1.6MB — 로딩 지연 우려 (WebP/리사이즈 권장, 사용처 index.html:933)"
+    },
+    {
+      "level": "warn",
+      "check": "doc-drift",
+      "file": "CLAUDE.md",
+      "line": null,
+      "message": "페이지 'privacy.html' 가 CLAUDE.md 에 문서화되지 않음"
+    }
+  ]
+}

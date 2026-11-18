@@ -1,0 +1,150 @@
+{
+  "activeRun": "20261118-01",
+  "bypass": false,
+  "runs": {
+    "20261118-01": {
+      "id": "20261118-01",
+      "title": "국내 필라테스 사이트 기능 조사 및 채움 사이트 적용",
+      "phase": "deploy",
+      "createdAt": "2026-11-18T20:34:10.405+09:00",
+      "devLoop": 0,
+      "gates": {
+        "G1": {
+          "status": "approved",
+          "requestedAt": "2026-11-18T20:35:21.499+09:00",
+          "rounds": 1,
+          "decidedAt": "2026-11-18T20:42:40.385+09:00",
+          "comment": "범위 B,C,D,E 로 진행 (A 요금·환불 섹션, F RLS 축소는 제외)",
+          "actor": "human-chat"
+        },
+        "G2": {
+          "status": "approved",
+          "requestedAt": "2026-11-18T20:45:19.920+09:00",
+          "rounds": 1,
+          "decidedAt": "2026-11-18T20:54:16.089+09:00",
+          "comment": "B 진행 / C: 수업종류·요청사항 입력 없음, 시간선택(예약된 시간·지난 시간 비활성) 포함, 토·일·공휴일 선택 가능, 휴대번호 010-0000-0000 형식 / D·E·설정파일 진행 / DB 변경은 개발 시 별도 보고 / 공개달력 오류 수정 포함 / 취소규정·50분 확정 / 보유기간: 파기 요청 시까지 / Supabase 리전 확인 방법 안내 요청",
+          "actor": "human-chat"
+        },
+        "G3": {
+          "status": "approved",
+          "requestedAt": "2026-11-18T20:59:41.170+09:00",
+          "rounds": 1,
+          "decidedAt": "2026-11-18T21:08:27.913+09:00",
+          "comment": "승인 (Supabase 리전 서울 확인, privacy.html TODO 주석은 유지)",
+          "actor": "human-chat"
+        },
+        "G4": {
+          "status": "approved",
+          "requestedAt": "2026-11-18T21:19:35.806+09:00",
+          "rounds": 1,
+          "decidedAt": "2026-11-18T21:23:53.783+09:00",
+          "comment": "출시 승인 (프리뷰 직접 확인 완료)",
+          "actor": "human-chat"
+        }
+      },
+      "history": [
+        {
+          "at": "2026-11-18T20:34:10.406+09:00",
+          "event": "start",
+          "to": "research"
+        },
+        {
+          "at": "2026-11-18T20:35:21.500+09:00",
+          "event": "transition",
+          "from": "research",
+          "to": "G1",
+          "reason": "조사 완료"
+        },
+        {
+          "at": "2026-11-18T20:42:40.385+09:00",
+          "event": "transition",
+          "from": "G1",
+          "to": "plan",
+          "reason": "G1 승인: 범위 B,C,D,E 로 진행 (A 요금·환불 섹션, F RLS 축소는 제외)"
+        },
+        {
+          "at": "2026-11-18T20:45:19.834+09:00",
+          "event": "transition",
+          "from": "plan",
+          "to": "design",
+          "reason": "기획 완료"
+        },
+        {
+          "at": "2026-11-18T20:45:19.921+09:00",
+          "event": "transition",
+          "from": "design",
+          "to": "G2",
+          "reason": "설계 완료"
+        },
+        {
+          "at": "2026-11-18T20:54:16.089+09:00",
+          "event": "transition",
+          "from": "G2",
+          "to": "develop",
+          "reason": "G2 승인: B 진행 / C: 수업종류·요청사항 입력 없음, 시간선택(예약된 시간·지난 시간 비활성) 포함, 토·일·공휴일 선택 가능, 휴대번호 010-0000-0000 형식 / D·E·설정파일 진행 / DB 변경은 개발 시 별도 보고 / 공개달력 오류 수정 포함 / 취소규정·50분 확정 / 보유기간: 파기 요청 시까지 / Supabase 리전 확인 방법 안내 요청"
+        },
+        {
+          "at": "2026-11-18T20:59:15.303+09:00",
+          "event": "transition",
+          "from": "develop",
+          "to": "verify",
+          "reason": "개발 완료"
+        },
+        {
+          "at": "2026-11-18T20:59:41.170+09:00",
+          "event": "transition",
+          "from": "verify",
+          "to": "G3",
+          "reason": "검증 통과 (오류 0 / 경고 10)"
+        },
+        {
+          "at": "2026-11-18T21:08:27.913+09:00",
+          "event": "transition",
+          "from": "G3",
+          "to": "release_qa",
+          "reason": "G3 승인: 승인 (Supabase 리전 서울 확인, privacy.html TODO 주석은 유지)"
+        },
+        {
+          "at": "2026-11-18T21:19:35.806+09:00",
+          "event": "transition",
+          "from": "release_qa",
+          "to": "G4",
+          "reason": "출시QA 완료"
+        },
+        {
+          "at": "2026-11-18T21:23:53.783+09:00",
+          "event": "transition",
+          "from": "G4",
+          "to": "deploy",
+          "reason": "G4 승인: 출시 승인 (프리뷰 직접 확인 완료)"
+        }
+      ],
+      "verifications": [
+        {
+          "at": "2026-11-18T20:59:41.170+09:00",
+          "loop": 1,
+          "automated": "pass",
+          "reviewer": "pass",
+          "summary": {
+            "errors": 0,
+            "warnings": 10,
+            "checkedFiles": [
+              "admin.html",
+              "banners.html",
+              "index.html",
+              "login.html",
+              "member-reservations.html",
+              "members.html",
+              "naver97744fb8b86d92ad52724815813a6ce7.html",
+              "privacy.html",
+              "js/booking-config.js",
+              "js/script.js",
+              "js/supabase-client.js"
+            ]
+          },
+          "note": null
+        }
+      ]
+    }
+  }
+}
